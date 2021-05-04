@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Platform, TextInput, Icon } from 'react-native';
+import { StyleSheet, SafeAreaView, Platform, TextInput } from 'react-native';
 import { COLORS } from '../config/colors.js';
 import { Ionicons } from '@expo/vector-icons';
 

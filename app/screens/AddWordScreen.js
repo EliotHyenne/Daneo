@@ -3,7 +3,7 @@ import { StyleSheet, SafeAreaView, Platform, TextInput } from 'react-native';
 import { COLORS } from '../config/colors.js';
 import { Ionicons } from '@expo/vector-icons';
 
-function AddWordScreen ({ route, navigation }) {
+function AddWordScreen ({route, navigation}) {
   
   return (
     <SafeAreaView style={styles.container}>

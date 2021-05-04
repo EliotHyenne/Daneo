@@ -27,24 +27,24 @@ function HomeScreen ({ navigation }) {
   return (
     <SafeAreaView style={ styles.container }>
       <TouchableNativeFeedback onPress={() => console.log("WORDS")}>
-        <Text style={ [styles.button, {backgroundColor:COLORS.pastel_orange}]}>
+        <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
           WORDS
         </Text>
       </TouchableNativeFeedback>
       <TouchableNativeFeedback onPress={() => console.log("LESSON")}>
-        <Text style={ [styles.button, {backgroundColor:COLORS.pastel_blue}]}>
+        <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
           LESSON
         </Text>
       </TouchableNativeFeedback>
       <TouchableNativeFeedback onPress={() => console.log("REVIEW")}>
-        <Text style={ [styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
+        <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
           REVIEW 
         </Text>
       </TouchableNativeFeedback>
       <TouchableNativeFeedback onPress={() => navigation.navigate('AddWord', {
         title: "ADD WORD",
       })}>
-        <Text style={ [styles.button, {backgroundColor:COLORS.pastel_green}]}>
+        <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
           ADD 
         </Text>
       </TouchableNativeFeedback>

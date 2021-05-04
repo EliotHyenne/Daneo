@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView, TouchableNativeFeedback, Platform } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform } from 'react-native';
 import { COLORS } from '../config/colors.js';
 import { useFonts } from "expo-font";
 import AppLoading from 'expo-app-loading';
 
-function HomeScreen ({ navigation }) {
+function HomeScreen ({navigation}) {
   const [isLoaded] = useFonts({
     'Roboto-Black': require("../assets/fonts/Roboto-Black.ttf"),
     'Roboto-BlackItalic': require("../assets/fonts/Roboto-BlackItalic.ttf"),
@@ -25,29 +25,29 @@ function HomeScreen ({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={ styles.container }>
-      <TouchableNativeFeedback onPress={() => console.log("WORDS")}>
+    <SafeAreaView style={styles.container}>
+      <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
         <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
           WORDS
         </Text>
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback onPress={() => console.log("LESSON")}>
+      </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
         <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
           LESSON
         </Text>
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback onPress={() => console.log("REVIEW")}>
+      </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
         <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
           REVIEW 
         </Text>
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback onPress={() => navigation.navigate('AddWord', {
+      </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {
         title: "ADD WORD",
       })}>
         <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
           ADD 
         </Text>
-      </TouchableNativeFeedback>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }
@@ -57,11 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.pastel_purple,
     alignItems: 'center',
-    paddingTop: Platform.OS === "android" ? 75 : 0,
-  },
-  title: {
-    fontFamily: 'Roboto-Black',
-    color: 'white',
+    paddingTop: Platform.OS === "android" ? 75 : 50,
   },
   button: {
     textAlign: 'center',
@@ -73,6 +69,7 @@ const styles = StyleSheet.create({
     color: 'white',
     width: 300,
     height: 100,
+    overflow: 'hidden',
   }
 });
 

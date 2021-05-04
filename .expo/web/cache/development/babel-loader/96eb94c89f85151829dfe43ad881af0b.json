@@ -1,0 +1,1 @@
+{"ast":null,"code":"export var COLORS = {\n  brown: '#92817a'\n};","map":{"version":3,"sources":["/Users/eliothyenne/Tango/colors.js"],"names":["COLORS","brown"],"mappings":"AAAA,OAAO,IAAMA,MAAM,GAAG;AAClBC,EAAAA,KAAK,EAAE;AADW,CAAf","sourcesContent":["export const COLORS = {\n    brown: '#92817a'\n}"]},"metadata":{},"sourceType":"module"}

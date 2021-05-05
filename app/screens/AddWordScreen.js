@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Platform, View } from 'react-native';
+import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useFonts } from 'expo-font';
 import { COLORS } from '../config/colors.js';
@@ -7,6 +7,8 @@ import AppLoading from 'expo-app-loading';
 
 function AddWordScreen ({route, navigation}) {
   const [searchInputText, setSearchInputText] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
   const [isLoaded] = useFonts({
     'Roboto-Black': require("../assets/fonts/Roboto-Black.ttf"),
     'Roboto-BlackItalic': require("../assets/fonts/Roboto-BlackItalic.ttf"),
@@ -22,75 +24,81 @@ function AddWordScreen ({route, navigation}) {
     'Roboto-ThinItalic': require("../assets/fonts/Roboto-ThinItalic.ttf"),
   });
 
-  if (!isLoaded) {
-    return <AppLoading/>;
-  }
-
   const parseString = require('react-native-xml2js').parseString;
  
   const handleSearch =  (text) => {
+    setIsLoading(true)
     var url = 'https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=2&q=' + text
     fetch(url)
       .then(response => response.text())
       .then((response) => {
-          parseString(response, function (err, result) {
-              console.log(response)
+          parseString(response, function (err, res) {
               var convert = require('xml-js');
               var xml = response
-              var result1 = convert.xml2json(xml, {compact: true, spaces: 2});
-              console.log("result1----"+result1);
-              console.log("result2----"+result2);
+              var result = convert.xml2json(xml, {compact: true, spaces: 2});
+              console.log("result----" + result);
+              setIsLoading(false)
           });
         }).catch((err) => {
           console.log("search", err)
         })
   }
-  
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.searchBar}>
-        <SearchBar
-          round
-          autoFocus
-          searchIcon={{size: 25, color: 'white', paddingLeft:10}}
-          clearIcon={{size: 20, color: 'white'}}
-          onChangeText={setSearchInputText}
-          onSubmitEditing={(event) => handleSearch(event.nativeEvent.text)}
-          placeholder="Search word..."
-          placeholderTextColor="#EDEDED"
-          value={searchInputText}
-          inputContainerStyle={{backgroundColor: COLORS.pastel_blue}}
-          leftIconContainerStyle={{backgroundColor: COLORS.pastel_blue}}
-          inputStyle={{
-            backgroundColor: COLORS.pastel_blue,
-            fontFamily: 'Roboto-Regular',
-            fontSize: 21,
-            color: 'white',
-          }}
-          containerStyle={{
-            backgroundColor: COLORS.pastel_purple,
-            justifyContent: 'space-around',
-            borderTopWidth:0,
-            borderBottomWidth:0,
-          }}
-        />
-      </View>
-    </SafeAreaView>
-  );
+
+  if (!isLoaded) {
+    return <AppLoading/>;
+  } else {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.searchBar}>
+          <SearchBar
+            round
+            autoFocus
+            searchIcon={{size: 25, color: 'white', paddingLeft:10}}
+            clearIcon={{size: 20, color: 'white'}}
+            onChangeText={setSearchInputText}
+            onSubmitEditing={(event) => handleSearch(event.nativeEvent.text)}
+            placeholder="Search word.."
+            placeholderTextColor="#e3f3ff"
+            value={searchInputText}
+            inputContainerStyle={{backgroundColor: COLORS.pastel_blue}}
+            leftIconContainerStyle={{backgroundColor: COLORS.pastel_blue}}
+            inputStyle={{
+              backgroundColor: COLORS.pastel_blue,
+              fontFamily: 'Roboto-Regular',
+              fontSize: 21,
+              color: 'white',
+            }}
+            containerStyle={{
+              backgroundColor: COLORS.pastel_purple,
+              justifyContent: 'space-around',
+              borderTopWidth:0,
+              borderBottomWidth:0,
+            }}
+          />
+        </View>
+        <View style={styles.loading}>
+          {isLoading ? (
+            <ActivityIndicator style={styles.loading} size="large" color='white'/>
+          ) : (<></>)}
+        </View>
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.pastel_purple,
-    flexDirection: 'row',
     alignItems: 'center',
     paddingTop: Platform.OS === "android" ? 50 : 0,
+  },
+  loading: {
+    top: 100,
   },
   searchBar: {
     width: '100%',
     height: 65,
-    alignSelf: 'flex-start',
     fontFamily: 'Roboto-Regular',
     fontSize: 21,
   }

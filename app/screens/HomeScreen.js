@@ -22,36 +22,36 @@ function HomeScreen ({navigation}) {
 
   if (!isLoaded) {
     return <AppLoading/>;
+  } else {
+    return (
+      <SafeAreaView style={[styles.container]}>
+        <View style={{top: Platform.OS === "ios" ? 50 : 0}}>
+          <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
+            <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
+              WORDS
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
+            <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
+              LESSON
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
+            <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
+              REVIEW 
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {
+            title: "ADD WORD",
+          })}>
+            <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
+              ADD 
+            </Text>
+          </TouchableWithoutFeedback>
+        </View>
+      </SafeAreaView>
+    );
   }
-
-  return (
-    <SafeAreaView style={[styles.container]}>
-      <View style={{top: Platform.OS === "ios" ? 50 : 0}}>
-        <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
-          <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
-            WORDS
-          </Text>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
-          <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
-            LESSON
-          </Text>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
-          <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
-            REVIEW 
-          </Text>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {
-          title: "ADD WORD",
-        })}>
-          <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
-            ADD 
-          </Text>
-        </TouchableWithoutFeedback>
-      </View>
-    </SafeAreaView>
-  );
 }
 
 const styles = StyleSheet.create({

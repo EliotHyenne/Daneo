@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     top: 100,
   },
   searchBar: {
-    width: '100%',
+    width: '90%',
     height: 65,
     fontFamily: 'Roboto-Regular',
     fontSize: 21,

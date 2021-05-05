@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../config/colors.js';
-import { useFonts } from "expo-font";
+import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
 function HomeScreen ({navigation}) {
@@ -25,29 +25,31 @@ function HomeScreen ({navigation}) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
-        <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
-          WORDS
-        </Text>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
-        <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
-          LESSON
-        </Text>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
-        <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
-          REVIEW 
-        </Text>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {
-        title: "ADD WORD",
-      })}>
-        <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
-          ADD 
-        </Text>
-      </TouchableWithoutFeedback>
+    <SafeAreaView style={[styles.container]}>
+      <View style={{top: Platform.OS === "ios" ? 50 : 0}}>
+        <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
+          <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
+            WORDS
+          </Text>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
+          <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
+            LESSON
+          </Text>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
+          <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
+            REVIEW 
+          </Text>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {
+          title: "ADD WORD",
+        })}>
+          <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
+            ADD 
+          </Text>
+        </TouchableWithoutFeedback>
+      </View>
     </SafeAreaView>
   );
 }
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.pastel_purple,
     alignItems: 'center',
-    paddingTop: Platform.OS === "android" ? 75 : 50,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 40 : 0,
   },
   button: {
     textAlign: 'center',

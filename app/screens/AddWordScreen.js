@@ -79,7 +79,7 @@ function AddWordScreen ({route, navigation}) {
         <View style={styles.loading}>
           {isLoading ? (
             <ActivityIndicator style={styles.loading} size="large" color='white'/>
-          ) : (<></>)}
+          ) : null}
         </View>
       </SafeAreaView>
     );

@@ -49,31 +49,35 @@ function AddWordScreen ({route, navigation}) {
   }
  
   const handleSearch =  (text) => {
-    setWordFound(false)
-    setIsLoading(true)
-    var url = 'https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=' + text
-    fetch(url)
-      .then(response => response.text())
-      .then((response) => {
-          parseString(response, function (err, res) {
-              var convert = require('xml-js');
-              var xml = response
-              var result = convert.xml2json(xml, {compact: true, spaces: 2});
-              var jsonData = JSON.parse(result);
+    if (text === '') {
+      setWordFound(false)
+    } else {
+      setWordFound(false)
+      setIsLoading(true)
+      var url = 'https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=' + text
+      fetch(url)
+        .then(response => response.text())
+        .then((response) => {
+            parseString(response, function (err, res) {
+                var convert = require('xml-js');
+                var xml = response
+                var result = convert.xml2json(xml, {compact: true, spaces: 2});
+                var jsonData = JSON.parse(result);
 
-              console.log(result)
+                console.log(result)
 
-              if (jsonData.channel.total._text === "0") {
-                setWordFound(false)
-              } else {
-                createWord(jsonData)
-                setWordFound(true)
-              }
-              setIsLoading(false)
-          });
-        }).catch((err) => {
-          console.log("search", err)
-        })
+                if (jsonData.channel.total._text === "0") {
+                  setWordFound(false)
+                } else {
+                  createWord(jsonData)
+                  setWordFound(true)
+                }
+                setIsLoading(false)
+            });
+          }).catch((err) => {
+            console.log("search", err)
+          })
+    }
   }
 
   const handleOnClear = () => {

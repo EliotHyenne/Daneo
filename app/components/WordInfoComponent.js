@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Light',
     fontSize: 18,
     color: 'white',
-    marginTop: 15,
+    marginBottom: 15,
   },
   button: {
     alignSelf: 'flex-end',

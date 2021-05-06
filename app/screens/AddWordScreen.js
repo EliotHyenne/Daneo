@@ -128,7 +128,7 @@ function AddWordScreen ({route, navigation}) {
           <Text style={styles.error}>¯\(°_o)/¯ </Text>
         ) : null}
       </View>
-      <ScrollView>
+      <ScrollView style={{width: "100%"}}>
         <View>
           {wordFound ? (
               <WordInfoComponent vocabWord={vocabWord} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
@@ -145,11 +145,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.pastel_purple,
     alignItems: 'center',
     paddingTop: Platform.OS === "android" ? 50 : 0,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: COLORS.pastel_purple,
-    alignItems: 'center',
   },
   loading: {
     top: 200,

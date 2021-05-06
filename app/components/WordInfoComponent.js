@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Button, Text, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Platform, View, Text, TouchableWithoutFeedback } from 'react-native';
 import { COLORS } from '../config/colors';
 
 const WordInfoComponent = (props) => {

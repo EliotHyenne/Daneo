@@ -1,7 +1,7 @@
 import React from 'react';
 import HomeScreen from './app/screens/HomeScreen';
 import AddWordScreen from './app/screens/AddWordScreen';
-import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Button } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AntDesign } from '@expo/vector-icons'; 

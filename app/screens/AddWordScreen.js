@@ -4,59 +4,52 @@ import { SearchBar } from 'react-native-elements';
 import { useFonts } from 'expo-font';
 import { COLORS } from '../config/colors.js';
 import AppLoading from 'expo-app-loading';
+import WordInfoComponent from '../components/WordInfoComponent.js';
+import { ScrollView } from 'react-native-gesture-handler';
 
 function AddWordScreen ({route, navigation}) {
   const [searchInputText, setSearchInputText] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [wordFound, setWordFound] = useState(true)
-
-  const [isLoaded] = useFonts({
-    'Roboto-Black': require("../assets/fonts/Roboto-Black.ttf"),
-    'Roboto-BlackItalic': require("../assets/fonts/Roboto-BlackItalic.ttf"),
-    'Roboto-Bold': require("../assets/fonts/Roboto-Bold.ttf"),
-    'Roboto-BoldItalic': require("../assets/fonts/Roboto-BoldItalic.ttf"),
-    'Roboto-Italic': require("../assets/fonts/Roboto-Italic.ttf"),
-    'Roboto-Light': require("../assets/fonts/Roboto-Light.ttf"),
-    'Roboto-LightItalic': require("../assets/fonts/Roboto-LightItalic.ttf"),
-    'Roboto-Medium': require("../assets/fonts/Roboto-Medium.ttf"),
-    'Roboto-MediumItalic': require("../assets/fonts/Roboto-MediumItalic.ttf"),
-    'Roboto-Regular': require("../assets/fonts/Roboto-Regular.ttf"),
-    'Roboto-Thin': require("../assets/fonts/Roboto-Thin.ttf"),
-    'Roboto-ThinItalic': require("../assets/fonts/Roboto-ThinItalic.ttf"),
-  });
+  const [wordFound, setWordFound] = useState(false)
+  const [vocabWord, setVocabWord] = useState("")
+  const [translatedWordList, setTranslatedWordList] = useState([])
+  const [definitionsList, setDefinitionsList] = useState([])
 
   const parseString = require('react-native-xml2js').parseString;
 
   const createWord = (jsonData) => {
-    var koreanWord = "";
-    var translatedWord = "";
-    var definition = "";
+    var newTranslatedWordList = []
+    var newDefinitionsList = []
 
     if (Array.isArray(jsonData.channel.item)) {
-      koreanWord = jsonData.channel.item[0].word._text;
+      setVocabWord(jsonData.channel.item[0].word._text);
       if (Array.isArray(jsonData.channel.item[0].sense)) {
-        translatedWord = jsonData.channel.item[0].sense[0].translation.trans_word._cdata;
-        definition = jsonData.channel.item[0].sense[0].translation.trans_dfn._cdata;
+        for (var i = 0; i < jsonData.channel.item[0].sense.length; i++) {
+          newTranslatedWordList.push(jsonData.channel.item[0].sense[i].translation.trans_word._cdata);
+          newDefinitionsList.push(jsonData.channel.item[0].sense[i].translation.trans_dfn._cdata);
+        }
       } else {
-        translatedWord = jsonData.channel.item[0].sense.translation.trans_word._cdata;
-        definition = jsonData.channel.item[0].sense.translation.trans_dfn._cdata;
+        newTranslatedWordList.push(jsonData.channel.item[0].sense.translation.trans_word._cdata);
+        newDefinitionsList.push(jsonData.channel.item[0].sense.translation.trans_dfn._cdata);
       }
     } else {
-      koreanWord = jsonData.channel.item.word._text;
+      setVocabWord(jsonData.channel.item.word._text);
       if (Array.isArray(jsonData.channel.item.sense)) {
-        translatedWord = jsonData.channel.item.sense[0].translation.trans_word._cdata;
-        definition = jsonData.channel.item.sense[0].translation.trans_dfn._cdata;
+        for (var i = 0; i < jsonData.channel.item[0].sense.length; i++) {
+          newTranslatedWordList.push(jsonData.channel.item[0].sense[i].translation.trans_word._cdata);
+          newDefinitionsList.push(jsonData.channel.item[0].sense[i].translation.trans_dfn._cdata);
+        }
       } else {
-        translatedWord = jsonData.channel.item.sense.translation.trans_word._cdata;
-        definition = jsonData.channel.item.sense.translation.trans_dfn._cdata;
+        newTranslatedWordList.push(jsonData.channel.item.sense.translation.trans_word._cdata);
+        newDefinitionsList.push(jsonData.channel.item.sense.translation.trans_dfn._cdata);
       }
     }
-    console.log(koreanWord)
-    console.log(translatedWord)
-    console.log(definition)
+    setTranslatedWordList(newTranslatedWordList);
+    setDefinitionsList(newDefinitionsList)
   }
  
   const handleSearch =  (text) => {
+    setWordFound(false)
     setIsLoading(true)
     var url = 'https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=' + text
     fetch(url)
@@ -73,8 +66,8 @@ function AddWordScreen ({route, navigation}) {
               if (jsonData.channel.total._text === "0") {
                 setWordFound(false)
               } else {
-                setWordFound(true)
                 createWord(jsonData)
+                setWordFound(true)
               }
               setIsLoading(false)
           });
@@ -83,51 +76,63 @@ function AddWordScreen ({route, navigation}) {
         })
   }
 
-  if (!isLoaded) {
-    return <AppLoading/>;
-  } else {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.searchBar}>
-          <SearchBar
-            round
-            autoFocus
-            searchIcon={{size: 25, color: 'white', paddingLeft:10}}
-            clearIcon={{size: 20, color: 'white'}}
-            onChangeText={setSearchInputText}
-            onSubmitEditing={(event) => handleSearch(event.nativeEvent.text)}
-            placeholder="Search word.."
-            placeholderTextColor="#e3f3ff"
-            value={searchInputText}
-            inputContainerStyle={{backgroundColor: COLORS.pastel_blue}}
-            leftIconContainerStyle={{backgroundColor: COLORS.pastel_blue}}
-            inputStyle={{
-              backgroundColor: COLORS.pastel_blue,
-              fontFamily: 'Roboto-Regular',
-              fontSize: 21,
-              color: 'white',
-            }}
-            containerStyle={{
-              backgroundColor: COLORS.pastel_purple,
-              justifyContent: 'space-around',
-              borderTopWidth:0,
-              borderBottomWidth:0,
-            }}
-          />
-        </View>
-        <View style={styles.loading}>
-          {isLoading ? (
-            <ActivityIndicator size="large" color='white'/>
-          ) : null}
-        </View>
-        <View style={styles.loading}>
-          {!wordFound && !isLoading ? (
-            <Text style={styles.error}>¯\(°_o)/¯ </Text>
-          ) : null}
-        </View>
-      </SafeAreaView>
-    );
+  const handleOnClear = () => {
+    if (this.search != null) {
+      this.search.focus()
+    }
   }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.searchBar}>
+        <SearchBar
+          ref={search => this.search = search}
+          onClear={handleOnClear}
+          round
+          autoFocus
+          searchIcon={{size: 25, color: 'white', paddingLeft:10}}
+          clearIcon={{size: 20, color: 'white'}}
+          onChangeText={setSearchInputText}
+          onSubmitEditing={(event) => handleSearch(event.nativeEvent.text)}
+          placeholder="Search word.."
+          placeholderTextColor="#e3f3ff"
+          value={searchInputText}
+          inputContainerStyle={{backgroundColor: COLORS.pastel_blue}}
+          leftIconContainerStyle={{backgroundColor: COLORS.pastel_blue}}
+          inputStyle={{
+            backgroundColor: COLORS.pastel_blue,
+            fontFamily: 'Roboto-Regular',
+            fontSize: 21,
+            color: 'white',
+          }}
+          containerStyle={{
+            backgroundColor: COLORS.pastel_purple,
+            justifyContent: 'space-around',
+            borderTopWidth:0,
+            borderBottomWidth:0,
+          }}
+        />
+        
+      </View>
+      <View style={styles.loading}>
+        {isLoading ? (
+          <ActivityIndicator size="large" color='white'/>
+        ) : null}
+      </View>
+      <View style={{top: 200}}>
+        {!wordFound && !isLoading ? (
+          <Text style={styles.error}>¯\(°_o)/¯ </Text>
+        ) : null}
+      </View>
+      <ScrollView>
+        <View>
+          {wordFound ? (
+              <WordInfoComponent vocabWord={vocabWord} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
+            ) : null}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -136,6 +141,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.pastel_purple,
     alignItems: 'center',
     paddingTop: Platform.OS === "android" ? 50 : 0,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: COLORS.pastel_purple,
+    alignItems: 'center',
   },
   loading: {
     top: 200,

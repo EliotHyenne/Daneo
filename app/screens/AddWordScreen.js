@@ -28,7 +28,7 @@ function AddWordScreen ({route, navigation}) {
  
   const handleSearch =  (text) => {
     setIsLoading(true)
-    var url = 'https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=2&q=' + text
+    var url = 'https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=' + text
     fetch(url)
       .then(response => response.text())
       .then((response) => {
@@ -36,7 +36,10 @@ function AddWordScreen ({route, navigation}) {
               var convert = require('xml-js');
               var xml = response
               var result = convert.xml2json(xml, {compact: true, spaces: 2});
-              console.log("result----" + result);
+              var jsonData = JSON.parse(result);
+              console.log(jsonData.channel.item[0].word._text);
+              console.log(jsonData.channel.item[0].sense[0].translation.trans_word._cdata);
+              console.log(jsonData.channel.item[0].sense[0].translation.trans_dfn._cdata);
               setIsLoading(false)
           });
         }).catch((err) => {

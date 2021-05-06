@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Text } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useFonts } from 'expo-font';
 import { COLORS } from '../config/colors.js';
@@ -8,6 +8,7 @@ import AppLoading from 'expo-app-loading';
 function AddWordScreen ({route, navigation}) {
   const [searchInputText, setSearchInputText] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [wordFound, setWordFound] = useState(true)
 
   const [isLoaded] = useFonts({
     'Roboto-Black': require("../assets/fonts/Roboto-Black.ttf"),
@@ -37,9 +38,30 @@ function AddWordScreen ({route, navigation}) {
               var xml = response
               var result = convert.xml2json(xml, {compact: true, spaces: 2});
               var jsonData = JSON.parse(result);
-              console.log(jsonData.channel.item[0].word._text);
-              console.log(jsonData.channel.item[0].sense[0].translation.trans_word._cdata);
-              console.log(jsonData.channel.item[0].sense[0].translation.trans_dfn._cdata);
+
+              var koreanWord = "";
+              var translatedWord = "";
+              var definition = "";
+
+              if (jsonData.channel.total._text === "0") {
+                console.log("Undefined")
+                setWordFound(false)
+              } else {
+                setWordFound(true)
+                koreanWord = jsonData.channel.item[0].word._text;
+                
+                if (Array.isArray(jsonData.channel.item[0].sense)) {
+                  translatedWord = jsonData.channel.item[0].sense[0].translation.trans_word._cdata;
+                  definition = jsonData.channel.item[0].sense[0].translation.trans_dfn._cdata;
+                } else {
+                  translatedWord = jsonData.channel.item[0].sense.translation.trans_word._cdata;
+                  definition = jsonData.channel.item[0].sense.translation.trans_dfn._cdata;
+                }
+              }
+              console.log(koreanWord)
+              console.log(translatedWord)
+              console.log(definition)
+              
               setIsLoading(false)
           });
         }).catch((err) => {
@@ -81,7 +103,12 @@ function AddWordScreen ({route, navigation}) {
         </View>
         <View style={styles.loading}>
           {isLoading ? (
-            <ActivityIndicator style={styles.loading} size="large" color='white'/>
+            <ActivityIndicator size="large" color='white'/>
+          ) : null}
+        </View>
+        <View style={styles.loading}>
+          {!wordFound && !isLoading ? (
+            <Text style={styles.error}>¯\(°_o)/¯ </Text>
           ) : null}
         </View>
       </SafeAreaView>
@@ -97,13 +124,19 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? 50 : 0,
   },
   loading: {
-    top: 100,
+    top: 200,
   },
   searchBar: {
     width: '90%',
     height: 65,
     fontFamily: 'Roboto-Regular',
     fontSize: 21,
+  },
+  error: {
+    height: 65,
+    fontFamily: 'Roboto-Regular',
+    fontSize: 25,
+    color: '#e3f3ff',
   }
 });
 

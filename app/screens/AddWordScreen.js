@@ -26,6 +26,35 @@ function AddWordScreen ({route, navigation}) {
   });
 
   const parseString = require('react-native-xml2js').parseString;
+
+  const createWord = (jsonData) => {
+    var koreanWord = "";
+    var translatedWord = "";
+    var definition = "";
+
+    if (Array.isArray(jsonData.channel.item)) {
+      koreanWord = jsonData.channel.item[0].word._text;
+      if (Array.isArray(jsonData.channel.item[0].sense)) {
+        translatedWord = jsonData.channel.item[0].sense[0].translation.trans_word._cdata;
+        definition = jsonData.channel.item[0].sense[0].translation.trans_dfn._cdata;
+      } else {
+        translatedWord = jsonData.channel.item[0].sense.translation.trans_word._cdata;
+        definition = jsonData.channel.item[0].sense.translation.trans_dfn._cdata;
+      }
+    } else {
+      koreanWord = jsonData.channel.item.word._text;
+      if (Array.isArray(jsonData.channel.item.sense)) {
+        translatedWord = jsonData.channel.item.sense[0].translation.trans_word._cdata;
+        definition = jsonData.channel.item.sense[0].translation.trans_dfn._cdata;
+      } else {
+        translatedWord = jsonData.channel.item.sense.translation.trans_word._cdata;
+        definition = jsonData.channel.item.sense.translation.trans_dfn._cdata;
+      }
+    }
+    console.log(koreanWord)
+    console.log(translatedWord)
+    console.log(definition)
+  }
  
   const handleSearch =  (text) => {
     setIsLoading(true)
@@ -39,29 +68,14 @@ function AddWordScreen ({route, navigation}) {
               var result = convert.xml2json(xml, {compact: true, spaces: 2});
               var jsonData = JSON.parse(result);
 
-              var koreanWord = "";
-              var translatedWord = "";
-              var definition = "";
+              console.log(result)
 
               if (jsonData.channel.total._text === "0") {
-                console.log("Undefined")
                 setWordFound(false)
               } else {
                 setWordFound(true)
-                koreanWord = jsonData.channel.item[0].word._text;
-                
-                if (Array.isArray(jsonData.channel.item[0].sense)) {
-                  translatedWord = jsonData.channel.item[0].sense[0].translation.trans_word._cdata;
-                  definition = jsonData.channel.item[0].sense[0].translation.trans_dfn._cdata;
-                } else {
-                  translatedWord = jsonData.channel.item[0].sense.translation.trans_word._cdata;
-                  definition = jsonData.channel.item[0].sense.translation.trans_dfn._cdata;
-                }
+                createWord(jsonData)
               }
-              console.log(koreanWord)
-              console.log(translatedWord)
-              console.log(definition)
-              
               setIsLoading(false)
           });
         }).catch((err) => {

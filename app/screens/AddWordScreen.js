@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Text } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import { useFonts } from 'expo-font';
 import { COLORS } from '../config/colors.js';
-import AppLoading from 'expo-app-loading';
 import WordInfoComponent from '../components/WordInfoComponent.js';
 import { ScrollView } from 'react-native-gesture-handler';
 

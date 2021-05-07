@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../config/colors.js';
 import { ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HomeScreen ({navigation}) {
+  const [vocabWordsListFound, setVocabWordsListFound] = useState(false)
+  const [vocabWordsListLength, setVocabWordsListLength] = useState(0)
+
+  const getVocabWordsListLength = async() => {
+    const currentVocabWordsList = await AsyncStorage.getItem('vocabWords')
+    
+    if(!currentVocabWordsList) {
+      setVocabWordsListLength(0)
+    } else {
+      setVocabWordsListLength(JSON.parse(currentVocabWordsList).length)
+    }
+    setVocabWordsListFound(true)
+  }
+
+  if (!vocabWordsListFound) {
+    getVocabWordsListLength()
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View>
           <View style={{top: Platform.OS === "ios" ? 50 : 0}}>
             <TouchableWithoutFeedback onPress={() => navigation.navigate('WordList', {title: "WORD LIST"})}>
-              <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>WORDS</Text>
+              <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>{"WORDS" + " (" + vocabWordsListLength + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
               <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>LESSON</Text>

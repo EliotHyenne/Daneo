@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, Platform, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { COLORS } from '../config/colors.js';
 import WordInfoComponent from '../components/WordInfoComponent.js';
@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function WordListScreen ({route, navigation}) {
   const [searchInputText, setSearchInputText] = useState("")
   const [vocabWordsList, setVocabWordsList] = useState()
-  const [vocabListFound, setVocabListFound] = useState(false)
+  const [vocabWordsListFound, setvocabWordsListFound] = useState(false)
 
   const getVocabWordList = async() => {
     const currentVocabWordsList = await AsyncStorage.getItem('vocabWords')
@@ -20,10 +20,10 @@ function WordListScreen ({route, navigation}) {
       //console.log(JSON.parse(currentVocabWordsList))
       setVocabWordsList(JSON.parse(currentVocabWordsList))
     }
-    setVocabListFound(true)
+    setvocabWordsListFound(true)
   }
 
-  if (!vocabListFound) {
+  if (!vocabWordsListFound) {
     getVocabWordList()
   }
   
@@ -69,8 +69,8 @@ function WordListScreen ({route, navigation}) {
       </View>
       <ScrollView style={{width: "100%"}}>
         <View>
-          {vocabListFound ? (
-            vocabWordsList.map((data, index) => {
+          {vocabWordsListFound ? (
+            vocabWordsList.reverse().map((data, index) => {
               return (
                 <View style={styles.wordContainer} key={index}>
                   <WordInfoComponent vocabWord={vocabWordsList[index].vocabWord} translatedWordList={vocabWordsList[index].translatedWordList} definitionsList={vocabWordsList[index].definitionsList}></WordInfoComponent>

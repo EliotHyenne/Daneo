@@ -4,7 +4,6 @@ import { SearchBar } from 'react-native-elements';
 import { COLORS } from '../config/colors.js';
 import WordInfoComponent from '../components/WordInfoComponent.js';
 import { ScrollView } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function AddWordScreen ({route, navigation}) {
   const [searchInputText, setSearchInputText] = useState("")

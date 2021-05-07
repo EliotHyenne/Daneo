@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View, Image } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../config/colors.js';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -10,26 +10,16 @@ function HomeScreen ({navigation}) {
         <View>
           <View style={{top: Platform.OS === "ios" ? 50 : 0}}>
             <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
-              <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>
-                WORDS
-              </Text>
+              <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>WORDS</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
-              <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>
-                LESSON
-              </Text>
+              <Text style={[styles.button, {backgroundColor:COLORS.pastel_blue}]}>LESSON</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
-              <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>
-                REVIEW 
-              </Text>
+              <Text style={[styles.button, {backgroundColor:COLORS.pastel_yellow}]}>REVIEW</Text>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {
-              title: "ADD WORD",
-            })}>
-              <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
-                ADD 
-              </Text>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('AddWord', {title: "ADD WORD"})}>
+              <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>ADD</Text>
             </TouchableWithoutFeedback>
           </View>
         </View>

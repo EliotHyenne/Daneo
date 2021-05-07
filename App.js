@@ -13,7 +13,7 @@ import AppLoading from 'expo-app-loading';
 const Stack = createStackNavigator();
 
 function App () {
-  const modelNames = ["iPhone 6", "iPhone 6 Plus", "iPhone 6s", "iPhone 6s Plus", "iPhone 7", "iPhone 7 Plus", "iPhone 8", "iPhone 8 Plus"]
+  const modelNames = ["iPhone 5", "iPhone 5s", "iPhone 6", "iPhone 6 Plus", "iPhone 6s", "iPhone 6s Plus", "iPhone 7", "iPhone 7 Plus", "iPhone 8", "iPhone 8 Plus"]
   const [isLoaded] = useFonts({
     'Roboto-Black': require("./app/assets/fonts/Roboto-Black.ttf"),
     'Roboto-BlackItalic': require("./app/assets/fonts/Roboto-BlackItalic.ttf"),

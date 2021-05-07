@@ -1,9 +1,38 @@
 import React from 'react';
 import { StyleSheet, Platform, View, Text, TouchableWithoutFeedback } from 'react-native';
 import { COLORS } from '../config/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const WordInfoComponent = (props) => {
-  
+
+  const addVocabWord = async () => {
+    const vocabWordToAdd = {vocabWord: props.vocabWord, translatedWordsList: props.translatedWordList, definitionsList: props.definitionsList}
+    const currentVocabWordsList = await AsyncStorage.getItem('vocabWords')
+
+    if(!currentVocabWordsList) {
+      const newVocabWordsList = []
+      newVocabWordsList.push(vocabWordToAdd)
+      await AsyncStorage.setItem('vocabWords', JSON.stringify(newVocabWordsList))
+      .then(() => {
+        console.log("Vocab words list created and word added.")
+      })
+      .catch((e) => {
+        console.log("There was an error while creating the vocab words list: ", e)
+      })
+    } else {
+      const newVocabWordsList = JSON.parse(currentVocabWordsList)
+      newVocabWordsList.push(vocabWordToAdd)
+      console.log(newVocabWordsList)
+      await AsyncStorage.setItem('vocabWords', JSON.stringify(newVocabWordsList))
+      .then(() => {
+        console.log("Word added to vocab words list.")
+      })
+      .catch((e) => {
+        console.log("There was an error while saving the vocab words list: ", e)
+      })
+    }
+  }
+
   const renderSenses= () => {
     return (
       props.translatedWordList.map((data, index) => {
@@ -21,7 +50,7 @@ const WordInfoComponent = (props) => {
     <View style={styles.container}>
         <Text style={styles.vocabWord}>{props.vocabWord}</Text>
         {renderSenses()}
-        <TouchableWithoutFeedback onPress={() => console.log("ADD")}>
+        <TouchableWithoutFeedback onPress={() => addVocabWord()}>
           <Text style={[styles.button, {backgroundColor:COLORS.pastel_green}]}>
             ADD 
           </Text>

@@ -33,7 +33,7 @@ function AddWordScreen ({route, navigation}) {
     } else {
       setVocabWord(jsonData.channel.item.word._text);
       if (Array.isArray(jsonData.channel.item.sense)) {
-        for (var i = 0; i < jsonData.channel.item[0].sense.length; i++) {
+        for (i = 0; i < jsonData.channel.item[0].sense.length; i++) {
           newTranslatedWordList.push(jsonData.channel.item[0].sense[i].translation.trans_word._cdata);
           newDefinitionsList.push(jsonData.channel.item[0].sense[i].translation.trans_dfn._cdata);
         }
@@ -62,8 +62,6 @@ function AddWordScreen ({route, navigation}) {
                 var result = convert.xml2json(xml, {compact: true, spaces: 2});
                 var jsonData = JSON.parse(result);
 
-                console.log(result)
-
                 if (jsonData.channel.total._text === "0") {
                   setWordFound(false)
                 } else {
@@ -72,8 +70,8 @@ function AddWordScreen ({route, navigation}) {
                 }
                 setIsLoading(false)
             });
-          }).catch((err) => {
-            console.log("search", err)
+          }).catch((e) => {
+            console.log("search", e)
           })
     }
   }

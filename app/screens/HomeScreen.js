@@ -9,7 +9,7 @@ function HomeScreen ({navigation}) {
       <ScrollView>
         <View>
           <View style={{top: Platform.OS === "ios" ? 50 : 0}}>
-            <TouchableWithoutFeedback onPress={() => console.log("WORDS")}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('WordList', {title: "WORD LIST"})}>
               <Text style={[styles.button, {backgroundColor:COLORS.pastel_orange}]}>WORDS</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>

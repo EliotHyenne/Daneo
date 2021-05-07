@@ -4,6 +4,7 @@ import { SearchBar } from 'react-native-elements';
 import { COLORS } from '../config/colors.js';
 import WordInfoComponent from '../components/WordInfoComponent.js';
 import { ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function AddWordScreen ({route, navigation}) {
   const [searchInputText, setSearchInputText] = useState("")
@@ -127,7 +128,9 @@ function AddWordScreen ({route, navigation}) {
       <ScrollView style={{width: "100%"}}>
         <View>
           {wordFound ? (
+            <View style={styles.wordContainer}>
               <WordInfoComponent vocabWord={vocabWord} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
+            </View>
             ) : null}
         </View>
       </ScrollView>
@@ -142,6 +145,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: Platform.OS === "android" ? 50 : 0,
   },
+  wordContainer: {
+    backgroundColor: COLORS.light_gray,
+    margin: 25,
+    marginTop: 0,
+    padding: 25,
+    borderRadius: 25,
+  },
   loading: {
     top: 200,
   },
@@ -150,6 +160,7 @@ const styles = StyleSheet.create({
     height: 65,
     fontFamily: 'Roboto-Regular',
     fontSize: 21,
+    marginBottom: 25,
   },
   error: {
     height: 65,

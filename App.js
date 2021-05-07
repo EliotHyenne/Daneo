@@ -10,6 +10,7 @@ import * as Device from 'expo-device';
 import { COLORS } from './app/config/colors';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ function App () {
     return <AppLoading/>;
   } else {
     return (
+      <RootSiblingParent>
       <NavigationContainer>
         {modelNames.includes(Device.modelName) ? 
           <Stack.Navigator initialRouteName="Home" >
@@ -90,6 +92,7 @@ function App () {
             <Stack.Screen name="WordList" component={WordListScreen}/>
           </Stack.Navigator>}
       </NavigationContainer>
+      </RootSiblingParent>
     );
   }
 }

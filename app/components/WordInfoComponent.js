@@ -2,10 +2,19 @@ import React from 'react';
 import { StyleSheet, Platform, View, Text, TouchableWithoutFeedback } from 'react-native';
 import { COLORS } from '../config/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-root-toast';
 
 const WordInfoComponent = (props) => {
 
   const addVocabWord = async () => {
+
+    Toast.show('Word added', {
+      duration: Toast.durations.SHORT,
+      backgroundColor: 'gray',
+      shadow: false,
+      opacity: 0.8
+    });
+
     const vocabWordToAdd = {vocabWord: props.vocabWord, translatedWordList: props.translatedWordList, definitionsList: props.definitionsList}
     const currentVocabWordsList = await AsyncStorage.getItem('vocabWords')
 

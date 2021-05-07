@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from 'react-native';
 import { COLORS } from '../config/colors.js';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function HomeScreen ({navigation}) {
+function HomeScreen ({ navigation }) {
   const [vocabWordsListFound, setVocabWordsListFound] = useState(false)
   const [vocabWordsListLength, setVocabWordsListLength] = useState(0)
+
+  //Re-render when going to this screen through navigation
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setVocabWordsListFound(false)
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const getVocabWordsListLength = async() => {
     const currentVocabWordsList = await AsyncStorage.getItem('vocabWords')

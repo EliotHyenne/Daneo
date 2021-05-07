@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     width: 125,
     height: 75,
     overflow: 'hidden',
-    marginTop: 25,
     ...Platform.select({
       ios: {
           lineHeight: 75 // as same as height

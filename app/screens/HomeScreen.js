@@ -45,49 +45,22 @@ const HomeScreen = ({ navigation }) => {
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
             <TouchableWithoutFeedback
-              onPress={() =>
-                navigation.navigate("WordList", { title: "WORD LIST" })
-              }
+              onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}
             >
-              <Text
-                style={[
-                  styles.button,
-                  { backgroundColor: COLORS.pastel_orange },
-                ]}
-              >
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_orange }]}>
                 {"WORDS" + " (" + vocabWordsListLength + ")"}
               </Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
-              <Text
-                style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}
-              >
-                LESSON
-              </Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>LESSON</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
-              <Text
-                style={[
-                  styles.button,
-                  { backgroundColor: COLORS.pastel_yellow },
-                ]}
-              >
-                REVIEW
-              </Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_yellow }]}>REVIEW</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback
-              onPress={() =>
-                navigation.navigate("AddWord", { title: "ADD WORD" })
-              }
+              onPress={() => navigation.navigate("AddWord", { title: "ADD WORD" })}
             >
-              <Text
-                style={[
-                  styles.button,
-                  { backgroundColor: COLORS.pastel_green },
-                ]}
-              >
-                ADD
-              </Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
             </TouchableWithoutFeedback>
           </View>
         </View>

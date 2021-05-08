@@ -108,10 +108,7 @@ const App = () => {
               />
             </Stack.Navigator>
           ) : (
-            <Stack.Navigator
-              screenOptions={{ headerShown: false }}
-              initialRouteName="Home"
-            >
+            <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="AddWord" component={AddWordScreen} />
               <Stack.Screen name="WordList" component={WordListScreen} />

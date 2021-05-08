@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  Platform,
-  View,
-  ActivityIndicator,
-  Text,
-} from "react-native";
+import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Text } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
@@ -30,9 +23,7 @@ const AddWordScreen = ({ route, navigation }) => {
     if (Array.isArray(jsonData.channel.item)) {
       while (!foundTranslatedWord) {
         if (!Array.isArray(jsonData.channel.item[itemIndex].sense)) {
-          if (
-            jsonData.channel.item[itemIndex].sense.translation === undefined
-          ) {
+          if (jsonData.channel.item[itemIndex].sense.translation === undefined) {
             itemIndex++;
           } else {
             foundTranslatedWord = true;
@@ -54,18 +45,12 @@ const AddWordScreen = ({ route, navigation }) => {
     if (Array.isArray(jsonData.channel.item)) {
       setVocabWord(jsonData.channel.item[itemIndex].word._text);
       if (Array.isArray(jsonData.channel.item[itemIndex].sense)) {
-        for (
-          var i = 0;
-          i < jsonData.channel.item[itemIndex].sense.length;
-          i++
-        ) {
+        for (var i = 0; i < jsonData.channel.item[itemIndex].sense.length; i++) {
           newTranslatedWordList.push(
-            jsonData.channel.item[itemIndex].sense[i].translation.trans_word
-              ._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_word._cdata
           );
           newDefinitionsList.push(
-            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn
-              ._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn._cdata
           );
         }
       } else {
@@ -81,21 +66,15 @@ const AddWordScreen = ({ route, navigation }) => {
       if (Array.isArray(jsonData.channel.item.sense)) {
         for (i = 0; i < jsonData.channel.item[itemIndex].sense.length; i++) {
           newTranslatedWordList.push(
-            jsonData.channel.item[itemIndex].sense[i].translation.trans_word
-              ._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_word._cdata
           );
           newDefinitionsList.push(
-            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn
-              ._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn._cdata
           );
         }
       } else {
-        newTranslatedWordList.push(
-          jsonData.channel.item.sense.translation.trans_word._cdata
-        );
-        newDefinitionsList.push(
-          jsonData.channel.item.sense.translation.trans_dfn._cdata
-        );
+        newTranslatedWordList.push(jsonData.channel.item.sense.translation.trans_word._cdata);
+        newDefinitionsList.push(jsonData.channel.item.sense.translation.trans_dfn._cdata);
       }
     }
     setTranslatedWordList(newTranslatedWordList);
@@ -176,9 +155,7 @@ const AddWordScreen = ({ route, navigation }) => {
         {isLoading ? <ActivityIndicator size="large" color="white" /> : null}
       </View>
       <View style={{ top: 200 }}>
-        {!wordFound && !isLoading ? (
-          <Text style={styles.error}>¯\(°_o)/¯ </Text>
-        ) : null}
+        {!wordFound && !isLoading ? <Text style={styles.error}>¯\(°_o)/¯ </Text> : null}
       </View>
       <ScrollView style={{ width: "100%" }}>
         <View>

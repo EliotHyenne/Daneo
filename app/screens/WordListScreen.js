@@ -74,9 +74,7 @@ const WordListScreen = ({ route, navigation }) => {
                   <View style={styles.wordContainer} key={index}>
                     <WordInfoComponent
                       vocabWord={vocabWordsList[index].vocabWord}
-                      translatedWordList={
-                        vocabWordsList[index].translatedWordList
-                      }
+                      translatedWordList={vocabWordsList[index].translatedWordList}
                       definitionsList={vocabWordsList[index].definitionsList}
                     ></WordInfoComponent>
                   </View>

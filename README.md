@@ -1,6 +1,6 @@
 # Daneo
 
-A Korean language vocabulary learning app written in JavaScript using React Native for iOS and Android.
+A Korean language vocabulary learning app for iOS and Android written in JavaScript using React Native (expo).
 
 ## Usage
 

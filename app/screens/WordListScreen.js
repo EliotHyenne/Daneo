@@ -6,7 +6,7 @@ import WordInfoComponent from "../components/WordInfoComponent.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function WordListScreen({ route, navigation }) {
+const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [vocabWordsList, setVocabWordsList] = useState();
   const [vocabWordsListFound, setvocabWordsListFound] = useState(false);
@@ -87,7 +87,7 @@ function WordListScreen({ route, navigation }) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

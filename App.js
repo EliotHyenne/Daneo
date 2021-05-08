@@ -14,7 +14,7 @@ import { RootSiblingParent } from "react-native-root-siblings";
 
 const Stack = createStackNavigator();
 
-function App() {
+const App = () => {
   const modelNames = [
     "iPhone 5",
     "iPhone 5s",
@@ -121,6 +121,6 @@ function App() {
       </RootSiblingParent>
     );
   }
-}
+};
 
 export default App;

@@ -12,7 +12,7 @@ import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function HomeScreen({ navigation }) {
+const HomeScreen = ({ navigation }) => {
   const [vocabWordsListFound, setVocabWordsListFound] = useState(false);
   const [vocabWordsListLength, setVocabWordsListLength] = useState(0);
 
@@ -94,7 +94,7 @@ function HomeScreen({ navigation }) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

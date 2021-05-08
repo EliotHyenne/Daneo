@@ -12,7 +12,7 @@ import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
 import { ScrollView } from "react-native-gesture-handler";
 
-function AddWordScreen({ route, navigation }) {
+const AddWordScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [wordFound, setWordFound] = useState(false);
@@ -22,38 +22,71 @@ function AddWordScreen({ route, navigation }) {
 
   const parseString = require("react-native-xml2js").parseString;
 
+  //Find word item that contains translated word and translated definition
+  const findItemIndex = (jsonData) => {
+    var foundTranslatedWord = false;
+    var itemIndex = 0;
+
+    if (Array.isArray(jsonData.channel.item)) {
+      while (!foundTranslatedWord) {
+        if (!Array.isArray(jsonData.channel.item[itemIndex].sense)) {
+          if (
+            jsonData.channel.item[itemIndex].sense.translation === undefined
+          ) {
+            itemIndex++;
+          } else {
+            foundTranslatedWord = true;
+          }
+        } else {
+          foundTranslatedWord = true;
+        }
+      }
+    }
+    return itemIndex;
+  };
+
   const createWord = (jsonData) => {
     var newTranslatedWordList = [];
     var newDefinitionsList = [];
+    var itemIndex = findItemIndex(jsonData);
 
+    //Set the states using the correct word item
     if (Array.isArray(jsonData.channel.item)) {
-      setVocabWord(jsonData.channel.item[0].word._text);
-      if (Array.isArray(jsonData.channel.item[0].sense)) {
-        for (var i = 0; i < jsonData.channel.item[0].sense.length; i++) {
+      setVocabWord(jsonData.channel.item[itemIndex].word._text);
+      if (Array.isArray(jsonData.channel.item[itemIndex].sense)) {
+        for (
+          var i = 0;
+          i < jsonData.channel.item[itemIndex].sense.length;
+          i++
+        ) {
           newTranslatedWordList.push(
-            jsonData.channel.item[0].sense[i].translation.trans_word._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_word
+              ._cdata
           );
           newDefinitionsList.push(
-            jsonData.channel.item[0].sense[i].translation.trans_dfn._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn
+              ._cdata
           );
         }
       } else {
         newTranslatedWordList.push(
-          jsonData.channel.item[0].sense.translation.trans_word._cdata
+          jsonData.channel.item[itemIndex].sense.translation.trans_word._cdata
         );
         newDefinitionsList.push(
-          jsonData.channel.item[0].sense.translation.trans_dfn._cdata
+          jsonData.channel.item[itemIndex].sense.translation.trans_dfn._cdata
         );
       }
     } else {
       setVocabWord(jsonData.channel.item.word._text);
       if (Array.isArray(jsonData.channel.item.sense)) {
-        for (i = 0; i < jsonData.channel.item[0].sense.length; i++) {
+        for (i = 0; i < jsonData.channel.item[itemIndex].sense.length; i++) {
           newTranslatedWordList.push(
-            jsonData.channel.item[0].sense[i].translation.trans_word._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_word
+              ._cdata
           );
           newDefinitionsList.push(
-            jsonData.channel.item[0].sense[i].translation.trans_dfn._cdata
+            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn
+              ._cdata
           );
         }
       } else {
@@ -87,7 +120,7 @@ function AddWordScreen({ route, navigation }) {
             var result = convert.xml2json(xml, { compact: true, spaces: 2 });
             var jsonData = JSON.parse(result);
 
-            if (jsonData.channel.total._text === "0") {
+            if (jsonData.channel.item === undefined) {
               setWordFound(false);
             } else {
               createWord(jsonData);
@@ -97,7 +130,7 @@ function AddWordScreen({ route, navigation }) {
           });
         })
         .catch((e) => {
-          console.log("search", e);
+          console.log("There was a problem searching for a word: ", e);
         });
     }
   };
@@ -162,7 +195,7 @@ function AddWordScreen({ route, navigation }) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

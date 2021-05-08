@@ -46,20 +46,12 @@ const AddWordScreen = ({ route, navigation }) => {
       setVocabWord(jsonData.channel.item[itemIndex].word._text);
       if (Array.isArray(jsonData.channel.item[itemIndex].sense)) {
         for (var i = 0; i < jsonData.channel.item[itemIndex].sense.length; i++) {
-          newTranslatedWordList.push(
-            jsonData.channel.item[itemIndex].sense[i].translation.trans_word._cdata
-          );
-          newDefinitionsList.push(
-            jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn._cdata
-          );
+          newTranslatedWordList.push(jsonData.channel.item[itemIndex].sense[i].translation.trans_word._cdata);
+          newDefinitionsList.push(jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn._cdata);
         }
       } else {
-        newTranslatedWordList.push(
-          jsonData.channel.item[itemIndex].sense.translation.trans_word._cdata
-        );
-        newDefinitionsList.push(
-          jsonData.channel.item[itemIndex].sense.translation.trans_dfn._cdata
-        );
+        newTranslatedWordList.push(jsonData.channel.item[itemIndex].sense.translation.trans_word._cdata);
+        newDefinitionsList.push(jsonData.channel.item[itemIndex].sense.translation.trans_dfn._cdata);
       }
     } else {
       setVocabWord(jsonData.channel.item.word._text);
@@ -147,21 +139,13 @@ const AddWordScreen = ({ route, navigation }) => {
           }}
         />
       </View>
-      <View style={styles.loading}>
-        {isLoading ? <ActivityIndicator size="large" color="white" /> : null}
-      </View>
-      <View style={{ top: 200 }}>
-        {!wordFound && !isLoading ? <Text style={styles.error}>¯\(°_o)/¯ </Text> : null}
-      </View>
+      <View style={styles.loading}>{isLoading ? <ActivityIndicator size="large" color="white" /> : null}</View>
+      <View style={{ top: 200 }}>{!wordFound && !isLoading ? <Text style={styles.error}>¯\(°_o)/¯ </Text> : null}</View>
       <ScrollView style={{ width: "100%" }}>
         <View>
           {wordFound ? (
             <View style={styles.wordContainer}>
-              <WordInfoComponent
-                vocabWord={vocabWord}
-                translatedWordList={translatedWordList}
-                definitionsList={definitionsList}
-              ></WordInfoComponent>
+              <WordInfoComponent vocabWord={vocabWord} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
             </View>
           ) : null}
         </View>

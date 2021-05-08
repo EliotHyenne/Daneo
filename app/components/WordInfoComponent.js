@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Platform, View, Text, TouchableWithoutFeedback } from "react-native";
 import { COLORS } from "../config/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-root-toast";
 
 const WordInfoComponent = (props) => {
+  const [wordIndex, setWordIndex] = useState(-1);
+  const [checkedExists, setCheckedExists] = useState(false);
+
+  const checkWordExists = async () => {
+    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+
+    if (currentVocabWordsList) {
+      setWordIndex(JSON.parse(currentVocabWordsList).findIndex((element) => element.vocabWord === props.vocabWord));
+    }
+  };
+
+  const deleteVocabWord = async (index) => {
+    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+
+    const newVocabWordsList = JSON.parse(currentVocabWordsList);
+    newVocabWordsList.splice(index, 1);
+
+    await AsyncStorage.setItem("vocabWords", JSON.stringify(newVocabWordsList))
+      .then(() => {
+        setCheckedExists(false);
+        console.log("Word deleted and vocab words list updated.");
+      })
+      .catch((e) => {
+        console.log("There was an error while delete a vocab word from the vocab words list: ", e);
+      });
+  };
+
   const addVocabWord = async () => {
     Toast.show("Word added", {
       duration: Toast.durations.SHORT,
@@ -18,6 +45,7 @@ const WordInfoComponent = (props) => {
       translatedWordList: props.translatedWordList,
       definitionsList: props.definitionsList,
     };
+
     const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
 
     if (!currentVocabWordsList) {
@@ -25,6 +53,7 @@ const WordInfoComponent = (props) => {
       newVocabWordsList.push(vocabWordToAdd);
       await AsyncStorage.setItem("vocabWords", JSON.stringify(newVocabWordsList))
         .then(() => {
+          setCheckedExists(false);
           console.log("Vocab words list created and word added.");
         })
         .catch((e) => {
@@ -35,6 +64,7 @@ const WordInfoComponent = (props) => {
       newVocabWordsList.push(vocabWordToAdd);
       await AsyncStorage.setItem("vocabWords", JSON.stringify(newVocabWordsList))
         .then(() => {
+          setCheckedExists(false);
           console.log("Word added to vocab words list.");
         })
         .catch((e) => {
@@ -42,6 +72,11 @@ const WordInfoComponent = (props) => {
         });
     }
   };
+
+  if (!checkedExists) {
+    checkWordExists();
+    setCheckedExists(true);
+  }
 
   const renderSenses = () => {
     return props.translatedWordList.map((data, index) => {
@@ -60,9 +95,15 @@ const WordInfoComponent = (props) => {
     <View>
       <Text style={styles.vocabWord}>{props.vocabWord}</Text>
       {renderSenses()}
-      <TouchableWithoutFeedback onPress={() => addVocabWord()}>
-        <Text style={[styles.button, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
-      </TouchableWithoutFeedback>
+      {wordIndex === -1 ? (
+        <TouchableWithoutFeedback onPress={() => addVocabWord()}>
+          <Text style={[styles.addButton, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
+        </TouchableWithoutFeedback>
+      ) : (
+        <TouchableWithoutFeedback onPress={() => deleteVocabWord(wordIndex)}>
+          <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_orange }]}>DELETE</Text>
+        </TouchableWithoutFeedback>
+      )}
     </View>
   );
 };
@@ -85,7 +126,7 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 15,
   },
-  button: {
+  addButton: {
     alignSelf: "flex-end",
     textAlign: "center",
     textAlignVertical: "center",
@@ -94,6 +135,24 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: "white",
     width: 125,
+    height: 75,
+    overflow: "hidden",
+    ...Platform.select({
+      ios: {
+        lineHeight: 75, // as same as height
+      },
+      android: {},
+    }),
+  },
+  deleteButton: {
+    alignSelf: "flex-end",
+    textAlign: "center",
+    textAlignVertical: "center",
+    borderRadius: 25,
+    fontFamily: "Roboto-Black",
+    fontSize: 25,
+    color: "white",
+    width: 150,
     height: 75,
     overflow: "hidden",
     ...Platform.select({

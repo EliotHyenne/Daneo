@@ -72,12 +72,7 @@ const App = () => {
                   },
                   headerLeft: () => (
                     <View style={{ marginLeft: 15 }}>
-                      <AntDesign
-                        name="arrowleft"
-                        size={20}
-                        color="white"
-                        onPress={() => navigation.navigate("Home")}
-                      />
+                      <AntDesign name="arrowleft" size={20} color="white" onPress={() => navigation.navigate("Home")} />
                     </View>
                   ),
                 })}
@@ -96,12 +91,7 @@ const App = () => {
                   },
                   headerLeft: () => (
                     <View style={{ marginLeft: 15 }}>
-                      <AntDesign
-                        name="arrowleft"
-                        size={20}
-                        color="white"
-                        onPress={() => navigation.navigate("Home")}
-                      />
+                      <AntDesign name="arrowleft" size={20} color="white" onPress={() => navigation.navigate("Home")} />
                     </View>
                   ),
                 })}

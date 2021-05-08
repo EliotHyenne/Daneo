@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-  Platform,
-  StatusBar,
-  View,
-} from "react-native";
+import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -44,12 +36,8 @@ const HomeScreen = ({ navigation }) => {
       <ScrollView>
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}
-            >
-              <Text style={[styles.button, { backgroundColor: COLORS.pastel_orange }]}>
-                {"WORDS" + " (" + vocabWordsListLength + ")"}
-              </Text>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_orange }]}>{"WORDS" + " (" + vocabWordsListLength + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>LESSON</Text>
@@ -57,9 +45,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_yellow }]}>REVIEW</Text>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate("AddWord", { title: "ADD WORD" })}
-            >
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("AddWord", { title: "ADD WORD" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
             </TouchableWithoutFeedback>
           </View>

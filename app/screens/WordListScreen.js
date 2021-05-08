@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Platform, View } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, View, Text } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
@@ -68,19 +68,23 @@ const WordListScreen = ({ route, navigation }) => {
       </View>
       <ScrollView style={{ width: "100%" }}>
         <View>
-          {vocabWordsListFound
-            ? vocabWordsList.reverse().map((data, index) => {
-                return (
-                  <View style={styles.wordContainer} key={index}>
-                    <WordInfoComponent
-                      vocabWord={vocabWordsList[index].vocabWord}
-                      translatedWordList={vocabWordsList[index].translatedWordList}
-                      definitionsList={vocabWordsList[index].definitionsList}
-                    ></WordInfoComponent>
-                  </View>
-                );
-              })
-            : null}
+          {vocabWordsListFound ? (
+            vocabWordsList.reverse().map((data, index) => {
+              return (
+                <View style={styles.wordContainer} key={index}>
+                  <WordInfoComponent
+                    vocabWord={vocabWordsList[index].vocabWord}
+                    translatedWordList={vocabWordsList[index].translatedWordList}
+                    definitionsList={vocabWordsList[index].definitionsList}
+                  ></WordInfoComponent>
+                </View>
+              );
+            })
+          ) : (
+            <View style={{ top: 200 }}>
+              <Text style={styles.error}>¯\(°_o)/¯ </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -5,30 +5,30 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = ({ navigation }) => {
-  const [vocabWordsListFound, setVocabWordsListFound] = useState(false);
-  const [vocabWordsListLength, setVocabWordsListLength] = useState(0);
+  const [vocabListFound, setVocabListFound] = useState(false);
+  const [vocabListLength, setVocabListLength] = useState(0);
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      setVocabWordsListFound(false);
+      setVocabListFound(false);
     });
     return unsubscribe;
   }, [navigation]);
 
-  const getVocabWordsListLength = async () => {
-    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+  const getVocabListLength = async () => {
+    const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
-    if (!currentVocabWordsList) {
-      setVocabWordsListLength(0);
+    if (!currentVocabList) {
+      setVocabListLength(0);
     } else {
-      setVocabWordsListLength(JSON.parse(currentVocabWordsList).length);
+      setVocabListLength(JSON.parse(currentVocabList).length);
     }
-    setVocabWordsListFound(true);
+    setVocabListFound(true);
   };
 
-  if (!vocabWordsListFound) {
-    getVocabWordsListLength();
+  if (!vocabListFound) {
+    getVocabListLength();
   }
 
   return (
@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
-              <Text style={[styles.button, { backgroundColor: COLORS.pastel_orange }]}>{"WORDS" + " (" + vocabWordsListLength + ")"}</Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_orange }]}>{"WORDS" + " (" + vocabListLength + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>LESSON</Text>

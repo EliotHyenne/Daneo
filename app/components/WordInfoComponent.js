@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Platform, View, Text, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Platform, View, Text, TouchableWithoutFeedback, Alert } from "react-native";
 import { COLORS } from "../config/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-root-toast";
@@ -9,20 +9,24 @@ const WordInfoComponent = (props) => {
   const [checkedExists, setCheckedExists] = useState(false);
 
   const checkWordExists = async () => {
-    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+    const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
-    if (currentVocabWordsList) {
-      setWordIndex(JSON.parse(currentVocabWordsList).findIndex((element) => element.vocabWord === props.vocabWord));
+    if (currentVocabList) {
+      setWordIndex(JSON.parse(currentVocabList).findIndex((element) => element.vocabWord === props.vocabWord));
     }
   };
 
+  const confirmDelete = (index) => {
+    Alert.alert("Delete", "Are you sure?", [{ text: "Yes", onPress: () => deleteVocabWord(index) }, { text: "No" }]);
+  };
+
   const deleteVocabWord = async (index) => {
-    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+    const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
-    const newVocabWordsList = JSON.parse(currentVocabWordsList);
-    newVocabWordsList.splice(index, 1);
+    const newVocabList = JSON.parse(currentVocabList);
+    newVocabList.splice(index, 1);
 
-    await AsyncStorage.setItem("vocabWords", JSON.stringify(newVocabWordsList))
+    await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
       .then(() => {
         setCheckedExists(false);
         console.log("Word deleted and vocab words list updated.");
@@ -46,12 +50,12 @@ const WordInfoComponent = (props) => {
       definitionsList: props.definitionsList,
     };
 
-    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+    const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
-    if (!currentVocabWordsList) {
-      const newVocabWordsList = [];
-      newVocabWordsList.push(vocabWordToAdd);
-      await AsyncStorage.setItem("vocabWords", JSON.stringify(newVocabWordsList))
+    if (!currentVocabList) {
+      const newVocabList = [];
+      newVocabList.push(vocabWordToAdd);
+      await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
         .then(() => {
           setCheckedExists(false);
           console.log("Vocab words list created and word added.");
@@ -60,9 +64,9 @@ const WordInfoComponent = (props) => {
           console.log("There was an error while creating the vocab words list: ", e);
         });
     } else {
-      const newVocabWordsList = JSON.parse(currentVocabWordsList);
-      newVocabWordsList.push(vocabWordToAdd);
-      await AsyncStorage.setItem("vocabWords", JSON.stringify(newVocabWordsList))
+      const newVocabList = JSON.parse(currentVocabList);
+      newVocabList.push(vocabWordToAdd);
+      await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
         .then(() => {
           setCheckedExists(false);
           console.log("Word added to vocab words list.");
@@ -100,7 +104,7 @@ const WordInfoComponent = (props) => {
           <Text style={[styles.addButton, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
         </TouchableWithoutFeedback>
       ) : (
-        <TouchableWithoutFeedback onPress={() => deleteVocabWord(wordIndex)}>
+        <TouchableWithoutFeedback onPress={() => confirmDelete(wordIndex)}>
           <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_orange }]}>DELETE</Text>
         </TouchableWithoutFeedback>
       )}

@@ -140,7 +140,7 @@ const AddWordScreen = ({ route, navigation }) => {
         />
       </View>
       <View style={styles.loading}>{isLoading ? <ActivityIndicator size="large" color="white" /> : null}</View>
-      <View style={{ top: 200 }}>{!wordFound && !isLoading ? <Text style={styles.error}>¯\(°_o)/¯ </Text> : null}</View>
+      <View style={{ top: 200 }}>{!wordFound && !isLoading ? <Text style={styles.error}>¯\(°_o)/¯</Text> : null}</View>
       <ScrollView style={{ width: "100%" }}>
         <View>
           {wordFound ? (

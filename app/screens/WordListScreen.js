@@ -8,21 +8,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
-  const [vocabWordsList, setVocabWordsList] = useState();
-  const [vocabWordsListFound, setvocabWordsListFound] = useState(false);
+  const [vocabList, setVocabList] = useState();
+  const [vocabListFound, setVocabListFound] = useState(false);
+  const [vocabListEmpty, setVocabListEmpty] = useState(true);
 
   const getVocabWordList = async () => {
-    const currentVocabWordsList = await AsyncStorage.getItem("vocabWords");
+    const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
-    if (!currentVocabWordsList) {
-      setVocabWordsList([]);
+    if (!currentVocabList) {
+      setVocabList([]);
     } else {
-      setVocabWordsList(JSON.parse(currentVocabWordsList));
+      setVocabList(JSON.parse(currentVocabList));
+      if (JSON.parse(currentVocabList).length > 0) {
+        setVocabListEmpty(false);
+      }
     }
-    setvocabWordsListFound(true);
+    setVocabListFound(true);
   };
 
-  if (!vocabWordsListFound) {
+  if (!vocabListFound) {
     getVocabWordList();
   }
 
@@ -66,25 +70,26 @@ const WordListScreen = ({ route, navigation }) => {
           }}
         />
       </View>
+      {!vocabListFound || vocabListEmpty ? (
+        <View style={{ top: 200 }}>
+          <Text style={styles.error}>¯\(°_o)/¯</Text>
+        </View>
+      ) : null}
       <ScrollView style={{ width: "100%" }}>
         <View>
-          {vocabWordsListFound ? (
-            vocabWordsList.reverse().map((data, index) => {
-              return (
-                <View style={styles.wordContainer} key={index}>
-                  <WordInfoComponent
-                    vocabWord={vocabWordsList[index].vocabWord}
-                    translatedWordList={vocabWordsList[index].translatedWordList}
-                    definitionsList={vocabWordsList[index].definitionsList}
-                  ></WordInfoComponent>
-                </View>
-              );
-            })
-          ) : (
-            <View style={{ top: 200 }}>
-              <Text style={styles.error}>¯\(°_o)/¯ </Text>
-            </View>
-          )}
+          {vocabListFound && !vocabListEmpty
+            ? vocabList.reverse().map((data, index) => {
+                return (
+                  <View style={styles.wordContainer} key={index}>
+                    <WordInfoComponent
+                      vocabWord={vocabList[index].vocabWord}
+                      translatedWordList={vocabList[index].translatedWordList}
+                      definitionsList={vocabList[index].definitionsList}
+                    ></WordInfoComponent>
+                  </View>
+                );
+              })
+            : null}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -10,6 +10,7 @@ import { FlatList } from "react-native";
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [vocabList, setVocabList] = useState();
+  const [filteredVocabList, setFilteredVocabList] = useState();
   const [vocabListFound, setVocabListFound] = useState(false);
   const [vocabListEmpty, setVocabListEmpty] = useState(true);
 
@@ -18,8 +19,10 @@ const WordListScreen = ({ route, navigation }) => {
 
     if (!currentVocabList) {
       setVocabList([]);
+      setFilteredVocabList([]);
     } else {
       setVocabList(JSON.parse(currentVocabList).reverse());
+      setFilteredVocabList(JSON.parse(currentVocabList).reverse());
       if (JSON.parse(currentVocabList).length > 0) {
         setVocabListEmpty(false);
       }
@@ -30,10 +33,6 @@ const WordListScreen = ({ route, navigation }) => {
   if (!vocabListFound) {
     getVocabWordList();
   }
-
-  const handleSearch = (text) => {
-    console.log("Search");
-  };
 
   const handleOnClear = () => {
     if (this.search != null) {
@@ -53,6 +52,16 @@ const WordListScreen = ({ route, navigation }) => {
     );
   };
 
+  const handleSearch = (text) => {
+    if (text) {
+      const data = vocabList;
+      const filteredList = data.filter((element) => element.vocabWord === text);
+      console.log(filteredList);
+      setFilteredVocabList(filteredList);
+    }
+    setSearchInputText(text);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchBar}>
@@ -62,11 +71,10 @@ const WordListScreen = ({ route, navigation }) => {
           round
           searchIcon={{ size: 25, color: "white", paddingLeft: 10 }}
           clearIcon={{ size: 20, color: "white" }}
-          onChangeText={setSearchInputText}
-          onSubmitEditing={(event) => handleSearch(event.nativeEvent.text)}
+          value={searchInputText}
+          onChangeText={(value) => handleSearch(value)}
           placeholder="Search word.."
           placeholderTextColor="#e3f3ff"
-          value={searchInputText}
           inputContainerStyle={{ backgroundColor: COLORS.pastel_blue }}
           leftIconContainerStyle={{ backgroundColor: COLORS.pastel_blue }}
           inputStyle={{
@@ -88,22 +96,7 @@ const WordListScreen = ({ route, navigation }) => {
           <Text style={styles.error}>¯\(°_o)/¯</Text>
         </View>
       ) : null}
-      <FlatList data={vocabList} renderItem={renderItem} keyExtractor={(item, index) => index.toString()} />
-      {/* <View>
-          {vocabListFound && !vocabListEmpty
-            ? vocabList.reverse().map((data, index) => {
-                return (
-                  <View style={styles.wordContainer} key={index}>
-                    <WordInfoComponent
-                      vocabWord={vocabList[index].vocabWord}
-                      translatedWordList={vocabList[index].translatedWordList}
-                      definitionsList={vocabList[index].definitionsList}
-                    ></WordInfoComponent>
-                  </View>
-                );
-              })
-            : null}
-        </View> */}
+      <FlatList data={filteredVocabList} renderItem={renderItem} keyExtractor={(item, index) => index.toString()} />
     </SafeAreaView>
   );
 };

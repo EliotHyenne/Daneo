@@ -105,7 +105,7 @@ const WordInfoComponent = (props) => {
         </TouchableWithoutFeedback>
       ) : (
         <TouchableWithoutFeedback onPress={() => confirmDelete(wordIndex)}>
-          <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_orange }]}>DELETE</Text>
+          <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>DELETE</Text>
         </TouchableWithoutFeedback>
       )}
     </View>

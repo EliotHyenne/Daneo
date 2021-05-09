@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
-              <Text style={[styles.button, { backgroundColor: COLORS.pastel_orange }]}>{"WORDS" + " (" + vocabListLength + ")"}</Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_red }]}>{"WORDS" + " (" + vocabListLength + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>LESSON</Text>

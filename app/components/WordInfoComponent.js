@@ -56,6 +56,8 @@ const WordInfoComponent = (props) => {
 
     const vocabWordToAdd = {
       vocabWord: props.vocabWord,
+      level: "Unseen",
+      nextReview: Date.now(),
       translatedWordList: props.translatedWordList,
       definitionsList: props.definitionsList,
     };
@@ -107,7 +109,10 @@ const WordInfoComponent = (props) => {
 
   return (
     <View>
-      <Text style={styles.vocabWord}>{props.vocabWord}</Text>
+      <View style={styles.container}>
+        <Text style={styles.vocabWord}>{props.vocabWord}</Text>
+        {props.level ? <Text style={styles.level}>{props.level}</Text> : null}
+      </View>
       {renderSenses()}
       {wordIndex === -1 ? (
         <TouchableWithoutFeedback onPress={() => addVocabWord()}>
@@ -123,10 +128,21 @@ const WordInfoComponent = (props) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   vocabWord: {
     fontFamily: "Roboto-Black",
     fontSize: 40,
     color: "white",
+  },
+  level: {
+    fontFamily: "Roboto-BoldItalic",
+    fontSize: 30,
+    color: COLORS.pastel_yellow,
+    marginTop: 10,
+    marginRight: 10,
   },
   translatedWordList: {
     fontFamily: "Roboto-Bold",

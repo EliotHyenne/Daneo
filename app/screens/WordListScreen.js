@@ -11,7 +11,6 @@ const WordListScreen = ({ route, navigation }) => {
   const [vocabList, setVocabList] = useState([]);
   const [filteredVocabList, setFilteredVocabList] = useState();
   const [vocabListFound, setVocabListFound] = useState(false);
-  const [vocabListEmpty, setVocabListEmpty] = useState(true);
 
   const getVocabWordList = async () => {
     const currentVocabList = await AsyncStorage.getItem("@vocabList");
@@ -22,9 +21,6 @@ const WordListScreen = ({ route, navigation }) => {
     } else {
       setVocabList(JSON.parse(currentVocabList).reverse());
       setFilteredVocabList(JSON.parse(currentVocabList).reverse());
-      if (JSON.parse(currentVocabList).length > 0) {
-        setVocabListEmpty(false);
-      }
     }
     setVocabListFound(true);
   };
@@ -44,6 +40,7 @@ const WordListScreen = ({ route, navigation }) => {
       <View style={styles.wordContainer}>
         <WordInfoComponent
           vocabWord={item.vocabWord}
+          level={item.level}
           translatedWordList={item.translatedWordList}
           definitionsList={item.definitionsList}
         ></WordInfoComponent>
@@ -127,11 +124,6 @@ const WordListScreen = ({ route, navigation }) => {
           }}
         />
       </View>
-      {!vocabListFound || vocabListEmpty ? (
-        <View style={{ top: 200 }}>
-          <Text style={styles.error}>¯\(°_o)/¯</Text>
-        </View>
-      ) : null}
       <FlatList
         data={filteredVocabList}
         renderItem={renderItem}

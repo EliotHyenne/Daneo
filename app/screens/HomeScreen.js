@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HomeScreen = ({ navigation }) => {
   const [vocabListFound, setVocabListFound] = useState(false);
   const [vocabListLength, setVocabListLength] = useState(0);
+  const [numNewWords, setNumNewWords] = useState(0);
+  const [numReviews, setNumReviews] = useState(0);
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
@@ -16,19 +18,31 @@ const HomeScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  const getVocabListLength = async () => {
+  const getCounters = async () => {
     const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
     if (!currentVocabList) {
       setVocabListLength(0);
     } else {
-      setVocabListLength(JSON.parse(currentVocabList).length);
+      const vocabList = JSON.parse(currentVocabList);
+      setVocabListLength(vocabList.length);
+      var newWordsCounter = 0;
+      var reviewsCounter = 0;
+      for (var i = 0; i < vocabList.length; i++) {
+        if (vocabList[i].level == "Unseen") {
+          newWordsCounter++;
+        } else {
+          reviewsCounter++;
+        }
+      }
+      setNumReviews(reviewsCounter);
+      setNumNewWords(newWordsCounter);
     }
     setVocabListFound(true);
   };
 
   if (!vocabListFound) {
-    getVocabListLength();
+    getCounters();
   }
 
   return (
@@ -40,10 +54,10 @@ const HomeScreen = ({ navigation }) => {
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_red }]}>{"WORDS" + " (" + vocabListLength + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
-              <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>LESSON</Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>{"LEARN" + " (" + numNewWords + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
-              <Text style={[styles.button, { backgroundColor: COLORS.pastel_yellow }]}>REVIEW</Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_yellow }]}>{"REVIEW" + " (" + numReviews + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("AddWord", { title: "ADD WORD" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>

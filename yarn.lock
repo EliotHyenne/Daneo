@@ -1863,9 +1863,9 @@
     nanoid "^3.1.15"
 
 "@react-navigation/stack@^5.14.4":
-  version "5.14.4"
-  resolved "https://registry.yarnpkg.com/@react-navigation/stack/-/stack-5.14.4.tgz#32f6717c03494f0ca6cf0dd43d8302af824de9e9"
-  integrity sha512-gQjWK8JHtVkD1p7wzjtSPuScJI0mSAk/N/gzgjQZo+rDUwgM8rOTDcVNRbtEOqCEgLQcZrZQHwhOjkrJirehjQ==
+  version "5.14.5"
+  resolved "https://registry.yarnpkg.com/@react-navigation/stack/-/stack-5.14.5.tgz#dc615cd7d270ba79e3330dcb50c2819d0e1f3850"
+  integrity sha512-hpdn1SS0tc3/3atkV2Q2y++n5B4e0rUcCj4W43PODMu72yX2m0LkKAAcpkPDCWAvwnLLIoLAEl5BEifZigl/6A==
   dependencies:
     color "^3.1.3"
     react-native-iphone-x-helper "^1.3.0"
@@ -2776,9 +2776,9 @@ copy-descriptor@^0.1.0:
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
 core-js-compat@^3.8.0, core-js-compat@^3.9.0, core-js-compat@^3.9.1:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.12.0.tgz#a031e51fe411085e33cb629bfee2acaa53bc309a"
-  integrity sha512-vvaN8EOvYBEjrr+MN3vCKrMNc/xdYZI+Rt/uPMROi4T5Hj8Fz6TiPQm2mrB9aZoQVW1lCFHYmMrv99aUct9mkg==
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.12.1.tgz#2c302c4708505fa7072b0adb5156d26f7801a18b"
+  integrity sha512-i6h5qODpw6EsHAoIdQhKoZdWn+dGBF3dSS8m5tif36RlWvW3A6+yu2S16QHUo3CrkzrnEskMAt9f8FxmY9fhWQ==
   dependencies:
     browserslist "^4.16.6"
     semver "7.0.0"
@@ -2794,9 +2794,9 @@ core-js@^2.4.1:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.6.5:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.12.0.tgz#62bac86f7d7f087d40dba3e90a211c2c3c8559ea"
-  integrity sha512-SaMnchL//WwU2Ot1hhkPflE8gzo7uq1FGvUJ8GKmi3TOU7rGTHIU+eir1WGf6qOtTyxdfdcp10yPdGZ59sQ3hw==
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.12.1.tgz#6b5af4ff55616c08a44d386f1f510917ff204112"
+  integrity sha512-Ne9DKPHTObRuB09Dru5AjwKjY4cJHVGu+y5f7coGn1E9Grkc3p2iBwE9AI/nJzsE29mQF7oq+mhYYRqOMFN1Bw==
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -3929,9 +3929,9 @@ is-ci@^2.0.0:
     ci-info "^2.0.0"
 
 is-core-module@^2.2.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.3.0.tgz#d341652e3408bca69c4671b79a0954a3d349f887"
-  integrity sha512-xSphU2KG9867tsYdLD4RWQ1VqdFl4HTO9Thf3I/3dLEfr0dbPTWKsuCKrgqMljg4nPE+Gq0VCnzT3gr0CyBmsw==
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.4.0.tgz#8e9fc8e15027b011418026e98f0e6f4d86305cc1"
+  integrity sha512-6A2fkfq1rfeQZjxrZJGerpLCTHRNEBiSgnu0+obeJpEPZRUooHgsizvzv0ZjJwOz3iWIHdJtVWJ/tmPr3D21/A==
   dependencies:
     has "^1.0.3"
 

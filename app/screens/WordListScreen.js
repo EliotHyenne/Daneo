@@ -5,6 +5,7 @@ import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FlatList } from "react-native";
 
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
@@ -18,7 +19,7 @@ const WordListScreen = ({ route, navigation }) => {
     if (!currentVocabList) {
       setVocabList([]);
     } else {
-      setVocabList(JSON.parse(currentVocabList));
+      setVocabList(JSON.parse(currentVocabList).reverse());
       if (JSON.parse(currentVocabList).length > 0) {
         setVocabListEmpty(false);
       }
@@ -38,6 +39,18 @@ const WordListScreen = ({ route, navigation }) => {
     if (this.search != null) {
       this.search.focus();
     }
+  };
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.wordContainer}>
+        <WordInfoComponent
+          vocabWord={item.vocabWord}
+          translatedWordList={item.translatedWordList}
+          definitionsList={item.definitionsList}
+        ></WordInfoComponent>
+      </View>
+    );
   };
 
   return (
@@ -75,8 +88,8 @@ const WordListScreen = ({ route, navigation }) => {
           <Text style={styles.error}>¯\(°_o)/¯</Text>
         </View>
       ) : null}
-      <ScrollView style={{ width: "100%" }}>
-        <View>
+      <FlatList data={vocabList} renderItem={renderItem} keyExtractor={(item, index) => index.toString()} />
+      {/* <View>
           {vocabListFound && !vocabListEmpty
             ? vocabList.reverse().map((data, index) => {
                 return (
@@ -90,8 +103,7 @@ const WordListScreen = ({ route, navigation }) => {
                 );
               })
             : null}
-        </View>
-      </ScrollView>
+        </View> */}
     </SafeAreaView>
   );
 };

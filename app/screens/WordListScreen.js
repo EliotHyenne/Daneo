@@ -3,7 +3,6 @@ import { StyleSheet, SafeAreaView, Platform, View, Text } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
-import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FlatList } from "react-native";
 
@@ -52,12 +51,47 @@ const WordListScreen = ({ route, navigation }) => {
     );
   };
 
+  const filter = (text, element) => {
+    if (element.vocabWord === text) {
+      return true;
+    }
+
+    for (var i = 0; i < element.vocabWord.length; i++) {
+      if (element.vocabWord.charAt(i) === text) {
+        return true;
+      }
+    }
+
+    for (i = 0; i < element.translatedWordList.length; i++) {
+      if (
+        element.translatedWordList[i]
+          .toLowerCase()
+          .split(/[\s;]+/)
+          .includes(text.toLowerCase())
+      ) {
+        return true;
+      }
+    }
+
+    for (i = 0; i < element.definitionsList.length; i++) {
+      if (
+        element.definitionsList[i]
+          .toLowerCase()
+          .split(/[\s,.;:]+/)
+          .includes(text.toLowerCase())
+      ) {
+        return true;
+      }
+    }
+  };
+
   const handleSearch = (text) => {
+    const data = vocabList;
     if (text) {
-      const data = vocabList;
-      const filteredList = data.filter((element) => element.vocabWord === text);
-      console.log(filteredList);
+      const filteredList = data.filter((element) => filter(text, element));
       setFilteredVocabList(filteredList);
+    } else {
+      setFilteredVocabList(data);
     }
     setSearchInputText(text);
   };

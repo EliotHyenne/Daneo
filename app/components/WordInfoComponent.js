@@ -21,6 +21,13 @@ const WordInfoComponent = (props) => {
   };
 
   const deleteVocabWord = async (index) => {
+    Toast.show("Word deleted", {
+      duration: Toast.durations.SHORT,
+      backgroundColor: "gray",
+      shadow: false,
+      opacity: 0.8,
+    });
+
     const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
     const newVocabList = JSON.parse(currentVocabList);

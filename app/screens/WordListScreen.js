@@ -42,11 +42,7 @@ const WordListScreen = ({ route, navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <View style={styles.wordContainer}>
-        <WordInfoComponent
-          vocabWord={item.vocabWord}
-          translatedWordList={item.translatedWordList}
-          definitionsList={item.definitionsList}
-        ></WordInfoComponent>
+        <WordInfoComponent vocabWord={item.vocabWord} translatedWordList={item.translatedWordList} definitionsList={item.definitionsList}></WordInfoComponent>
       </View>
     );
   };
@@ -64,6 +60,7 @@ const WordListScreen = ({ route, navigation }) => {
 
     for (i = 0; i < element.translatedWordList.length; i++) {
       if (
+        element.translatedWordList[i] != null &&
         element.translatedWordList[i]
           .toLowerCase()
           .split(/[\s;]+/)
@@ -75,6 +72,7 @@ const WordListScreen = ({ route, navigation }) => {
 
     for (i = 0; i < element.definitionsList.length; i++) {
       if (
+        element.translatedWordList[i] != null &&
         element.definitionsList[i]
           .toLowerCase()
           .split(/[\s,.;:]+/)

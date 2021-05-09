@@ -16,8 +16,8 @@ const WordInfoComponent = (props) => {
     }
   };
 
-  const confirmDelete = (index) => {
-    Alert.alert("Delete", "Are you sure?", [{ text: "Yes", onPress: () => deleteVocabWord(index) }, { text: "No" }]);
+  const confirmDelete = (index, vocabWord) => {
+    Alert.alert("Delete", "Are you sure you want to delete " + vocabWord + " ?", [{ text: "Yes", onPress: () => deleteVocabWord(index) }, { text: "No" }]);
   };
 
   const deleteVocabWord = async (index) => {
@@ -111,7 +111,7 @@ const WordInfoComponent = (props) => {
           <Text style={[styles.addButton, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
         </TouchableWithoutFeedback>
       ) : (
-        <TouchableWithoutFeedback onPress={() => confirmDelete(wordIndex)}>
+        <TouchableWithoutFeedback onPress={() => confirmDelete(wordIndex, props.vocabWord)}>
           <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>DELETE</Text>
         </TouchableWithoutFeedback>
       )}

@@ -8,7 +8,7 @@ import { FlatList } from "react-native";
 
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
-  const [vocabList, setVocabList] = useState();
+  const [vocabList, setVocabList] = useState([]);
   const [filteredVocabList, setFilteredVocabList] = useState();
   const [vocabListFound, setVocabListFound] = useState(false);
   const [vocabListEmpty, setVocabListEmpty] = useState(true);
@@ -42,7 +42,11 @@ const WordListScreen = ({ route, navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <View style={styles.wordContainer}>
-        <WordInfoComponent vocabWord={item.vocabWord} translatedWordList={item.translatedWordList} definitionsList={item.definitionsList}></WordInfoComponent>
+        <WordInfoComponent
+          vocabWord={item.vocabWord}
+          translatedWordList={item.translatedWordList}
+          definitionsList={item.definitionsList}
+        ></WordInfoComponent>
       </View>
     );
   };
@@ -128,7 +132,12 @@ const WordListScreen = ({ route, navigation }) => {
           <Text style={styles.error}>¯\(°_o)/¯</Text>
         </View>
       ) : null}
-      <FlatList data={filteredVocabList} renderItem={renderItem} keyExtractor={(item, index) => index.toString()} />
+      <FlatList
+        data={filteredVocabList}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={<Text style={[styles.error, { marginTop: 200 }]}>¯\(°_o)/¯</Text>}
+      />
     </SafeAreaView>
   );
 };

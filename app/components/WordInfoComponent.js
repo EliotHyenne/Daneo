@@ -17,7 +17,10 @@ const WordInfoComponent = (props) => {
   };
 
   const confirmDelete = (index, vocabWord) => {
-    Alert.alert("Delete", "Are you sure you want to delete " + vocabWord + " ?", [{ text: "Yes", onPress: () => deleteVocabWord(index) }, { text: "No" }]);
+    Alert.alert("Delete", "Are you sure you want to delete " + vocabWord + " ?", [
+      { text: "Yes", onPress: () => deleteVocabWord(index) },
+      { text: "No" },
+    ]);
   };
 
   const deleteVocabWord = async (index) => {

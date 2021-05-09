@@ -76,7 +76,8 @@ const AddWordScreen = ({ route, navigation }) => {
       setWordFound(false);
       setIsLoading(true);
       var url =
-        "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=" + text;
+        "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=" +
+        text;
       fetch(url)
         .then((response) => response.text())
         .then((response) => {

@@ -24,12 +24,12 @@ const HomeScreen = ({ navigation }) => {
     if (!currentVocabList) {
       setVocabListLength(0);
     } else {
-      const vocabList = JSON.parse(currentVocabList);
-      setVocabListLength(vocabList.length);
+      const tempVocabList = JSON.parse(currentVocabList);
+      setVocabListLength(tempVocabList.length);
       var newWordsCounter = 0;
       var reviewsCounter = 0;
-      for (var i = 0; i < vocabList.length; i++) {
-        if (vocabList[i].level == "Unseen") {
+      for (var i = 0; i < tempVocabList.length; i++) {
+        if (tempVocabList[i].level == "Unseen") {
           newWordsCounter++;
         } else {
           reviewsCounter++;
@@ -53,7 +53,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_red }]}>{"WORDS" + " (" + vocabListLength + ")"}</Text>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => console.log("LESSON")}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("LearnWord", { title: "LEARN WORD" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>{"LEARN" + " (" + numNewWords + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>

@@ -2,6 +2,7 @@ import React from "react";
 import HomeScreen from "./app/screens/HomeScreen";
 import AddWordScreen from "./app/screens/AddWordScreen";
 import WordListScreen from "./app/screens/WordListScreen";
+import LearnWordScreen from "./app/screens/LearnWordScreen";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -59,8 +60,8 @@ const App = () => {
                 headerShown={false}
               />
               <Stack.Screen
-                name="AddWord"
-                component={AddWordScreen}
+                name="WordList"
+                component={WordListScreen}
                 options={({ navigation }) => ({
                   title: "",
                   headerStyle: {
@@ -78,8 +79,27 @@ const App = () => {
                 })}
               />
               <Stack.Screen
-                name="WordList"
-                component={WordListScreen}
+                name="LearnWord"
+                component={LearnWordScreen}
+                options={({ navigation }) => ({
+                  title: "",
+                  headerStyle: {
+                    backgroundColor: COLORS.pastel_purple,
+                    borderBottomColor: COLORS.pastel_purple,
+                    shadowOffset: {
+                      height: 0,
+                    },
+                  },
+                  headerLeft: () => (
+                    <View style={{ marginLeft: 15 }}>
+                      <AntDesign name="arrowleft" size={20} color="white" onPress={() => navigation.navigate("Home")} />
+                    </View>
+                  ),
+                })}
+              />
+              <Stack.Screen
+                name="AddWord"
+                component={AddWordScreen}
                 options={({ navigation }) => ({
                   title: "",
                   headerStyle: {
@@ -100,8 +120,9 @@ const App = () => {
           ) : (
             <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
               <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="AddWord" component={AddWordScreen} />
               <Stack.Screen name="WordList" component={WordListScreen} />
+              <Stack.Screen name="LearnWord" component={LearnWordScreen} />
+              <Stack.Screen name="AddWord" component={AddWordScreen} />
             </Stack.Navigator>
           )}
         </NavigationContainer>

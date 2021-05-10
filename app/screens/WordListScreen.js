@@ -9,16 +9,13 @@ import { FlatList } from "react-native";
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [vocabList, setVocabList] = useState([]);
-  const [filteredVocabList, setFilteredVocabList] = useState();
+  const [filteredVocabList, setFilteredVocabList] = useState([]);
   const [vocabListFound, setVocabListFound] = useState(false);
 
   const getVocabWordList = async () => {
     const currentVocabList = await AsyncStorage.getItem("@vocabList");
 
-    if (!currentVocabList) {
-      setVocabList([]);
-      setFilteredVocabList([]);
-    } else {
+    if (currentVocabList) {
       setVocabList(JSON.parse(currentVocabList).reverse());
       setFilteredVocabList(JSON.parse(currentVocabList).reverse());
     }

@@ -1,3 +1,5 @@
+![Circle Icon](circle-icon.png)
+
 # Daneo
 
 A Korean language vocabulary learning app for iOS and Android written in JavaScript using React Native (expo).

@@ -1,4 +1,6 @@
-![Circle Icon](circle-icon.png)
+<p  align="center">
+<img src="circle-icon.png" width="300" height="300">
+</p>
 
 # Daneo
 

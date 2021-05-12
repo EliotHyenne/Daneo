@@ -45,9 +45,9 @@ const AddWordScreen = ({ route, navigation }) => {
     if (Array.isArray(jsonData.channel.item)) {
       setVocabWord(jsonData.channel.item[itemIndex].word._text);
       if (Array.isArray(jsonData.channel.item[itemIndex].sense)) {
-        for (var i = 0; i < jsonData.channel.item[itemIndex].sense.length; i++) {
-          newTranslatedWordList.push(jsonData.channel.item[itemIndex].sense[i].translation.trans_word._cdata);
-          newDefinitionsList.push(jsonData.channel.item[itemIndex].sense[i].translation.trans_dfn._cdata);
+        for (let sense of jsonData.channel.item[itemIndex].sense) {
+          newTranslatedWordList.push(sense.translation.trans_word._cdata);
+          newDefinitionsList.push(sense.translation.trans_dfn._cdata);
         }
       } else {
         newTranslatedWordList.push(jsonData.channel.item[itemIndex].sense.translation.trans_word._cdata);
@@ -56,9 +56,9 @@ const AddWordScreen = ({ route, navigation }) => {
     } else {
       setVocabWord(jsonData.channel.item.word._text);
       if (Array.isArray(jsonData.channel.item.sense)) {
-        for (i = 0; i < jsonData.channel.item.sense.length; i++) {
-          newTranslatedWordList.push(jsonData.channel.item.sense[i].translation.trans_word._cdata);
-          newDefinitionsList.push(jsonData.channel.item.sense[i].translation.trans_dfn._cdata);
+        for (let sense of jsonData.channel.item.sense) {
+          newTranslatedWordList.push(sense.translation.trans_word._cdata);
+          newDefinitionsList.push(sense.translation.trans_dfn._cdata);
         }
       } else {
         newTranslatedWordList.push(jsonData.channel.item.sense.translation.trans_word._cdata);

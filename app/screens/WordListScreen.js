@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Platform, View, Text } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, View, Text, FlatList } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FlatList } from "react-native";
 
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");

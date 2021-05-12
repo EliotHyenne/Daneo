@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     borderRadius: 25,
     fontFamily: "Roboto-Black",
+    marginTop: 15,
     fontSize: 25,
     color: "white",
     width: 125,

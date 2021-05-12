@@ -87,7 +87,7 @@ const LearnWordScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.componentContainer}>
-        {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: 200 }]}>¯\(°_o)/¯</Text> : null}
+        {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text> : null}
         <ScrollView ref={scrollRef} style={{ width: "100%" }}>
           {lessonListFound && !noLessons ? (
             <View>
@@ -119,14 +119,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.pastel_purple,
     alignItems: "center",
     justifyContent: "center",
-    padding: 25,
-    paddingTop: Platform.OS === "android" ? 50 : 0,
+    padding: Platform.OS === "android" ? 0 : 25,
   },
   counter: {
     fontFamily: "Roboto-Regular",
     fontSize: 18,
     color: "white",
-    marginTop: 5,
+    marginTop: Platform.OS === "android" ? 5 : 0,
     textAlign: "right",
   },
   vocabWord: {

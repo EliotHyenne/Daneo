@@ -50,6 +50,7 @@ const LearnWordScreen = ({ route, navigation }) => {
 
   const changeLevel = async () => {
     vocabList[lessonList[currentWordIndex].index].level = "Unranked";
+
     await AsyncStorage.setItem("@vocabList", JSON.stringify(vocabList))
       .then(() => {
         console.log("Vocab word level changed.");
@@ -85,25 +86,35 @@ const LearnWordScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: 200 }]}>¯\(°_o)/¯</Text> : null}
-      <ScrollView ref={scrollRef} style={{ width: "100%" }}>
-        {lessonListFound && !noLessons ? (
-          <View>
-            <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
-            <Text style={styles.vocabWord}>{lessonList[currentWordIndex].element.vocabWord}</Text>
-            {renderSenses(currentWordIndex)}
-            <TouchableWithoutFeedback onPress={() => nextWord()}>
-              <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>
-            </TouchableWithoutFeedback>
-          </View>
-        ) : null}
-      </ScrollView>
+      <View style={styles.componentContainer}>
+        {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: 200 }]}>¯\(°_o)/¯</Text> : null}
+        <ScrollView ref={scrollRef} style={{ width: "100%" }}>
+          {lessonListFound && !noLessons ? (
+            <View>
+              <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
+              <Text style={styles.vocabWord}>{lessonList[currentWordIndex].element.vocabWord}</Text>
+              {renderSenses(currentWordIndex)}
+              <TouchableWithoutFeedback onPress={() => nextWord()}>
+                <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>
+              </TouchableWithoutFeedback>
+            </View>
+          ) : null}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: COLORS.pastel_purple,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 25,
+    paddingTop: Platform.OS === "android" ? 50 : 0,
+  },
+  componentContainer: {
     flex: 1,
     backgroundColor: COLORS.pastel_purple,
     alignItems: "center",

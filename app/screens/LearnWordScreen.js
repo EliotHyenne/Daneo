@@ -3,10 +3,11 @@ import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedbac
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
+import Toast from "react-native-root-toast";
 
 const LearnWordScreen = ({ route, navigation }) => {
   const [vocabList, setVocabList] = useState([]);
-  const [lessonList, setLessonList] = useState([]);
+  const [lessonList] = useState([]);
   const [lessonListFound, setLessonListFound] = useState(false);
   const [noLessons, setNoLessons] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -48,6 +49,12 @@ const LearnWordScreen = ({ route, navigation }) => {
   };
 
   const nextWord = () => {
+    Toast.show("Word ready for review", {
+      duration: Toast.durations.SHORT,
+      backgroundColor: "gray",
+      shadow: false,
+      opacity: 0.8,
+    });
     var tempCounter = currentWordIndex;
     tempCounter++;
     if (lessonList[tempCounter]) {
@@ -67,6 +74,7 @@ const LearnWordScreen = ({ route, navigation }) => {
       <ScrollView ref={scrollRef} style={{ width: "100%" }}>
         {lessonListFound && !noLessons ? (
           <View>
+            <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
             <Text style={styles.vocabWord}>{lessonList[currentWordIndex].vocabWord}</Text>
             {renderSenses(currentWordIndex)}
             <TouchableWithoutFeedback onPress={() => nextWord()}>
@@ -88,12 +96,20 @@ const styles = StyleSheet.create({
     padding: 25,
     paddingTop: Platform.OS === "android" ? 50 : 0,
   },
+  counter: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 18,
+    color: "white",
+    marginTop: 5,
+    textAlign: "right",
+  },
   vocabWord: {
     fontFamily: "Roboto-Black",
     fontSize: 50,
     color: "white",
     flex: 1,
     marginTop: 50,
+    marginBottom: 40,
     textAlign: "center",
     alignItems: "center",
     justifyContent: "center",

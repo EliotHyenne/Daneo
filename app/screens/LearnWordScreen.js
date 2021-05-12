@@ -21,7 +21,7 @@ const LearnWordScreen = ({ route, navigation }) => {
 
       for (var i = 0; i < vocabList.length; i++) {
         if (vocabList[i].level == "Unseen") {
-          lessonList.push(vocabList[i]);
+          lessonList.push({ index: i, element: vocabList[i] });
         }
       }
       if (lessonList.length > 0) {
@@ -36,27 +36,42 @@ const LearnWordScreen = ({ route, navigation }) => {
   }
 
   const renderSenses = (index) => {
-    return lessonList[index].translatedWordList.map((data, key) => {
+    return lessonList[index].element.translatedWordList.map((data, key) => {
       return (
         <View key={key}>
           <Text style={styles.translatedWordList}>
             {key + 1}. {data}
           </Text>
-          <Text style={styles.definitionsList}>{lessonList[index].definitionsList[key]}</Text>
+          <Text style={styles.definitionsList}>{lessonList[index].element.definitionsList[key]}</Text>
         </View>
       );
     });
   };
 
+  const changeLevel = async () => {
+    vocabList[lessonList[currentWordIndex].index].level = "Unranked";
+    await AsyncStorage.setItem("@vocabList", JSON.stringify(vocabList))
+      .then(() => {
+        console.log("Vocab word level changed.");
+      })
+      .catch((e) => {
+        console.log("There was an error while changing the vocab word level: ", e);
+      });
+  };
+
   const nextWord = () => {
+    changeLevel();
+
     Toast.show("Word ready for review", {
       duration: Toast.durations.SHORT,
       backgroundColor: "gray",
       shadow: false,
       opacity: 0.8,
     });
+
     var tempCounter = currentWordIndex;
     tempCounter++;
+
     if (lessonList[tempCounter]) {
       setCurrentWordIndex(tempCounter);
     } else {
@@ -75,7 +90,7 @@ const LearnWordScreen = ({ route, navigation }) => {
         {lessonListFound && !noLessons ? (
           <View>
             <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
-            <Text style={styles.vocabWord}>{lessonList[currentWordIndex].vocabWord}</Text>
+            <Text style={styles.vocabWord}>{lessonList[currentWordIndex].element.vocabWord}</Text>
             {renderSenses(currentWordIndex)}
             <TouchableWithoutFeedback onPress={() => nextWord()}>
               <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>

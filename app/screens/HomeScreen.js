@@ -12,10 +12,9 @@ const HomeScreen = ({ navigation }) => {
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
+    return navigation.addListener("focus", () => {
       setVocabListFound(false);
     });
-    return unsubscribe;
   }, [navigation]);
 
   const getCounters = async () => {
@@ -28,8 +27,8 @@ const HomeScreen = ({ navigation }) => {
       setVocabListLength(tempVocabList.length);
       var newWordsCounter = 0;
       var reviewsCounter = 0;
-      for (var i = 0; i < tempVocabList.length; i++) {
-        if (tempVocabList[i].level == "Unseen") {
+      for (let element of tempVocabList) {
+        if (element.level == "Unseen") {
           newWordsCounter++;
         } else {
           reviewsCounter++;

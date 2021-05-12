@@ -95,13 +95,13 @@ const WordInfoComponent = (props) => {
   }
 
   const renderSenses = () => {
-    return props.translatedWordList.map((data, index) => {
+    return props.translatedWordList.map((data, key) => {
       return (
-        <View key={index}>
+        <View key={key}>
           <Text style={styles.translatedWordList}>
-            {index + 1}. {data}
+            {key + 1}. {data}
           </Text>
-          <Text style={styles.definitionsList}>{props.definitionsList[index]}</Text>
+          <Text style={styles.definitionsList}>{props.definitionsList[key]}</Text>
         </View>
       );
     });

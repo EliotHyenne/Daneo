@@ -138,11 +138,10 @@ const styles = StyleSheet.create({
     color: "white",
   },
   level: {
-    fontFamily: "Roboto-BoldItalic",
-    fontSize: 30,
+    fontFamily: "Roboto-Regular",
+    fontSize: 20,
+    marginTop: 17,
     color: COLORS.pastel_yellow,
-    marginTop: 10,
-    marginRight: 10,
   },
   translatedWordList: {
     fontFamily: "Roboto-Bold",

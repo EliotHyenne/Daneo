@@ -87,11 +87,14 @@ const LearnWordScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.componentContainer}>
-        {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text> : null}
+        {!lessonListFound || noLessons ? (
+          <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text>
+        ) : (
+          <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
+        )}
         <ScrollView ref={scrollRef} style={{ width: "100%" }}>
-          {lessonListFound && !noLessons ? (
+          {!noLessons ? (
             <View>
-              <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
               <Text style={styles.vocabWord}>{lessonList[currentWordIndex].element.vocabWord}</Text>
               {renderSenses(currentWordIndex)}
               <TouchableWithoutFeedback onPress={() => nextWord()}>
@@ -122,11 +125,11 @@ const styles = StyleSheet.create({
     padding: Platform.OS === "android" ? 0 : 25,
   },
   counter: {
+    alignSelf: "flex-end",
     fontFamily: "Roboto-Regular",
     fontSize: 18,
     color: "white",
     marginTop: Platform.OS === "android" ? 5 : 0,
-    textAlign: "right",
   },
   vocabWord: {
     fontFamily: "Roboto-Black",

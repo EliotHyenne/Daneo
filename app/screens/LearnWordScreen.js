@@ -55,14 +55,14 @@ const LearnWordScreen = ({ route, navigation }) => {
     } else {
       setNoLessons(true);
     }
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: false,
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {scrollRef.current?.scrollTo({
-        y: 0,
-        animated: false,
-      })}
       {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: 200 }]}>¯\(°_o)/¯</Text> : null}
       <ScrollView ref={scrollRef} style={{ width: "100%" }}>
         {lessonListFound && !noLessons ? (

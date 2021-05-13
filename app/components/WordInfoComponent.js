@@ -107,11 +107,44 @@ const WordInfoComponent = (props) => {
     });
   };
 
+  const renderReviewDate = () => {
+    var x = (props.nextReview - Date.now()) / 1000;
+    const seconds = x % 60;
+    x /= 60;
+    const minutes = x % 60;
+    x /= 60;
+    const hours = x % 24;
+    x /= 24;
+    const days = x;
+
+    var str = "Next review in ";
+
+    if (Math.round(days) > 0) {
+      str += Math.round(days) + " day(s) ";
+    }
+    if (Math.round(hours) > 0) {
+      str += Math.round(hours) + " hour(s) ";
+    }
+    if (Math.round(minutes) > 0) {
+      str += Math.round(minutes) + " min ";
+    }
+    if (Math.round(seconds) > 0) {
+      str += Math.round(seconds) + " sec";
+    }
+
+    if (props.level != "Unseen" && props.nextReview - Date.now() <= 0) {
+      return <Text style={styles.nextReview}>Can review now!</Text>;
+    } else if (props.level != "Unseen") {
+      return <Text style={styles.nextReview}>{str}</Text>;
+    }
+  };
+
   return (
     <View>
       <View style={styles.container}>
         <Text style={styles.vocabWord}>{props.vocabWord}</Text>
         {props.level ? <Text style={styles.level}>{props.level}</Text> : null}
+        {props.nextReview ? renderReviewDate() : null}
       </View>
       {renderSenses()}
       {wordIndex === -1 ? (
@@ -129,7 +162,7 @@ const WordInfoComponent = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
   },
   vocabWord: {
@@ -140,14 +173,19 @@ const styles = StyleSheet.create({
   level: {
     fontFamily: "Roboto-Regular",
     fontSize: 20,
-    marginTop: 17,
+    marginTop: 5,
     color: COLORS.pastel_yellow,
+  },
+  nextReview: {
+    fontFamily: "Roboto-Light",
+    fontSize: 15,
+    color: "white",
   },
   translatedWordList: {
     fontFamily: "Roboto-Bold",
     fontSize: 20,
     color: "white",
-    marginTop: 15,
+    marginTop: 10,
   },
   definitionsList: {
     fontFamily: "Roboto-Light",

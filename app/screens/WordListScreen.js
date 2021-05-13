@@ -37,6 +37,7 @@ const WordListScreen = ({ route, navigation }) => {
         <WordInfoComponent
           vocabWord={item.vocabWord}
           level={item.level}
+          nextReview={item.nextReview}
           translatedWordList={item.translatedWordList}
           definitionsList={item.definitionsList}
         ></WordInfoComponent>

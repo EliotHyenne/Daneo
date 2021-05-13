@@ -12,6 +12,7 @@ import { COLORS } from "./app/config/colors";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { RootSiblingParent } from "react-native-root-siblings";
+import ReviewScreen from "./app/screens/ReviewScreen";
 
 const Stack = createStackNavigator();
 
@@ -98,6 +99,25 @@ const App = () => {
                 })}
               />
               <Stack.Screen
+                name="Review"
+                component={ReviewScreen}
+                options={({ navigation }) => ({
+                  title: "",
+                  headerStyle: {
+                    backgroundColor: COLORS.pastel_purple,
+                    borderBottomColor: COLORS.pastel_purple,
+                    shadowOffset: {
+                      height: 0,
+                    },
+                  },
+                  headerLeft: () => (
+                    <View style={{ marginLeft: 15 }}>
+                      <AntDesign name="arrowleft" size={20} color="white" onPress={() => navigation.navigate("Home")} />
+                    </View>
+                  ),
+                })}
+              />
+              <Stack.Screen
                 name="AddWord"
                 component={AddWordScreen}
                 options={({ navigation }) => ({
@@ -122,6 +142,7 @@ const App = () => {
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="WordList" component={WordListScreen} />
               <Stack.Screen name="LearnWord" component={LearnWordScreen} />
+              <Stack.Screen name="Review" component={ReviewScreen} />
               <Stack.Screen name="AddWord" component={AddWordScreen} />
             </Stack.Navigator>
           )}

@@ -55,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={() => navigation.navigate("LearnWord", { title: "LEARN WORD" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>{"LEARN" + " (" + numNewWords + ")"}</Text>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => console.log("REVIEW")}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("Review", { title: "REVIEW" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_yellow }]}>{"REVIEW" + " (" + numReviews + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("AddWord", { title: "ADD WORD" })}>

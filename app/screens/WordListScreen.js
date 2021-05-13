@@ -57,6 +57,12 @@ const WordListScreen = ({ route, navigation }) => {
     }
 
     for (i = 0; i < element.translatedWordList.length; i++) {
+      if (element.translatedWordList[i] != null && element.translatedWordList[i].toLowerCase() === text.toLowerCase()) {
+        return true;
+      }
+    }
+
+    for (i = 0; i < element.translatedWordList.length; i++) {
       if (
         element.translatedWordList[i] != null &&
         element.translatedWordList[i]

@@ -27,12 +27,18 @@ const HomeScreen = ({ navigation }) => {
       setVocabListLength(tempVocabList.length);
       var newWordsCounter = 0;
       var reviewsCounter = 0;
+
       for (let element of tempVocabList) {
-        if (element.level == "Unseen") {
+        if (element.learn) {
           newWordsCounter++;
-        } else {
+        } else if (element.nextReview - Date.now() <= 0) {
+          element.review = true;
           reviewsCounter++;
         }
+      }
+
+      if (reviewsCounter > 0) {
+        await AsyncStorage.setItem("@vocabList", JSON.stringify(tempVocabList));
       }
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);

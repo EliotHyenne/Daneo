@@ -56,6 +56,11 @@ const WordInfoComponent = (props) => {
 
     const vocabWordToAdd = {
       vocabWord: props.vocabWord,
+      learn: true,
+      review: false,
+      meaningAnswered: false,
+      readingAnswered: false,
+      finalAnswer: false,
       level: "Unseen",
       nextReview: Date.now(),
       translatedWordList: props.translatedWordList,
@@ -70,7 +75,6 @@ const WordInfoComponent = (props) => {
       await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
         .then(() => {
           setCheckedExists(false);
-          console.log("Vocab words list created and word added.");
         })
         .catch((e) => {
           console.log("There was an error while creating the vocab words list: ", e);
@@ -81,7 +85,6 @@ const WordInfoComponent = (props) => {
       await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
         .then(() => {
           setCheckedExists(false);
-          console.log("Word added to vocab words list.");
         })
         .catch((e) => {
           console.log("There was an error while setting the vocab words list: ", e);

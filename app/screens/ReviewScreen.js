@@ -2,14 +2,16 @@ import React, { useState, useRef } from "react";
 import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-root-toast";
 
 const ReviewScreen = ({ route, navigation }) => {
   const [vocabList, setVocabList] = useState([]);
   const [reviewListFound, setReviewListFound] = useState(false);
   const [reviewList] = useState([]);
+  const [currentWords, setCurrentWords] = useState([]);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [meaningState, setMeaningState] = useState(true);
   const [noReviews, setNoReviews] = useState(true);
+  const [wordGroupFound, setWordGroupFound] = useState(false);
 
   const getReviewList = async () => {
     const currentVocabList = await AsyncStorage.getItem("@vocabList");
@@ -18,7 +20,7 @@ const ReviewScreen = ({ route, navigation }) => {
       setVocabList(JSON.parse(currentVocabList));
 
       for (var i = 0; i < vocabList.length; i++) {
-        if (vocabList[i].level != "Unseen" && vocabList[i].nextReview - Date.now() <= 0) {
+        if (vocabList[i].review) {
           reviewList.push({ index: i, element: vocabList[i] });
         }
       }
@@ -29,8 +31,54 @@ const ReviewScreen = ({ route, navigation }) => {
     setReviewListFound(true);
   };
 
+  const getWordGroup = () => {
+    setCurrentWordIndex(0);
+    var counter = 0;
+    var randomIndex = Math.floor(Math.random() * reviewList.length);
+
+    if (meaningState) {
+      if (reviewList.length > 5) {
+        while (counter != 5) {
+          while (reviewList[randomIndex].element.meaningAnswered) {
+            randomIndex = Math.floor(Math.random() * reviewList.length);
+          }
+          currentWords.push(reviewList[randomIndex]);
+          counter++;
+        }
+      } else {
+        for (let item of reviewList) {
+          console.log(item);
+          if (!item.element.meaningAnswered) {
+            currentWords.push(item);
+          }
+        }
+      }
+    } else {
+      if (reviewList.length > 5) {
+        while (counter != 5) {
+          while (reviewList[randomIndex].element.readingAnswered) {
+            randomIndex = Math.floor(Math.random() * reviewList.length);
+          }
+          currentWords.push(reviewList[randomIndex]);
+          counter++;
+        }
+      } else {
+        for (let item of reviewList) {
+          if (!item.element.readingAnswered) {
+            currentWords.push(item);
+          }
+        }
+      }
+    }
+    setWordGroupFound(true);
+  };
+
   if (!reviewListFound) {
     getReviewList();
+  }
+
+  if (reviewListFound && !wordGroupFound) {
+    getWordGroup();
   }
 
   return <SafeAreaView style={styles.container}></SafeAreaView>;

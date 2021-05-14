@@ -20,7 +20,7 @@ const LearnWordScreen = ({ route, navigation }) => {
       setVocabList(JSON.parse(currentVocabList));
 
       for (var i = 0; i < vocabList.length; i++) {
-        if (vocabList[i].level == "Unseen") {
+        if (vocabList[i].learn) {
           lessonList.push({ index: i, element: vocabList[i] });
         }
       }
@@ -49,15 +49,11 @@ const LearnWordScreen = ({ route, navigation }) => {
   };
 
   const changeLevel = async () => {
+    vocabList[lessonList[currentWordIndex].index].learn = false;
+    vocabList[lessonList[currentWordIndex].index].review = true;
     vocabList[lessonList[currentWordIndex].index].level = "Unranked";
 
-    await AsyncStorage.setItem("@vocabList", JSON.stringify(vocabList))
-      .then(() => {
-        console.log("Vocab word level changed.");
-      })
-      .catch((e) => {
-        console.log("There was an error while changing the vocab word level: ", e);
-      });
+    await AsyncStorage.setItem("@vocabList", JSON.stringify(vocabList));
   };
 
   const nextWord = () => {

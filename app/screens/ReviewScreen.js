@@ -4,73 +4,68 @@ import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ReviewScreen = ({ route, navigation }) => {
-  const [vocabList, setVocabList] = useState([]);
   const [reviewListFound, setReviewListFound] = useState(false);
-  const [reviewList] = useState([]);
-  const [currentWords, setCurrentWords] = useState([]);
+  const [meaningList, setMeaningList] = useState([]);
+  const [readingList, setReadingList] = useState([]);
+  const [noReviews, setNoReviews] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [meaningState, setMeaningState] = useState(true);
-  const [noReviews, setNoReviews] = useState(true);
-  const [wordGroupFound, setWordGroupFound] = useState(false);
+
+  const arrayShuffler = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * i);
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array;
+  };
 
   const getReviewList = async () => {
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+    const currentWordList = await AsyncStorage.getItem("@wordList");
+    var tempMeaningList = [];
+    var tempReadingList = [];
 
-    if (currentVocabList) {
-      setVocabList(JSON.parse(currentVocabList));
+    if (currentWordList) {
+      for (var word of JSON.parse(currentWordList)) {
+        var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
 
-      for (var i = 0; i < vocabList.length; i++) {
-        if (vocabList[i].review) {
-          reviewList.push({ index: i, element: vocabList[i] });
+        if (!currentWordObject.meaningAnswered) {
+          tempMeaningList.push(currentWordObject);
+        } else if (!currentWordObject.readingAnswered) {
+          tempReadingList.push(currentWordObject);
         }
       }
-      if (reviewList.length > 0) {
+      setMeaningList(arrayShuffler(tempMeaningList));
+      setReadingList(arrayShuffler(tempReadingList));
+
+      if (tempMeaningList.length > 0 || tempReadingList.length > 0) {
         setNoReviews(false);
       }
     }
-    getWordGroup();
     setReviewListFound(true);
   };
 
   const getWordGroup = () => {
     setCurrentWordIndex(0);
-    var counter = 0;
-    var randomIndex = Math.floor(Math.random() * reviewList.length);
 
     if (meaningState) {
-      if (reviewList.length > 5) {
-        while (counter != 5) {
-          while (reviewList[randomIndex].element.meaningAnswered) {
-            randomIndex = Math.floor(Math.random() * reviewList.length);
-          }
-          currentWords.push(reviewList[randomIndex]);
-          counter++;
-        }
+      if (meaningList.length >= 5) {
+        setWordGroup(meaningList.splice(0, 5));
+      } else if (meaningList.length > 0) {
+        setWordGroup(meaningList.splice(0, meaningList.length));
       } else {
-        for (let item of reviewList) {
-          if (!item.element.meaningAnswered) {
-            currentWords.push(item);
-          }
-        }
+        setMeaningState(false);
       }
     } else {
-      if (reviewList.length > 5) {
-        while (counter != 5) {
-          while (reviewList[randomIndex].element.readingAnswered) {
-            randomIndex = Math.floor(Math.random() * reviewList.length);
-          }
-          currentWords.push(reviewList[randomIndex]);
-          counter++;
-        }
+      if (readingList.length >= 5) {
+        setWordGroup(readingList.splice(0, 5));
+      } else if (readingList.length > 0) {
+        setWordGroup(readingList.splice(0, readingList.length));
       } else {
-        for (let item of reviewList) {
-          if (!item.element.readingAnswered) {
-            currentWords.push(item);
-          }
-        }
+        setMeaningState(true);
       }
     }
-    setWordGroupFound(true);
   };
 
   if (!reviewListFound) {

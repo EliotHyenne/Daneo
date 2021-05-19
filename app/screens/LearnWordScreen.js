@@ -4,7 +4,6 @@ import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
-import { CurrentRenderContext } from "@react-navigation/native";
 
 const LearnWordScreen = ({ route, navigation }) => {
   const [lessonList, setLessonList] = useState([]);

@@ -9,18 +9,15 @@ const WordInfoComponent = (props) => {
   const [checkedExists, setCheckedExists] = useState(false);
 
   const checkWordExists = async () => {
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+    const currentWordList = await AsyncStorage.getItem("@wordList");
 
-    if (currentVocabList) {
-      setWordIndex(JSON.parse(currentVocabList).findIndex((element) => element.vocabWord === props.vocabWord));
+    if (currentWordList) {
+      setWordIndex(JSON.parse(currentWordList).findIndex((element) => element === props.word));
     }
   };
 
-  const confirmDelete = (index, vocabWord) => {
-    Alert.alert("Delete", "Are you sure you want to delete " + vocabWord + " ?", [
-      { text: "Yes", onPress: () => deleteVocabWord(index) },
-      { text: "No" },
-    ]);
+  const confirmDelete = (index, word) => {
+    Alert.alert("Delete", "Are you sure you want to delete " + word + " ?", [{ text: "Yes", onPress: () => deleteVocabWord(index) }, { text: "No" }]);
   };
 
   const deleteVocabWord = async (index) => {
@@ -31,18 +28,20 @@ const WordInfoComponent = (props) => {
       opacity: 0.8,
     });
 
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+    const currentWordList = await AsyncStorage.getItem("@wordList");
 
-    const newVocabList = JSON.parse(currentVocabList);
-    newVocabList.splice(index, 1);
+    const newWordList = JSON.parse(currentWordList);
+    newWordList.splice(index, 1);
 
-    await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
+    await AsyncStorage.removeItem(props.word);
+
+    await AsyncStorage.setItem("@wordList", JSON.stringify(newWordList))
       .then(() => {
         setCheckedExists(false);
-        console.log("Word deleted and vocab words list updated.");
+        console.log("Word deleted and words list updated.");
       })
       .catch((e) => {
-        console.log("There was an error while delete a vocab word from the vocab words list: ", e);
+        console.log("There was an error while deleting a word from the words list: ", e);
       });
   };
 
@@ -54,42 +53,42 @@ const WordInfoComponent = (props) => {
       opacity: 0.8,
     });
 
-    const vocabWordToAdd = {
-      vocabWord: props.vocabWord,
+    const wordToAdd = {
+      word: props.word,
       learn: true,
       review: false,
       meaningAnswered: false,
       readingAnswered: false,
-      finalAnswer: false,
+      meaningAnswer: false,
+      readingAnswer: false,
       level: "Unseen",
       nextReview: Date.now(),
       translatedWordList: props.translatedWordList,
       definitionsList: props.definitionsList,
     };
 
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+    const currentWordList = await AsyncStorage.getItem("@wordList");
+    var newWordList = [];
 
-    if (!currentVocabList) {
-      const newVocabList = [];
-      newVocabList.push(vocabWordToAdd);
-      await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
-        .then(() => {
-          setCheckedExists(false);
-        })
-        .catch((e) => {
-          console.log("There was an error while creating the vocab words list: ", e);
-        });
-    } else {
-      const newVocabList = JSON.parse(currentVocabList);
-      newVocabList.push(vocabWordToAdd);
-      await AsyncStorage.setItem("@vocabList", JSON.stringify(newVocabList))
-        .then(() => {
-          setCheckedExists(false);
-        })
-        .catch((e) => {
-          console.log("There was an error while setting the vocab words list: ", e);
-        });
+    if (currentWordList) {
+      newWordList = JSON.parse(currentWordList);
     }
+
+    newWordList.push(wordToAdd.word);
+    await AsyncStorage.setItem(wordToAdd.word, JSON.stringify(wordToAdd))
+      .then(() => {
+        setCheckedExists(false);
+      })
+      .catch((e) => {
+        console.log("There was an error while creating word element: ", e);
+      });
+    await AsyncStorage.setItem("@wordList", JSON.stringify(newWordList))
+      .then(() => {
+        setCheckedExists(false);
+      })
+      .catch((e) => {
+        console.log("There was an error while creating the words list: ", e);
+      });
   };
 
   if (!checkedExists) {
@@ -145,7 +144,7 @@ const WordInfoComponent = (props) => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.vocabWord}>{props.vocabWord}</Text>
+        <Text style={styles.word}>{props.word}</Text>
         {props.level ? <Text style={styles.level}>{props.level}</Text> : null}
         {props.nextReview ? renderReviewDate() : null}
       </View>
@@ -155,7 +154,7 @@ const WordInfoComponent = (props) => {
           <Text style={[styles.addButton, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
         </TouchableWithoutFeedback>
       ) : (
-        <TouchableWithoutFeedback onPress={() => confirmDelete(wordIndex, props.vocabWord)}>
+        <TouchableWithoutFeedback onPress={() => confirmDelete(wordIndex, props.word)}>
           <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>DELETE</Text>
         </TouchableWithoutFeedback>
       )}
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
   },
-  vocabWord: {
+  word: {
     fontFamily: "Roboto-Black",
     fontSize: 40,
     color: "white",

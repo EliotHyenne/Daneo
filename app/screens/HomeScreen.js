@@ -5,48 +5,46 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = ({ navigation }) => {
-  const [vocabListFound, setVocabListFound] = useState(false);
-  const [vocabListLength, setVocabListLength] = useState(0);
+  const [wordListFound, setWordListFound] = useState(false);
+  const [wordListLength, setWordListLength] = useState(0);
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
     return navigation.addListener("focus", () => {
-      setVocabListFound(false);
+      setWordListFound(false);
     });
   }, [navigation]);
 
   const getCounters = async () => {
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+    const currentWordList = await AsyncStorage.getItem("@wordList");
 
-    if (!currentVocabList) {
-      setVocabListLength(0);
+    if (!currentWordList) {
+      setWordListLength(0);
     } else {
-      const tempVocabList = JSON.parse(currentVocabList);
-      setVocabListLength(tempVocabList.length);
+      setWordListLength(JSON.parse(currentWordList).length);
       var newWordsCounter = 0;
       var reviewsCounter = 0;
 
-      for (let element of tempVocabList) {
-        if (element.learn) {
-          newWordsCounter++;
-        } else if (element.nextReview - Date.now() <= 0) {
-          element.review = true;
-          reviewsCounter++;
-        }
-      }
+      for (let word of JSON.parse(currentWordList)) {
+        var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
 
-      if (reviewsCounter > 0) {
-        await AsyncStorage.setItem("@vocabList", JSON.stringify(tempVocabList));
+        if (currentWordObject.learn) {
+          newWordsCounter++;
+        } else if (currentWordObject.nextReview - Date.now() <= 0) {
+          currentWordObject.review = true;
+          reviewsCounter++;
+          await AsyncStorage.setItem(word, JSON.stringify(currentWordObject));
+        }
       }
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);
     }
-    setVocabListFound(true);
+    setWordListFound(true);
   };
 
-  if (!vocabListFound) {
+  if (!wordListFound) {
     getCounters();
   }
 
@@ -56,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
-              <Text style={[styles.button, { backgroundColor: COLORS.pastel_red }]}>{"WORDS" + " (" + vocabListLength + ")"}</Text>
+              <Text style={[styles.button, { backgroundColor: COLORS.pastel_red }]}>{"WORDS" + " (" + wordListLength + ")"}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("LearnWord", { title: "LEARN WORD" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_blue }]}>{"LEARN" + " (" + numNewWords + ")"}</Text>

@@ -9,7 +9,7 @@ const AddWordScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [wordFound, setWordFound] = useState(false);
-  const [vocabWord, setVocabWord] = useState("");
+  const [word, setWord] = useState("");
   const [translatedWordList, setTranslatedWordList] = useState([]);
   const [definitionsList, setDefinitionsList] = useState([]);
 
@@ -43,7 +43,7 @@ const AddWordScreen = ({ route, navigation }) => {
 
     //Set the states using the correct word item
     if (Array.isArray(jsonData.channel.item)) {
-      setVocabWord(jsonData.channel.item[itemIndex].word._text);
+      setWord(jsonData.channel.item[itemIndex].word._text);
       if (Array.isArray(jsonData.channel.item[itemIndex].sense)) {
         for (let sense of jsonData.channel.item[itemIndex].sense) {
           newTranslatedWordList.push(sense.translation.trans_word._cdata);
@@ -54,7 +54,7 @@ const AddWordScreen = ({ route, navigation }) => {
         newDefinitionsList.push(jsonData.channel.item[itemIndex].sense.translation.trans_dfn._cdata);
       }
     } else {
-      setVocabWord(jsonData.channel.item.word._text);
+      setWord(jsonData.channel.item.word._text);
       if (Array.isArray(jsonData.channel.item.sense)) {
         for (let sense of jsonData.channel.item.sense) {
           newTranslatedWordList.push(sense.translation.trans_word._cdata);
@@ -145,7 +145,7 @@ const AddWordScreen = ({ route, navigation }) => {
         <View>
           {wordFound ? (
             <View style={styles.wordContainer}>
-              <WordInfoComponent vocabWord={vocabWord} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
+              <WordInfoComponent word={word} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
             </View>
           ) : null}
         </View>

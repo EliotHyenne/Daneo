@@ -4,27 +4,28 @@ import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
+import { CurrentRenderContext } from "@react-navigation/native";
 
 const LearnWordScreen = ({ route, navigation }) => {
-  const [vocabList, setVocabList] = useState([]);
-  const [lessonList] = useState([]);
+  const [lessonList, setLessonList] = useState([]);
   const [lessonListFound, setLessonListFound] = useState(false);
   const [noLessons, setNoLessons] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const scrollRef = useRef();
 
   const getLessonList = async () => {
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+    const currentWordList = await AsyncStorage.getItem("@wordList");
+    var tempLessonList = [];
 
-    if (currentVocabList) {
-      setVocabList(JSON.parse(currentVocabList));
-
-      for (var i = 0; i < vocabList.length; i++) {
-        if (vocabList[i].learn) {
-          lessonList.push({ index: i, element: vocabList[i] });
+    if (currentWordList) {
+      for (var word of JSON.parse(currentWordList)) {
+        var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
+        if (currentWordObject.learn) {
+          tempLessonList.push(currentWordObject);
         }
       }
-      if (lessonList.length > 0) {
+      setLessonList(tempLessonList);
+      if (tempLessonList.length > 0) {
         setNoLessons(false);
       }
     }
@@ -36,24 +37,24 @@ const LearnWordScreen = ({ route, navigation }) => {
   }
 
   const renderSenses = (index) => {
-    return lessonList[index].element.translatedWordList.map((data, key) => {
+    return lessonList[index].translatedWordList.map((data, key) => {
       return (
         <View key={key}>
           <Text style={styles.translatedWordList}>
             {key + 1}. {data}
           </Text>
-          <Text style={styles.definitionsList}>{lessonList[index].element.definitionsList[key]}</Text>
+          <Text style={styles.definitionsList}>{lessonList[index].definitionsList[key]}</Text>
         </View>
       );
     });
   };
 
   const changeLevel = async () => {
-    vocabList[lessonList[currentWordIndex].index].learn = false;
-    vocabList[lessonList[currentWordIndex].index].review = true;
-    vocabList[lessonList[currentWordIndex].index].level = "Unranked";
+    lessonList[currentWordIndex].learn = false;
+    lessonList[currentWordIndex].review = true;
+    lessonList[currentWordIndex].level = "Unranked";
 
-    await AsyncStorage.setItem("@vocabList", JSON.stringify(vocabList));
+    await AsyncStorage.setItem(lessonList[currentWordIndex].word, JSON.stringify(lessonList[currentWordIndex]));
   };
 
   const nextWord = () => {
@@ -91,7 +92,7 @@ const LearnWordScreen = ({ route, navigation }) => {
         <ScrollView ref={scrollRef} style={{ width: "100%" }}>
           {!noLessons ? (
             <View>
-              <Text style={styles.vocabWord}>{lessonList[currentWordIndex].element.vocabWord}</Text>
+              <Text style={styles.word}>{lessonList[currentWordIndex].word}</Text>
               {renderSenses(currentWordIndex)}
               <TouchableWithoutFeedback onPress={() => nextWord()}>
                 <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
     color: "white",
     marginTop: Platform.OS === "android" ? 5 : 0,
   },
-  vocabWord: {
+  word: {
     fontFamily: "Roboto-Black",
     fontSize: 50,
     color: "white",

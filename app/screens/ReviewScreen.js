@@ -28,6 +28,7 @@ const ReviewScreen = ({ route, navigation }) => {
         setNoReviews(false);
       }
     }
+    getWordGroup();
     setReviewListFound(true);
   };
 
@@ -47,7 +48,6 @@ const ReviewScreen = ({ route, navigation }) => {
         }
       } else {
         for (let item of reviewList) {
-          console.log(item);
           if (!item.element.meaningAnswered) {
             currentWords.push(item);
           }
@@ -75,10 +75,6 @@ const ReviewScreen = ({ route, navigation }) => {
 
   if (!reviewListFound) {
     getReviewList();
-  }
-
-  if (reviewListFound && !wordGroupFound) {
-    getWordGroup();
   }
 
   return <SafeAreaView style={styles.container}></SafeAreaView>;

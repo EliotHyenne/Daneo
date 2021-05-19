@@ -7,22 +7,26 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
-  const [vocabList, setVocabList] = useState([]);
-  const [filteredVocabList, setFilteredVocabList] = useState([]);
-  const [vocabListFound, setVocabListFound] = useState(false);
+  const [wordList, setWordList] = useState([]);
+  const [filteredWordList, setFilteredWordList] = useState([]);
+  const [wordListFound, setWordListFound] = useState(false);
 
-  const getVocabWordList = async () => {
-    const currentVocabList = await AsyncStorage.getItem("@vocabList");
+  const getWordList = async () => {
+    const currentWordList = await AsyncStorage.getItem("@wordList");
+    var tempWordList = [];
 
-    if (currentVocabList) {
-      setVocabList(JSON.parse(currentVocabList).reverse());
-      setFilteredVocabList(JSON.parse(currentVocabList).reverse());
+    if (currentWordList) {
+      for (var word of JSON.parse(currentWordList)) {
+        tempWordList.unshift(JSON.parse(await AsyncStorage.getItem(word)));
+      }
+      setWordList(tempWordList);
+      setFilteredWordList(tempWordList);
     }
-    setVocabListFound(true);
+    setWordListFound(true);
   };
 
-  if (!vocabListFound) {
-    getVocabWordList();
+  if (!wordListFound) {
+    getWordList();
   }
 
   const handleOnClear = () => {
@@ -35,7 +39,7 @@ const WordListScreen = ({ route, navigation }) => {
     return (
       <View style={styles.wordContainer}>
         <WordInfoComponent
-          vocabWord={item.vocabWord}
+          word={item.word}
           level={item.level}
           nextReview={item.nextReview}
           translatedWordList={item.translatedWordList}
@@ -46,12 +50,12 @@ const WordListScreen = ({ route, navigation }) => {
   };
 
   const filter = (text, element) => {
-    if (element.vocabWord === text) {
+    if (element.word === text) {
       return true;
     }
 
-    for (var i = 0; i < element.vocabWord.length; i++) {
-      if (element.vocabWord.charAt(i) === text) {
+    for (var i = 0; i < element.word.length; i++) {
+      if (element.word.charAt(i) === text) {
         return true;
       }
     }
@@ -88,12 +92,12 @@ const WordListScreen = ({ route, navigation }) => {
   };
 
   const handleSearch = (text) => {
-    const data = vocabList;
+    const data = wordList;
     if (text) {
       const filteredList = data.filter((element) => filter(text, element));
-      setFilteredVocabList(filteredList);
+      setFilteredWordList(filteredList);
     } else {
-      setFilteredVocabList(data);
+      setFilteredWordList(data);
     }
     setSearchInputText(text);
   };
@@ -128,7 +132,7 @@ const WordListScreen = ({ route, navigation }) => {
         />
       </View>
       <FlatList
-        data={filteredVocabList}
+        data={filteredWordList}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         ListEmptyComponent={<Text style={[styles.error, { marginTop: 200 }]}>¯\(°_o)/¯</Text>}

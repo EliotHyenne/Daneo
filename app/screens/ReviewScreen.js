@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, SafeAreaView, Platform, Text, View, TouchableWithoutFeedback } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,22 +14,21 @@ const ReviewScreen = ({ route, navigation }) => {
 
   const arrayShuffler = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * i);
+      const j = Math.floor(Math.random() * (i + 1));
       const temp = array[i];
       array[i] = array[j];
       array[j] = temp;
     }
-    return array;
   };
 
   const getReviewList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
-    var tempMeaningList = [];
-    var tempReadingList = [];
+    let tempMeaningList = [];
+    let tempReadingList = [];
 
     if (currentWordList) {
-      for (var word of JSON.parse(currentWordList)) {
-        var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
+      for (let word of JSON.parse(currentWordList)) {
+        let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
 
         if (currentWordObject.review && !currentWordObject.meaningAnswered) {
           tempMeaningList.push(currentWordObject);
@@ -39,8 +38,10 @@ const ReviewScreen = ({ route, navigation }) => {
           tempReadingList.push(currentWordObject);
         }
       }
-      setMeaningList(arrayShuffler(tempMeaningList));
-      setReadingList(arrayShuffler(tempReadingList));
+      arrayShuffler(tempMeaningList);
+      arrayShuffler(tempReadingList);
+      setMeaningList(tempMeaningList);
+      setMeaningList(tempReadingList);
 
       if (tempMeaningList.length > 0 || tempReadingList.length > 0) {
         setNoReviews(false);
@@ -53,22 +54,14 @@ const ReviewScreen = ({ route, navigation }) => {
   const getWordBatch = () => {
     setCurrentWordIndex(0);
 
-    if (meaningState) {
-      if (meaningList.length >= 5) {
-        setWordBatch(meaningList.splice(0, 5));
-      } else if (meaningList.length > 0) {
-        setWordBatch(meaningList.splice(0, meaningList.length));
-      } else {
-        setMeaningState(false);
-      }
+    const tempList = meaningState ? meaningList : readingList;
+
+    if (tempList.length >= 5) {
+      setWordBatch(tempList.splice(0, 5));
+    } else if (tempList.length > 0) {
+      setWordBatch(tempList.splice(0, tempList.length));
     } else {
-      if (readingList.length >= 5) {
-        setWordBatch(readingList.splice(0, 5));
-      } else if (readingList.length > 0) {
-        setWordBatch(readingList.splice(0, readingList.length));
-      } else {
-        setMeaningState(true);
-      }
+      setMeaningState(!meaningState);
     }
   };
 
@@ -77,7 +70,7 @@ const ReviewScreen = ({ route, navigation }) => {
   }
 
   const nextWord = () => {
-    var tempCounter = currentWordIndex;
+    let tempCounter = currentWordIndex;
     tempCounter++;
 
     if (wordBatch[tempCounter]) {
@@ -134,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: "white",
     flex: 1,
-    marginTop: 50,
+    marginTop: 175,
     marginBottom: 40,
     textAlign: "center",
     alignItems: "center",
@@ -159,7 +152,6 @@ const styles = StyleSheet.create({
     color: "#e3f3ff",
   },
   nextButton: {
-    alignSelf: "flex-end",
     textAlign: "center",
     textAlignVertical: "center",
     borderRadius: 25,

@@ -18,7 +18,7 @@ const AddWordScreen = ({ route, navigation }) => {
   //Find word item that contains translated word and translated definition
   const findItemIndex = (jsonData) => {
     var itemIndex = 0;
-    const item = item;
+    const item = jsonData.channel.item;
 
     if (Array.isArray(item)) {
       while (true) {
@@ -83,7 +83,7 @@ const AddWordScreen = ({ route, navigation }) => {
           let result = convert.xml2json(xml, { compact: true, spaces: 2 });
           let jsonData = JSON.parse(result);
 
-          if (item === undefined) {
+          if (jsonData.channel.item === undefined) {
             setWordFound(false);
           } else {
             createWord(jsonData);

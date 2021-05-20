@@ -86,11 +86,11 @@ const ReviewScreen = ({ route, navigation }) => {
         <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text>
       ) : null}
       <View style={styles.componentContainer}>
-        {wordBatch.length > 0 ? (
+        {!noReviews && wordBatch.length > 0 ? (
           <View>
             <Text style={styles.word}>{wordBatch[currentWordIndex].word}</Text>
             <TouchableWithoutFeedback onPress={() => nextWord()}>
-              <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>
+              <Text style={styles.nextButton}>NEXT</Text>
             </TouchableWithoutFeedback>
           </View>
         ) : null}
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     color: "#e3f3ff",
   },
   nextButton: {
+    backgroundColor: COLORS.light_gray,
     textAlign: "center",
     textAlignVertical: "center",
     borderRadius: 25,

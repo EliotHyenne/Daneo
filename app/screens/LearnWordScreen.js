@@ -94,7 +94,7 @@ const LearnWordScreen = ({ route, navigation }) => {
               <Text style={styles.word}>{lessonList[currentWordIndex].word}</Text>
               {renderSenses(currentWordIndex)}
               <TouchableWithoutFeedback onPress={() => nextWord()}>
-                <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>
+                <Text style={styles.nextButton}>NEXT</Text>
               </TouchableWithoutFeedback>
             </View>
           ) : null}
@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     color: "#e3f3ff",
   },
   nextButton: {
+    backgroundColor: COLORS.light_gray,
     alignSelf: "flex-end",
     textAlign: "center",
     textAlignVertical: "center",

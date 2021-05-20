@@ -24,11 +24,11 @@ const HomeScreen = ({ navigation }) => {
       setWordListLength(0);
     } else {
       setWordListLength(JSON.parse(currentWordList).length);
-      var newWordsCounter = 0;
-      var reviewsCounter = 0;
+      let newWordsCounter = 0;
+      let reviewsCounter = 0;
 
       for (let word of JSON.parse(currentWordList)) {
-        var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
+        let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
 
         if (currentWordObject.learn) {
           newWordsCounter++;

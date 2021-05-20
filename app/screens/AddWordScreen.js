@@ -17,29 +17,27 @@ const AddWordScreen = ({ route, navigation }) => {
 
   //Find word item that contains translated word and translated definition
   const findItemIndex = (jsonData) => {
-    var foundTranslatedWord = false;
     var itemIndex = 0;
+    const item = jsonData.channel.item;
 
-    if (Array.isArray(jsonData.channel.item)) {
-      while (!foundTranslatedWord) {
-        if (!Array.isArray(jsonData.channel.item[itemIndex].sense)) {
-          if (jsonData.channel.item[itemIndex].sense.translation === undefined) {
-            itemIndex++;
-          } else {
-            foundTranslatedWord = true;
-          }
-        } else {
-          foundTranslatedWord = true;
+    if (Array.isArray(item)) {
+      while (true) {
+        if (Array.isArray(item[itemIndex].sense)) {
+          break;
         }
+        if (item[itemIndex].sense.translation !== undefined) {
+          break;
+        }
+        itemIndex++;
       }
     }
     return itemIndex;
   };
 
   const createWord = (jsonData) => {
-    var newTranslatedWordList = [];
-    var newDefinitionsList = [];
-    var itemIndex = findItemIndex(jsonData);
+    let newTranslatedWordList = [];
+    let newDefinitionsList = [];
+    let itemIndex = findItemIndex(jsonData);
 
     //Set the states using the correct word item
     if (Array.isArray(jsonData.channel.item)) {
@@ -70,36 +68,32 @@ const AddWordScreen = ({ route, navigation }) => {
   };
 
   const handleSearch = (text) => {
-    if (text === "") {
-      setWordFound(false);
-    } else {
-      setWordFound(false);
-      setIsLoading(true);
-      var url =
-        "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=" +
-        text;
-      fetch(url)
-        .then((response) => response.text())
-        .then((response) => {
-          parseString(response, function (err, res) {
-            var convert = require("xml-js");
-            var xml = response;
-            var result = convert.xml2json(xml, { compact: true, spaces: 2 });
-            var jsonData = JSON.parse(result);
+    setWordFound(false);
+    setIsLoading(true);
+    let url =
+      "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=1&q=" +
+      text;
+    fetch(url)
+      .then((response) => response.text())
+      .then((response) => {
+        parseString(response, function (err, res) {
+          let convert = require("xml-js");
+          let xml = response;
+          let result = convert.xml2json(xml, { compact: true, spaces: 2 });
+          let jsonData = JSON.parse(result);
 
-            if (jsonData.channel.item === undefined) {
-              setWordFound(false);
-            } else {
-              createWord(jsonData);
-              setWordFound(true);
-            }
-            setIsLoading(false);
-          });
-        })
-        .catch((e) => {
-          console.log("There was a problem searching for a word: ", e);
+          if (jsonData.channel.item === undefined) {
+            setWordFound(false);
+          } else {
+            createWord(jsonData);
+            setWordFound(true);
+          }
+          setIsLoading(false);
         });
-    }
+      })
+      .catch((e) => {
+        console.log("There was a problem searching for a word: ", e);
+      });
   };
 
   const handleOnClear = () => {

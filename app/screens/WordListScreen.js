@@ -13,10 +13,10 @@ const WordListScreen = ({ route, navigation }) => {
 
   const getWordList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
-    var tempWordList = [];
+    let tempWordList = [];
 
     if (currentWordList) {
-      for (var word of JSON.parse(currentWordList)) {
+      for (let word of JSON.parse(currentWordList)) {
         tempWordList.unshift(JSON.parse(await AsyncStorage.getItem(word)));
       }
       setWordList(tempWordList);
@@ -54,22 +54,22 @@ const WordListScreen = ({ route, navigation }) => {
       return true;
     }
 
-    for (var i = 0; i < element.word.length; i++) {
+    for (let i = 0; i < element.word.length; i++) {
       if (element.word.charAt(i) === text) {
         return true;
       }
     }
 
-    for (i = 0; i < element.translatedWordList.length; i++) {
-      if (element.translatedWordList[i] != null && element.translatedWordList[i].toLowerCase() === text.toLowerCase()) {
+    for (let translation of element.translatedWordList) {
+      if (translation != null && translation.toLowerCase() === text.toLowerCase()) {
         return true;
       }
     }
 
-    for (i = 0; i < element.translatedWordList.length; i++) {
+    for (let translation of element.translatedWordList) {
       if (
-        element.translatedWordList[i] != null &&
-        element.translatedWordList[i]
+        translation != null &&
+        translation
           .toLowerCase()
           .split(/[\s;]+/)
           .includes(text.toLowerCase())
@@ -78,10 +78,10 @@ const WordListScreen = ({ route, navigation }) => {
       }
     }
 
-    for (i = 0; i < element.definitionsList.length; i++) {
+    for (let definition of element.definitionsList) {
       if (
-        element.translatedWordList[i] != null &&
-        element.definitionsList[i]
+        definition != null &&
+        definition
           .toLowerCase()
           .split(/[\s,.;:]+/)
           .includes(text.toLowerCase())

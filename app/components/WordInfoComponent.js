@@ -68,7 +68,7 @@ const WordInfoComponent = (props) => {
     };
 
     const currentWordList = await AsyncStorage.getItem("@wordList");
-    var newWordList = [];
+    let newWordList = [];
 
     if (currentWordList) {
       newWordList = JSON.parse(currentWordList);
@@ -110,7 +110,7 @@ const WordInfoComponent = (props) => {
   };
 
   const renderReviewDate = () => {
-    var x = (props.nextReview - Date.now()) / 1000;
+    let x = (props.nextReview - Date.now()) / 1000;
     const seconds = x % 60;
     x /= 60;
     const minutes = x % 60;
@@ -119,7 +119,7 @@ const WordInfoComponent = (props) => {
     x /= 24;
     const days = x;
 
-    var str = "Next review in ";
+    let str = "Next review in ";
 
     if (Math.round(days) > 0) {
       str += Math.round(days) + " day(s) ";

@@ -14,11 +14,11 @@ const LearnWordScreen = ({ route, navigation }) => {
 
   const getLessonList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
-    var tempLessonList = [];
+    let tempLessonList = [];
 
     if (currentWordList) {
-      for (var word of JSON.parse(currentWordList)) {
-        var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
+      for (let word of JSON.parse(currentWordList)) {
+        let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
         if (currentWordObject.learn) {
           tempLessonList.push(currentWordObject);
         }
@@ -66,7 +66,7 @@ const LearnWordScreen = ({ route, navigation }) => {
       opacity: 0.8,
     });
 
-    var tempCounter = currentWordIndex;
+    let tempCounter = currentWordIndex;
     tempCounter++;
 
     if (lessonList[tempCounter]) {

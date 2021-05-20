@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, SafeAreaView, Platform, Text, View, TouchableWithoutFeedback } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -7,6 +7,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const [reviewListFound, setReviewListFound] = useState(false);
   const [meaningList, setMeaningList] = useState([]);
   const [readingList, setReadingList] = useState([]);
+  const [wordBatch, setWordBatch] = useState([]);
   const [noReviews, setNoReviews] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [meaningState, setMeaningState] = useState(true);
@@ -30,9 +31,11 @@ const ReviewScreen = ({ route, navigation }) => {
       for (var word of JSON.parse(currentWordList)) {
         var currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
 
-        if (!currentWordObject.meaningAnswered) {
+        if (currentWordObject.review && !currentWordObject.meaningAnswered) {
           tempMeaningList.push(currentWordObject);
-        } else if (!currentWordObject.readingAnswered) {
+        }
+
+        if (currentWordObject.review && !currentWordObject.readingAnswered) {
           tempReadingList.push(currentWordObject);
         }
       }
@@ -43,25 +46,26 @@ const ReviewScreen = ({ route, navigation }) => {
         setNoReviews(false);
       }
     }
+    getWordBatch();
     setReviewListFound(true);
   };
 
-  const getWordGroup = () => {
+  const getWordBatch = () => {
     setCurrentWordIndex(0);
 
     if (meaningState) {
       if (meaningList.length >= 5) {
-        setWordGroup(meaningList.splice(0, 5));
+        setWordBatch(meaningList.splice(0, 5));
       } else if (meaningList.length > 0) {
-        setWordGroup(meaningList.splice(0, meaningList.length));
+        setWordBatch(meaningList.splice(0, meaningList.length));
       } else {
         setMeaningState(false);
       }
     } else {
       if (readingList.length >= 5) {
-        setWordGroup(readingList.splice(0, 5));
+        setWordBatch(readingList.splice(0, 5));
       } else if (readingList.length > 0) {
-        setWordGroup(readingList.splice(0, readingList.length));
+        setWordBatch(readingList.splice(0, readingList.length));
       } else {
         setMeaningState(true);
       }
@@ -72,7 +76,34 @@ const ReviewScreen = ({ route, navigation }) => {
     getReviewList();
   }
 
-  return <SafeAreaView style={styles.container}></SafeAreaView>;
+  const nextWord = () => {
+    var tempCounter = currentWordIndex;
+    tempCounter++;
+
+    if (wordBatch[tempCounter]) {
+      setCurrentWordIndex(tempCounter);
+    } else {
+      setNoReviews(true);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {noReviews || wordBatch.length === 0 ? (
+        <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text>
+      ) : null}
+      <View style={styles.componentContainer}>
+        {wordBatch.length > 0 ? (
+          <View>
+            <Text style={styles.word}>{wordBatch[currentWordIndex].word}</Text>
+            <TouchableWithoutFeedback onPress={() => nextWord()}>
+              <Text style={[styles.nextButton, { backgroundColor: COLORS.light_gray }]}>NEXT</Text>
+            </TouchableWithoutFeedback>
+          </View>
+        ) : null}
+      </View>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -98,7 +129,7 @@ const styles = StyleSheet.create({
     color: "white",
     marginTop: Platform.OS === "android" ? 5 : 0,
   },
-  vocabWord: {
+  word: {
     fontFamily: "Roboto-Black",
     fontSize: 50,
     color: "white",

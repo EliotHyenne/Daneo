@@ -18,7 +18,7 @@ const AddWordScreen = ({ route, navigation }) => {
   //Find word item that contains translated word and translated definition
   const findItemIndex = (jsonData) => {
     var itemIndex = 0;
-    const item = jsonData.channel.item;
+    const item = item;
 
     if (Array.isArray(item)) {
       while (true) {
@@ -38,29 +38,30 @@ const AddWordScreen = ({ route, navigation }) => {
     let newTranslatedWordList = [];
     let newDefinitionsList = [];
     let itemIndex = findItemIndex(jsonData);
+    const item = jsonData.channel.item;
 
     //Set the states using the correct word item
-    if (Array.isArray(jsonData.channel.item)) {
-      setWord(jsonData.channel.item[itemIndex].word._text);
-      if (Array.isArray(jsonData.channel.item[itemIndex].sense)) {
-        for (let sense of jsonData.channel.item[itemIndex].sense) {
+    if (Array.isArray(item)) {
+      setWord(item[itemIndex].word._text);
+      if (Array.isArray(item[itemIndex].sense)) {
+        for (let sense of item[itemIndex].sense) {
           newTranslatedWordList.push(sense.translation.trans_word._cdata);
           newDefinitionsList.push(sense.translation.trans_dfn._cdata);
         }
       } else {
-        newTranslatedWordList.push(jsonData.channel.item[itemIndex].sense.translation.trans_word._cdata);
-        newDefinitionsList.push(jsonData.channel.item[itemIndex].sense.translation.trans_dfn._cdata);
+        newTranslatedWordList.push(item[itemIndex].sense.translation.trans_word._cdata);
+        newDefinitionsList.push(item[itemIndex].sense.translation.trans_dfn._cdata);
       }
     } else {
-      setWord(jsonData.channel.item.word._text);
-      if (Array.isArray(jsonData.channel.item.sense)) {
-        for (let sense of jsonData.channel.item.sense) {
+      setWord(item.word._text);
+      if (Array.isArray(item.sense)) {
+        for (let sense of item.sense) {
           newTranslatedWordList.push(sense.translation.trans_word._cdata);
           newDefinitionsList.push(sense.translation.trans_dfn._cdata);
         }
       } else {
-        newTranslatedWordList.push(jsonData.channel.item.sense.translation.trans_word._cdata);
-        newDefinitionsList.push(jsonData.channel.item.sense.translation.trans_dfn._cdata);
+        newTranslatedWordList.push(item.sense.translation.trans_word._cdata);
+        newDefinitionsList.push(item.sense.translation.trans_dfn._cdata);
       }
     }
     setTranslatedWordList(newTranslatedWordList);
@@ -82,7 +83,7 @@ const AddWordScreen = ({ route, navigation }) => {
           let result = convert.xml2json(xml, { compact: true, spaces: 2 });
           let jsonData = JSON.parse(result);
 
-          if (jsonData.channel.item === undefined) {
+          if (item === undefined) {
             setWordFound(false);
           } else {
             createWord(jsonData);

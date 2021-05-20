@@ -77,15 +77,11 @@ const ReviewScreen = ({ route, navigation }) => {
       if (!meaningState && text == wordBatch[currentWordIndex].word) {
         currentWord.readingAnswered = true;
         currentWord.readingAnswer = true;
-        await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-        changeLevel(currentWord);
-        console.log("LEVEL UP!");
+        console.log("RIGHT ANSWER :)");
       } else if (!meaningState && text != wordBatch[currentWordIndex].word) {
         currentWord.readingAnswered = true;
         currentWord.readingAnswer = false;
-        await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-        changeLevel(currentWord);
-        console.log("LEVEL DOWN :(");
+        console.log("WRONG ANSWER :( :(");
       } else {
         let correctReading = false;
         for (let translation of wordBatch[currentWordIndex].translatedWordList) {
@@ -103,21 +99,19 @@ const ReviewScreen = ({ route, navigation }) => {
         if (correctReading) {
           currentWord.meaningAnswered = true;
           currentWord.meaningAnswer = true;
-          await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-          changeLevel(currentWord);
-          console.log("LEVEL UP!");
+          console.log("RIGHT ANSWER :)");
         } else {
           currentWord.meaningAnswered = true;
           currentWord.meaningAnswer = false;
-          await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-          changeLevel(currentWord);
-          console.log("LEVEL DOWN");
+          console.log("WRONG ANSWER :(");
         }
       }
     }
+    await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
+    changeLevel(currentWord);
   };
 
-  const changeLevel = (currentWord) => {
+  const changeLevel = async (currentWord) => {
     console.log(currentWord.readingAnswered);
     console.log(currentWord.meaningAnswered);
     if (currentWord.meaningAnswered && currentWord.readingAnswered) {
@@ -126,7 +120,9 @@ const ReviewScreen = ({ route, navigation }) => {
       } else {
         console.log("CHANGE TO LOWER LEVEL");
       }
+      currentWord.review = false;
     }
+    await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
   };
 
   const nextWord = () => {

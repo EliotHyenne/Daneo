@@ -271,7 +271,7 @@ const ReviewScreen = ({ route, navigation }) => {
               <Text style={styles.nextButton}>NEXT</Text>
             </TouchableWithoutFeedback>
           ) : null}
-          {answered ? <ScrollView>{renderSenses(currentWordIndex)}</ScrollView> : null}
+          {answered ? <ScrollView>{renderSenses()}</ScrollView> : null}
         </View>
       )}
     </SafeAreaView>

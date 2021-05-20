@@ -4,6 +4,11 @@
 
 # Daneo [in development]
 
+- [x] Word list & search
+- [x] Add word system
+- [x] Learn system
+- [ ] Review system
+
 A Korean language vocabulary learning app for iOS and Android written in JavaScript using React Native (expo).
 
 ## Contributing

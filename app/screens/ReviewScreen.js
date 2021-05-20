@@ -112,13 +112,80 @@ const ReviewScreen = ({ route, navigation }) => {
   };
 
   const changeLevel = async (currentWord) => {
-    console.log(currentWord.readingAnswered);
-    console.log(currentWord.meaningAnswered);
+    let ONE_HOUR_IN_MILLIS = 3600000;
+    let ONE_DAY_IN_MILLIS = 86400000;
+
     if (currentWord.meaningAnswered && currentWord.readingAnswered) {
       if (currentWord.meaningAnswer && currentWord.readingAnswer) {
         console.log("CHANGE TO HIGHER LEVEL");
+        switch (currentWord.level) {
+          case "Unranked":
+            currentWord.level = "Apprentice 1";
+            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Apprentice 1":
+            currentWord.level = "Apprentice 2";
+            currentWord.nextReview = Date.now() + 8 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Apprentice 2":
+            currentWord.level = "Apprentice 3";
+            currentWord.nextReview = Date.now() + 23 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Apprentice 3":
+            currentWord.level = "Apprentice 4";
+            currentWord.nextReview = Date.now() + 47 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Apprentice 4":
+            currentWord.level = "Guru 1";
+            currentWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
+            break;
+          case "Guru 1":
+            currentWord.level = "Guru 2";
+            currentWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
+            break;
+          case "Guru 2":
+            currentWord.level = "Master";
+            currentWord.nextReview = Date.now() + 30 * ONE_DAY_IN_MILLIS;
+            break;
+          case "Master":
+            currentWord.level = "Enlighten";
+            currentWord.nextReview = Date.now() + 120 * ONE_DAY_IN_MILLIS;
+            break;
+          case "Enlighten":
+            currentWord.level = "Burn";
+            currentWord.nextReview = Date.now() + 365 * ONE_DAY_IN_MILLIS;
+            break;
+        }
       } else {
         console.log("CHANGE TO LOWER LEVEL");
+        switch (currentWord.level) {
+          case "Unranked":
+            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Apprentice 1":
+            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Apprentice 2":
+          case "Apprentice 3":
+          case "Apprentice 4":
+            currentWord.level = "Apprentice 1";
+            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Guru 1":
+          case "Guru 2":
+          case "Master":
+            currentWord.level = "Apprentice 4";
+            currentWord.nextReview = Date.now() + 43 * ONE_HOUR_IN_MILLIS;
+            break;
+          case "Enlighten":
+            currentWord.level = "Guru 1";
+            currentWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
+            break;
+          case "Burn":
+            currentWord.level = "Master";
+            currentWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
+            break;
+        }
       }
       currentWord.review = false;
     }

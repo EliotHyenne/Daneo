@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, SafeAreaView, Platform, Text, View, TouchableWithoutFeedback, TextInput, ScrollView } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,6 +13,9 @@ const ReviewScreen = ({ route, navigation }) => {
   const [meaningState, setMeaningState] = useState(true);
   const [text, setText] = useState("");
   const [answered, setAnswered] = useState(false);
+  const [answer, setAnswer] = useState(false);
+  const [firstMeaningAttempt, setFirstMeaningAttempt] = useState(true);
+  const [firstReadingAttempt, setFirstReadingAttempt] = useState(true);
 
   const arrayShuffler = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -49,9 +52,12 @@ const ReviewScreen = ({ route, navigation }) => {
         setNoReviews(false);
       }
     }
-    getWordBatch();
     setReviewListFound(true);
   };
+
+  useEffect(() => {
+    getWordBatch(); // This is be executed when 'reviewListFound' state changes
+  }, [reviewListFound]);
 
   const getWordBatch = () => {
     setCurrentWordIndex(0);
@@ -74,24 +80,27 @@ const ReviewScreen = ({ route, navigation }) => {
   const checkAnswer = async () => {
     const currentWord = JSON.parse(await AsyncStorage.getItem(wordBatch[currentWordIndex].word));
 
-    if (text != "") {
+    if (text != "" || text != null) {
       if (!meaningState && text == wordBatch[currentWordIndex].word) {
         currentWord.readingAnswered = true;
         currentWord.readingAnswer = true;
+        setAnswer(true);
         console.log("RIGHT ANSWER :)");
       } else if (!meaningState && text != wordBatch[currentWordIndex].word) {
         currentWord.readingAnswered = true;
         currentWord.readingAnswer = false;
-        console.log("WRONG ANSWER :( :(");
+        setAnswer(false);
+        console.log("WRONG ANSWER :(");
       } else {
         let correctReading = false;
         for (let translation of wordBatch[currentWordIndex].translatedWordList) {
           if (
-            translation != null &&
-            translation
-              .toLowerCase()
-              .split(/[\s;]+/)
-              .includes(text.toLowerCase())
+            (translation != null &&
+              translation
+                .toLowerCase()
+                .split(/[\s;]+/)
+                .includes(text.toLowerCase())) ||
+            (translation != null && translation.toLowerCase() === text.toLowerCase())
           ) {
             correctReading = true;
             break;
@@ -100,16 +109,27 @@ const ReviewScreen = ({ route, navigation }) => {
         if (correctReading) {
           currentWord.meaningAnswered = true;
           currentWord.meaningAnswer = true;
+          setAnswer(true);
+
           console.log("RIGHT ANSWER :)");
         } else {
           currentWord.meaningAnswered = true;
           currentWord.meaningAnswer = false;
+          setAnswer(false);
           console.log("WRONG ANSWER :(");
         }
       }
     }
-    await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-    changeLevel(currentWord);
+
+    if (meaningState && firstMeaningAttempt) {
+      await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
+      changeLevel(currentWord);
+      setFirstMeaningAttempt(false);
+    } else if (!meaningState && firstReadingAttempt) {
+      await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
+      changeLevel(currentWord);
+      setFirstReadingAttempt(false);
+    }
     setAnswered(true);
   };
 
@@ -190,25 +210,34 @@ const ReviewScreen = ({ route, navigation }) => {
         }
       }
       currentWord.review = false;
+      currentWord.meaningAnswered = false;
+      currentWord.meaningAnswer = false;
+      currentWord.readingAnswered = false;
+      currentWord.readingAnswer = false;
     }
     await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
   };
 
   const nextWord = () => {
     let tempCounter = currentWordIndex;
-    tempCounter++;
+    if (answer) {
+      tempCounter++;
 
-    if (wordBatch[tempCounter]) {
-      setCurrentWordIndex(tempCounter);
-    } else {
-      if (meaningState && readingList.length > 0) {
-        setMeaningState(false);
-        getWordBatch();
-      } else if (!meaningState && meaningList.length > 0) {
-        setMeaningState(true);
-        getWordBatch();
+      setFirstMeaningAttempt(true);
+      setFirstReadingAttempt(true);
+
+      if (wordBatch[tempCounter]) {
+        setCurrentWordIndex(tempCounter);
       } else {
-        setNoReviews(true);
+        if (meaningState && readingList.length > 0) {
+          setMeaningState(false);
+          getWordBatch();
+        } else if (!meaningState && meaningList.length > 0) {
+          setMeaningState(true);
+          getWordBatch();
+        } else {
+          setNoReviews(true);
+        }
       }
     }
     setAnswered(false);
@@ -233,47 +262,120 @@ const ReviewScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       {noReviews || wordBatch.length === 0 ? (
         <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text>
-      ) : (
+      ) : null}
+      {!noReviews && wordBatch.length > 0 && meaningState && !answered ? (
         <View>
-          {meaningState ? (
-            <View>
-              <Text style={styles.word}>{wordBatch[currentWordIndex].word}</Text>
-              <Text style={styles.reviewType}>Meaning</Text>
-              <TextInput
-                ref={(input) => (this.input = input)}
-                autoFocus
-                style={styles.input}
-                placeholder="ex: Milk"
-                placeholderTextColor="#e3f3ff"
-                onChangeText={setText}
-                onSubmitEditing={() => checkAnswer()}
-                value={text}
-              />
-            </View>
-          ) : (
-            <View>
-              <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
-              <Text style={styles.reviewType}>Reading</Text>
-              <TextInput
-                ref={(input) => (this.input = input)}
-                autoFocus
-                style={styles.input}
-                placeholder="ex: 우유"
-                placeholderTextColor="#e3f3ff"
-                onChangeText={setText}
-                onSubmitEditing={() => checkAnswer()}
-                value={text}
-              />
-            </View>
-          )}
-          {answered ? (
-            <TouchableWithoutFeedback onPress={() => nextWord()}>
-              <Text style={styles.nextButton}>NEXT</Text>
-            </TouchableWithoutFeedback>
-          ) : null}
-          {answered ? <ScrollView>{renderSenses()}</ScrollView> : null}
+          <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
+          <Text style={styles.reviewType}>Meaning</Text>
+          <TextInput
+            ref={(input) => (this.input = input)}
+            autoFocus
+            backgroundColor={COLORS.pastel_blue}
+            style={styles.input}
+            placeholder="ex: Milk"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
         </View>
-      )}
+      ) : null}
+      {!noReviews && wordBatch.length > 0 && !meaningState && !answered ? (
+        <View>
+          <Text style={[styles.translatedWord]}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.reviewType}>Reading</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_blue}
+            autoFocus
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: 우유"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+      {meaningState && answered && !answer ? (
+        <View>
+          <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
+          <Text style={styles.reviewType}>Meaning</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_red}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: Milk"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {!meaningState && answered && !answer ? (
+        <View>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.reviewType}>Reading</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_red}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: 우유"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {meaningState && answered && answer ? (
+        <View>
+          <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
+          <Text style={styles.reviewType}>Meaning</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_green}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: Milk"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {!meaningState && answered && answer ? (
+        <View>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.reviewType}>Reading</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_green}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: 우유"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {answered ? (
+        <TouchableWithoutFeedback onPress={() => nextWord()}>
+          <Text style={styles.nextButton}>NEXT</Text>
+        </TouchableWithoutFeedback>
+      ) : null}
+      {answered ? (
+        <ScrollView>
+          <Text style={styles.word2}>{wordBatch[currentWordIndex].word}</Text>
+          {renderSenses()}
+        </ScrollView>
+      ) : null}
     </SafeAreaView>
   );
 };
@@ -292,11 +394,19 @@ const styles = StyleSheet.create({
     color: "white",
     marginTop: Platform.OS === "android" ? 5 : 0,
   },
-  word: {
+  word1: {
     fontFamily: "Roboto-Black",
     fontSize: 50,
     color: "white",
     marginTop: 100,
+    marginBottom: 40,
+    textAlign: "center",
+  },
+  word2: {
+    fontFamily: "Roboto-Black",
+    fontSize: 50,
+    color: "white",
+    marginTop: 5,
     marginBottom: 40,
     textAlign: "center",
   },
@@ -335,7 +445,6 @@ const styles = StyleSheet.create({
     color: "#e3f3ff",
   },
   input: {
-    backgroundColor: COLORS.pastel_blue,
     alignSelf: "center",
     width: "100%",
     height: 50,
@@ -344,6 +453,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     borderRadius: 15,
     padding: 10,
+    textAlign: "center",
     color: "white",
   },
   nextButton: {

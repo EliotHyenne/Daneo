@@ -14,8 +14,11 @@ const ReviewScreen = ({ route, navigation }) => {
   const [text, setText] = useState("");
   const [answered, setAnswered] = useState(false);
   const [answer, setAnswer] = useState(false);
+  const [levelChange, setLevelChange] = useState(false);
+  const [finalAnswer, setFinalAnswer] = useState(false);
   const [firstMeaningAttempt, setFirstMeaningAttempt] = useState(true);
   const [firstReadingAttempt, setFirstReadingAttempt] = useState(true);
+  const [word, setWord] = useState(null);
 
   const suffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -150,6 +153,8 @@ const ReviewScreen = ({ route, navigation }) => {
     if (currentWord.meaningAnswered && currentWord.readingAnswered) {
       if (currentWord.meaningAnswer && currentWord.readingAnswer) {
         console.log("CHANGE TO HIGHER LEVEL");
+        setLevelChange(true);
+        setFinalAnswer(true);
         switch (currentWord.level) {
           case "Unranked":
             currentWord.level = "Apprentice 1";
@@ -190,6 +195,8 @@ const ReviewScreen = ({ route, navigation }) => {
         }
       } else {
         console.log("CHANGE TO LOWER LEVEL");
+        setLevelChange(true);
+        setFinalAnswer(false);
         switch (currentWord.level) {
           case "Unranked":
             currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
@@ -219,6 +226,7 @@ const ReviewScreen = ({ route, navigation }) => {
             break;
         }
       }
+      setWord(currentWord);
       currentWord.review = false;
       currentWord.meaningAnswered = false;
       currentWord.meaningAnswer = false;
@@ -283,6 +291,7 @@ const ReviewScreen = ({ route, navigation }) => {
           />
         </View>
       ) : null}
+
       {!noReviews && wordBatch.length > 0 && !meaningState && !answered ? (
         <View>
           <Text style={[styles.translatedWord]}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
@@ -300,6 +309,7 @@ const ReviewScreen = ({ route, navigation }) => {
           />
         </View>
       ) : null}
+
       {meaningState && answered && !answer ? (
         <View>
           <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
@@ -334,7 +344,7 @@ const ReviewScreen = ({ route, navigation }) => {
         </View>
       ) : null}
 
-      {meaningState && answered && answer ? (
+      {meaningState && answered && answer && !levelChange ? (
         <View>
           <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
           <Text style={styles.reviewType}>Meaning</Text>
@@ -351,8 +361,80 @@ const ReviewScreen = ({ route, navigation }) => {
         </View>
       ) : null}
 
-      {!meaningState && answered && answer ? (
+      {!meaningState && answered && answer && !levelChange ? (
         <View>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.reviewType}>Reading</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_green}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: 우유"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {meaningState && answered && answer && finalAnswer && levelChange ? (
+        <View>
+          <Text style={styles.levelUp}>+ {word.level}</Text>
+          <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
+          <Text style={styles.reviewType}>Meaning</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_green}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: Milk"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {!meaningState && answered && answer && finalAnswer && levelChange ? (
+        <View>
+          <Text style={styles.levelUp}>+ {word.level}</Text>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.reviewType}>Reading</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_green}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: 우유"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {meaningState && answered && answer && !finalAnswer && levelChange ? (
+        <View>
+          <Text style={styles.levelDown}>- {word.level}</Text>
+          <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
+          <Text style={styles.reviewType}>Meaning</Text>
+          <TextInput
+            backgroundColor={COLORS.pastel_green}
+            ref={(input) => (this.input = input)}
+            style={styles.input}
+            placeholder="ex: Milk"
+            placeholderTextColor="#e3f3ff"
+            onChangeText={setText}
+            onSubmitEditing={() => checkAnswer()}
+            value={text}
+          />
+        </View>
+      ) : null}
+
+      {!meaningState && answered && answer && !finalAnswer && levelChange ? (
+        <View>
+          <Text style={styles.levelDown}>- {word.level}</Text>
           <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
@@ -373,6 +455,7 @@ const ReviewScreen = ({ route, navigation }) => {
           <Text style={styles.nextButton}>NEXT</Text>
         </TouchableWithoutFeedback>
       ) : null}
+
       {answered ? (
         <ScrollView>
           <Text style={styles.word2}>{wordBatch[currentWordIndex].word}</Text>
@@ -390,11 +473,20 @@ const styles = StyleSheet.create({
     padding: 25,
     paddingTop: Platform.OS === "android" ? 50 : 0,
   },
-  counter: {
+  levelUp: {
+    position: "absolute",
     alignSelf: "flex-end",
     fontFamily: "Roboto-Regular",
     fontSize: 18,
-    color: "white",
+    color: COLORS.pastel_green,
+    marginTop: Platform.OS === "android" ? 5 : 0,
+  },
+  levelDown: {
+    position: "absolute",
+    alignSelf: "flex-end",
+    fontFamily: "Roboto-Regular",
+    fontSize: 18,
+    color: COLORS.pastel_red,
     marginTop: Platform.OS === "android" ? 5 : 0,
   },
   word1: {

@@ -18,7 +18,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const [finalAnswer, setFinalAnswer] = useState(false);
   const [firstMeaningAttempt, setFirstMeaningAttempt] = useState(true);
   const [firstReadingAttempt, setFirstReadingAttempt] = useState(true);
-  const [word, setWord] = useState(null);
+  const [currentWord, setCurrentWord] = useState(null);
 
   const suffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -91,17 +91,17 @@ const ReviewScreen = ({ route, navigation }) => {
   };
 
   const checkAnswer = async () => {
-    const currentWord = JSON.parse(await AsyncStorage.getItem(wordBatch[currentWordIndex].word));
+    const tempWord = JSON.parse(await AsyncStorage.getItem(wordBatch[currentWordIndex].word));
 
     if (text != "" || text != null) {
       if (!meaningState && text == wordBatch[currentWordIndex].word) {
-        currentWord.readingAnswered = true;
-        currentWord.readingAnswer = true;
+        tempWord.readingAnswered = true;
+        tempWord.readingAnswer = true;
         setAnswer(true);
         console.log("RIGHT ANSWER :)");
       } else if (!meaningState && text != wordBatch[currentWordIndex].word) {
-        currentWord.readingAnswered = true;
-        currentWord.readingAnswer = false;
+        tempWord.readingAnswered = true;
+        tempWord.readingAnswer = false;
         setAnswer(false);
         console.log("WRONG ANSWER :(");
       } else {
@@ -120,14 +120,14 @@ const ReviewScreen = ({ route, navigation }) => {
           }
         }
         if (correctReading) {
-          currentWord.meaningAnswered = true;
-          currentWord.meaningAnswer = true;
+          tempWord.meaningAnswered = true;
+          tempWord.meaningAnswer = true;
           setAnswer(true);
 
           console.log("RIGHT ANSWER :)");
         } else {
-          currentWord.meaningAnswered = true;
-          currentWord.meaningAnswer = false;
+          tempWord.meaningAnswered = true;
+          tempWord.meaningAnswer = false;
           setAnswer(false);
           console.log("WRONG ANSWER :(");
         }
@@ -135,105 +135,105 @@ const ReviewScreen = ({ route, navigation }) => {
     }
 
     if (meaningState && firstMeaningAttempt) {
-      await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-      changeLevel(currentWord);
+      await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(tempWord));
+      changeLevel(tempWord);
       setFirstMeaningAttempt(false);
     } else if (!meaningState && firstReadingAttempt) {
-      await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
-      changeLevel(currentWord);
+      await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(tempWord));
+      changeLevel(tempWord);
       setFirstReadingAttempt(false);
     }
     setAnswered(true);
   };
 
-  const changeLevel = async (currentWord) => {
+  const changeLevel = async (tempWord) => {
     let ONE_HOUR_IN_MILLIS = 3600000;
     let ONE_DAY_IN_MILLIS = 86400000;
 
-    if (currentWord.meaningAnswered && currentWord.readingAnswered) {
-      if (currentWord.meaningAnswer && currentWord.readingAnswer) {
+    if (tempWord.meaningAnswered && tempWord.readingAnswered) {
+      if (tempWord.meaningAnswer && tempWord.readingAnswer) {
         console.log("CHANGE TO HIGHER LEVEL");
         setLevelChange(true);
         setFinalAnswer(true);
-        switch (currentWord.level) {
+        switch (tempWord.level) {
           case "Unranked":
-            currentWord.level = "Apprentice 1";
-            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 1";
+            tempWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
             break;
           case "Apprentice 1":
-            currentWord.level = "Apprentice 2";
-            currentWord.nextReview = Date.now() + 8 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 2";
+            tempWord.nextReview = Date.now() + 8 * ONE_HOUR_IN_MILLIS;
             break;
           case "Apprentice 2":
-            currentWord.level = "Apprentice 3";
-            currentWord.nextReview = Date.now() + 23 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 3";
+            tempWord.nextReview = Date.now() + 23 * ONE_HOUR_IN_MILLIS;
             break;
           case "Apprentice 3":
-            currentWord.level = "Apprentice 4";
-            currentWord.nextReview = Date.now() + 47 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 4";
+            tempWord.nextReview = Date.now() + 47 * ONE_HOUR_IN_MILLIS;
             break;
           case "Apprentice 4":
-            currentWord.level = "Guru 1";
-            currentWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Guru 1";
+            tempWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
             break;
           case "Guru 1":
-            currentWord.level = "Guru 2";
-            currentWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Guru 2";
+            tempWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
             break;
           case "Guru 2":
-            currentWord.level = "Master";
-            currentWord.nextReview = Date.now() + 30 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Master";
+            tempWord.nextReview = Date.now() + 30 * ONE_DAY_IN_MILLIS;
             break;
           case "Master":
-            currentWord.level = "Enlighten";
-            currentWord.nextReview = Date.now() + 120 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Enlighten";
+            tempWord.nextReview = Date.now() + 120 * ONE_DAY_IN_MILLIS;
             break;
           case "Enlighten":
-            currentWord.level = "Burn";
-            currentWord.nextReview = Date.now() + 365 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Burn";
+            tempWord.nextReview = Date.now() + 365 * ONE_DAY_IN_MILLIS;
             break;
         }
       } else {
         console.log("CHANGE TO LOWER LEVEL");
         setLevelChange(true);
         setFinalAnswer(false);
-        switch (currentWord.level) {
+        switch (tempWord.level) {
           case "Unranked":
-            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            tempWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
             break;
           case "Apprentice 1":
-            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            tempWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
             break;
           case "Apprentice 2":
           case "Apprentice 3":
           case "Apprentice 4":
-            currentWord.level = "Apprentice 1";
-            currentWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 1";
+            tempWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
             break;
           case "Guru 1":
           case "Guru 2":
           case "Master":
-            currentWord.level = "Apprentice 4";
-            currentWord.nextReview = Date.now() + 43 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 4";
+            tempWord.nextReview = Date.now() + 43 * ONE_HOUR_IN_MILLIS;
             break;
           case "Enlighten":
-            currentWord.level = "Guru 1";
-            currentWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Guru 1";
+            tempWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
             break;
           case "Burn":
-            currentWord.level = "Master";
-            currentWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Master";
+            tempWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
             break;
         }
       }
-      setWord(currentWord);
-      currentWord.review = false;
-      currentWord.meaningAnswered = false;
-      currentWord.meaningAnswer = false;
-      currentWord.readingAnswered = false;
-      currentWord.readingAnswer = false;
+      setCurrentWord(tempWord);
+      tempWord.review = false;
+      tempWord.meaningAnswered = false;
+      tempWord.meaningAnswer = false;
+      tempWord.readingAnswered = false;
+      tempWord.readingAnswer = false;
     }
-    await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(currentWord));
+    await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(tempWord));
   };
 
   const nextWord = () => {
@@ -380,7 +380,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {meaningState && answered && answer && finalAnswer && levelChange ? (
         <View>
-          <Text style={styles.levelUp}>+ {word.level}</Text>
+          <Text style={styles.levelUp}>+ {currentWord.level}</Text>
           <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
           <Text style={styles.reviewType}>Meaning</Text>
           <TextInput
@@ -398,7 +398,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {!meaningState && answered && answer && finalAnswer && levelChange ? (
         <View>
-          <Text style={styles.levelUp}>+ {word.level}</Text>
+          <Text style={styles.levelUp}>+ {currentWord.level}</Text>
           <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
@@ -416,7 +416,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {meaningState && answered && answer && !finalAnswer && levelChange ? (
         <View>
-          <Text style={styles.levelDown}>- {word.level}</Text>
+          <Text style={styles.levelDown}>- {currentWord.level}</Text>
           <Text style={styles.word1}>{wordBatch[currentWordIndex].word}</Text>
           <Text style={styles.reviewType}>Meaning</Text>
           <TextInput
@@ -434,7 +434,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {!meaningState && answered && answer && !finalAnswer && levelChange ? (
         <View>
-          <Text style={styles.levelDown}>- {word.level}</Text>
+          <Text style={styles.levelDown}>- {currentWord.level}</Text>
           <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput

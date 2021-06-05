@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -31,9 +31,9 @@ const LearnWordScreen = ({ route, navigation }) => {
     setLessonListFound(true);
   };
 
-  if (!lessonListFound) {
+  useEffect(() => {
     getLessonList();
-  }
+  }, []);
 
   const renderSenses = (index) => {
     return lessonList[index].translatedWordList.map((data, key) => {
@@ -82,24 +82,23 @@ const LearnWordScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {!noLessons ? <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text> : null}
       <View style={styles.componentContainer}>
-        {!lessonListFound || noLessons ? (
-          <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text>
-        ) : (
-          <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text>
-        )}
+        {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text> : null}
         <ScrollView ref={scrollRef} style={{ width: "100%" }}>
           {!noLessons ? (
             <View>
               <Text style={styles.word}>{lessonList[currentWordIndex].word}</Text>
               {renderSenses(currentWordIndex)}
-              <TouchableWithoutFeedback onPress={() => nextWord()}>
-                <Text style={styles.nextButton}>NEXT</Text>
-              </TouchableWithoutFeedback>
             </View>
           ) : null}
         </ScrollView>
       </View>
+      {!noLessons ? (
+        <TouchableWithoutFeedback onPress={() => nextWord()}>
+          <Text style={styles.nextButton}>NEXT</Text>
+        </TouchableWithoutFeedback>
+      ) : null}
     </SafeAreaView>
   );
 };

@@ -43,7 +43,6 @@ const ReviewScreen = ({ route, navigation }) => {
           tempReadingList.push(currentWordObject);
         }
       }
-      console.log("HELLOOOOO");
       suffleArray(tempMeaningList);
       suffleArray(tempReadingList);
       setMeaningList(tempMeaningList);
@@ -57,7 +56,7 @@ const ReviewScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    getReviewList(); // This is be executed when 'reviewListFound' state changes
+    getReviewList();
   }, []);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, SafeAreaView, Platform, View, Text, FlatList } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
@@ -9,7 +9,6 @@ const WordListScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [wordList, setWordList] = useState([]);
   const [filteredWordList, setFilteredWordList] = useState([]);
-  const [wordListFound, setWordListFound] = useState(false);
 
   const getWordList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
@@ -22,12 +21,11 @@ const WordListScreen = ({ route, navigation }) => {
       setWordList(tempWordList);
       setFilteredWordList(tempWordList);
     }
-    setWordListFound(true);
   };
 
-  if (!wordListFound) {
+  useEffect(() => {
     getWordList();
-  }
+  }, []);
 
   const handleOnClear = () => {
     if (this.search != null) {

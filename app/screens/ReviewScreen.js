@@ -17,7 +17,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const [firstMeaningAttempt, setFirstMeaningAttempt] = useState(true);
   const [firstReadingAttempt, setFirstReadingAttempt] = useState(true);
 
-  const arrayShuffler = (array) => {
+  const suffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const temp = array[i];
@@ -43,8 +43,9 @@ const ReviewScreen = ({ route, navigation }) => {
           tempReadingList.push(currentWordObject);
         }
       }
-      arrayShuffler(tempMeaningList);
-      arrayShuffler(tempReadingList);
+      console.log("HELLOOOOO");
+      suffleArray(tempMeaningList);
+      suffleArray(tempReadingList);
       setMeaningList(tempMeaningList);
       setReadingList(tempReadingList);
 
@@ -56,26 +57,36 @@ const ReviewScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
+    getReviewList(); // This is be executed when 'reviewListFound' state changes
+  }, []);
+
+  useEffect(() => {
     getWordBatch(); // This is be executed when 'reviewListFound' state changes
   }, [reviewListFound]);
 
   const getWordBatch = () => {
     setCurrentWordIndex(0);
 
-    const tempList = meaningState ? meaningList : readingList;
+    const tempMeaningState = meaningList.length >= readingList.length;
+    setMeaningState(tempMeaningState);
+    const tempList = tempMeaningState ? [...meaningList] : [...readingList];
+
+    if (tempList.length === 0) {
+      setWordBatch([]);
+      return;
+    }
 
     if (tempList.length >= 5) {
       setWordBatch(tempList.splice(0, 5));
-    } else if (tempList.length > 0) {
-      setWordBatch(tempList.splice(0, tempList.length));
     } else {
-      setMeaningState(!meaningState);
+      setWordBatch(tempList.splice(0, tempList.length));
+    }
+    if (tempMeaningState) {
+      setMeaningList(tempList);
+    } else {
+      setReadingList(tempList);
     }
   };
-
-  if (!reviewListFound) {
-    getReviewList();
-  }
 
   const checkAnswer = async () => {
     const currentWord = JSON.parse(await AsyncStorage.getItem(wordBatch[currentWordIndex].word));
@@ -220,6 +231,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
   const nextWord = () => {
     let tempCounter = currentWordIndex;
+
     if (answer) {
       tempCounter++;
 
@@ -229,15 +241,7 @@ const ReviewScreen = ({ route, navigation }) => {
       if (wordBatch[tempCounter]) {
         setCurrentWordIndex(tempCounter);
       } else {
-        if (meaningState && readingList.length > 0) {
-          setMeaningState(false);
-          getWordBatch();
-        } else if (!meaningState && meaningList.length > 0) {
-          setMeaningState(true);
-          getWordBatch();
-        } else {
-          setNoReviews(true);
-        }
+        getWordBatch();
       }
     }
     setAnswered(false);

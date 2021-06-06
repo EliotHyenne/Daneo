@@ -227,6 +227,7 @@ const ReviewScreen = ({ route, navigation }) => {
         }
       }
       setCurrentWord(tempWord);
+
       tempWord.review = false;
       tempWord.meaningAnswered = false;
       tempWord.meaningAnswer = false;
@@ -456,12 +457,14 @@ const ReviewScreen = ({ route, navigation }) => {
         </TouchableWithoutFeedback>
       ) : null}
 
-      {answered ? (
+      {!meaningState && answered ? (
         <ScrollView>
           <Text style={styles.word2}>{wordBatch[currentWordIndex].word}</Text>
           {renderSenses()}
         </ScrollView>
       ) : null}
+
+      {meaningState && answered ? <ScrollView>{renderSenses()}</ScrollView> : null}
     </SafeAreaView>
   );
 };
@@ -480,6 +483,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.pastel_green,
     marginTop: Platform.OS === "android" ? 5 : 0,
+    marginRight: Platform.OS === "ios" ? 20 : 0,
   },
   levelDown: {
     position: "absolute",
@@ -488,6 +492,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.pastel_red,
     marginTop: Platform.OS === "android" ? 5 : 0,
+    marginRight: Platform.OS === "ios" ? 20 : 0,
   },
   word1: {
     fontFamily: "Roboto-Black",
@@ -525,12 +530,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "white",
     marginTop: 15,
+    paddingHorizontal: Platform.OS === "android" ? 0 : 25,
   },
   definitionsList: {
     fontFamily: "Roboto-Light",
     fontSize: 18,
     color: "white",
     marginBottom: 15,
+    paddingHorizontal: Platform.OS === "android" ? 0 : 25,
   },
   error: {
     height: 65,
@@ -541,7 +548,6 @@ const styles = StyleSheet.create({
   },
   input: {
     alignSelf: "center",
-    width: "100%",
     height: 50,
     fontFamily: "Roboto-Regular",
     fontSize: 21,
@@ -550,6 +556,7 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: "center",
     color: "white",
+    width: Platform.OS === "ios" ? "90%" : "100%",
   },
   nextButton: {
     backgroundColor: COLORS.light_gray,
@@ -564,12 +571,8 @@ const styles = StyleSheet.create({
     width: 125,
     height: 75,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        lineHeight: 75, // as same as height
-      },
-      android: {},
-    }),
+    marginRight: Platform.OS === "ios" ? 20 : 0,
+    lineHeight: Platform.OS === "ios" ? 75 : null,
   },
 });
 

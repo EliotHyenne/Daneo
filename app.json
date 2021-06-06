@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#a6b1e1"
-      }
+      },
+      "package": "com.plumetone.daneo"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"

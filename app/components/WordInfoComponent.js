@@ -206,12 +206,7 @@ const styles = StyleSheet.create({
     width: 125,
     height: 75,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        lineHeight: 75, // as same as height
-      },
-      android: {},
-    }),
+    lineHeight: Platform.OS === "ios" ? 75 : null,
   },
   deleteButton: {
     alignSelf: "flex-end",
@@ -224,12 +219,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 75,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        lineHeight: 75, // as same as height
-      },
-      android: {},
-    }),
+    lineHeight: Platform.OS === "ios" ? 75 : null,
   },
 });
 

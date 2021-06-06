@@ -90,12 +90,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 100,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        lineHeight: 100, // as same as height
-      },
-      android: {},
-    }),
+    lineHeight: Platform.OS === "ios" ? 100 : null,
   },
 });
 

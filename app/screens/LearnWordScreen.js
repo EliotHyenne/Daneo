@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 18,
     color: "white",
-    marginTop: Platform.OS === "android" ? 5 : 0,
+    margin: Platform.OS === "ios" ? 15 : 0,
   },
   word: {
     fontFamily: "Roboto-Black",
@@ -162,18 +162,13 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     borderRadius: 25,
     fontFamily: "Roboto-Black",
-    marginTop: 15,
     fontSize: 25,
     color: "white",
     width: 125,
     height: 75,
+    margin: Platform.OS === "ios" ? 25 : 0,
+    lineHeight: Platform.OS === "ios" ? 75 : null,
     overflow: "hidden",
-    ...Platform.select({
-      ios: {
-        lineHeight: 75, // as same as height
-      },
-      android: {},
-    }),
   },
 });
 

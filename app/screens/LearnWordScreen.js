@@ -85,7 +85,7 @@ const LearnWordScreen = ({ route, navigation }) => {
       {!noLessons ? <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text> : null}
       <View style={styles.componentContainer}>
         {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text> : null}
-        <ScrollView ref={scrollRef} style={{ width: "100%" }}>
+        <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef} style={{ width: "100%" }}>
           {!noLessons ? (
             <View>
               <Text style={styles.word}>{lessonList[currentWordIndex].word}</Text>

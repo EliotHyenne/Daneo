@@ -6,18 +6,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import { useAppState } from "@react-native-community/hooks";
+import { PieChart } from "react-native-svg-charts";
+import * as svg from "react-native-svg";
 
 const HomeScreen = ({ navigation }) => {
-  const [wordListFound, setWordListFound] = useState(false);
   const [wordListLength, setWordListLength] = useState(0);
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
+  const [data, setData] = useState([]);
+  const [sliceColors] = useState(["#eef5f6", "#cce2e5", "#aacfd4", "#88bcc3", "#66a9b2", "#4d9099"]);
   const appState = useAppState();
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
     return navigation.addListener("focus", () => {
-      setWordListFound(false);
+      getCounters();
     });
   }, [navigation]);
 
@@ -30,6 +33,11 @@ const HomeScreen = ({ navigation }) => {
       setWordListLength(JSON.parse(currentWordList).length);
       let newWordsCounter = 0;
       let reviewsCounter = 0;
+      let apprenticeCounter = 0;
+      let guruCounter = 0;
+      let masterCounter = 0;
+      let enlightenCounter = 0;
+      let burnCounter = 0;
 
       for (let word of JSON.parse(currentWordList)) {
         let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
@@ -41,16 +49,53 @@ const HomeScreen = ({ navigation }) => {
           reviewsCounter++;
           await AsyncStorage.setItem(word, JSON.stringify(currentWordObject));
         }
+
+        switch (currentWordObject.level) {
+          case "Apprentice 1":
+            apprenticeCounter++;
+            break;
+          case "Apprentice 2":
+            apprenticeCounter++;
+            break;
+          case "Apprentice 3":
+            apprenticeCounter++;
+            break;
+          case "Apprentice 4":
+            apprenticeCounter++;
+            break;
+          case "Guru 1":
+            guruCounter++;
+            break;
+          case "Guru 2":
+            guruCounter++;
+            break;
+          case "Master":
+            masterCounter++;
+            break;
+          case "Enlighten":
+            enlightenCounter++;
+            break;
+          case "Burn":
+            burnCounter++;
+            break;
+        }
       }
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);
+      setData([
+        { key: 0, amount: newWordsCounter, label: newWordsCounter === 0 ? "" : "Unranked", svg: { fill: "#eef5f6" } },
+        { key: 1, amount: apprenticeCounter, label: apprenticeCounter === 0 ? "" : "Apprentice", svg: { fill: "#cce2e5" } },
+        { key: 2, amount: guruCounter, label: guruCounter === 0 ? "" : "Guru", svg: { fill: "#aacfd4" } },
+        { key: 3, amount: masterCounter, label: masterCounter === 0 ? "" : "Master", svg: { fill: "#88bcc3" } },
+        { key: 4, amount: enlightenCounter, label: enlightenCounter === 0 ? "" : "Enlighten", svg: { fill: "#66a9b2" } },
+        { key: 5, amount: burnCounter, label: burnCounter === 0 ? "" : "Burn", svg: { fill: "#4d9099" } },
+      ]);
     }
-    setWordListFound(true);
   };
 
-  if (!wordListFound) {
+  useEffect(() => {
     getCounters();
-  }
+  }, []);
 
   useEffect(() => {
     if (appState !== "active") {
@@ -59,17 +104,28 @@ const HomeScreen = ({ navigation }) => {
         Notifications.setBadgeCountAsync(numReviews);
         console.log("Badge count number set to " + numReviews);
       } catch (err) {
-        console.log("did not manage to show notif app badge count!", err);
+        console.log("Counldn't change badge count number", err);
       }
     }
   }, [appState]);
+
+  const Labels = ({ slices }) => {
+    return slices.map((slice, index) => {
+      const { pieCentroid } = slice;
+      return (
+        <svg.Text key={index} x={pieCentroid[0]} y={pieCentroid[1]} fill={"white"} textAnchor={"middle"} alignmentBaseline={"middle"} fontSize={15}>
+          {data[index].amount}
+        </svg.Text>
+      );
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={() => navigation.navigate("Settings", { title: "SETTINGS" })}>
         <Ionicons style={styles.settings} name="settings-sharp" size={24} color="white" />
       </TouchableWithoutFeedback>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
@@ -86,6 +142,9 @@ const HomeScreen = ({ navigation }) => {
             </TouchableWithoutFeedback>
           </View>
         </View>
+        <PieChart style={{ height: 300 }} valueAccessor={({ item }) => item.amount} data={data} spacing={0} outerRadius={"95%"}>
+          <Labels />
+        </PieChart>
       </ScrollView>
       <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5 }}>1.0.3</Text>
     </SafeAreaView>

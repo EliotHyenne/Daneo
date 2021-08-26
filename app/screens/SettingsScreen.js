@@ -6,8 +6,6 @@ import Toast from "react-native-root-toast";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const SettingsScreen = ({ route, navigation }) => {
-  const [translationLanguageFound, setTranslationLanguageFound] = useState(false);
-  const [translationLanguage, setTranslationLanguage] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -19,23 +17,14 @@ const SettingsScreen = ({ route, navigation }) => {
     const currentTranslationLanguage = await AsyncStorage.getItem("@translationLanguage");
 
     if (!currentTranslationLanguage) {
+      console.log("Here");
       await AsyncStorage.setItem("@translationLanguage", JSON.stringify("1"));
     }
-    setTranslationLanguage(JSON.parse(currentTranslationLanguage));
-    setTranslationLanguageFound(true);
   };
 
   useEffect(() => {
     getTranslationLanguage();
   }, []);
-
-  useEffect(() => {
-    setValue(translationLanguage);
-  }, [translationLanguageFound]);
-
-  if (!translationLanguageFound) {
-    getTranslationLanguage();
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,14 +42,14 @@ const SettingsScreen = ({ route, navigation }) => {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
-        onClose={async () => {
+        onChangeValue={async () => {
+          await AsyncStorage.setItem("@translationLanguage", JSON.stringify(value));
           Toast.show("Saved changes", {
             duration: Toast.durations.SHORT,
             backgroundColor: "gray",
             shadow: false,
             opacity: 0.8,
           });
-          await AsyncStorage.setItem("@translationLanguage", JSON.stringify(value));
         }}
       />
     </SafeAreaView>

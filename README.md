@@ -8,6 +8,7 @@
 - [x] Add word system
 - [x] Learn system
 - [x] Review system
+- [ ] Settings page
 
 A Korean language vocabulary learning app for iOS and Android written in JavaScript using React Native (expo).
 

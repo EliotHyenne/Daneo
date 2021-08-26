@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import * as Notifications from "expo-notifications";
+import { useAppState } from "@react-native-community/hooks";
 
 const HomeScreen = ({ navigation }) => {
   const [wordListFound, setWordListFound] = useState(false);
   const [wordListLength, setWordListLength] = useState(0);
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
+  const appState = useAppState();
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
@@ -48,6 +51,18 @@ const HomeScreen = ({ navigation }) => {
   if (!wordListFound) {
     getCounters();
   }
+
+  useEffect(() => {
+    if (appState !== "active") {
+      console.log("Inactive");
+      try {
+        const setAppBadgeCount = Notifications.setBadgeCountAsync(numReviews);
+        console.log("Badge count number set to " + numReviews);
+      } catch (err) {
+        console.log("did not manage to show notif app badge count!", err);
+      }
+    }
+  }, [appState]);
 
   return (
     <SafeAreaView style={styles.container}>

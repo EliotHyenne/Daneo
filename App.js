@@ -4,7 +4,6 @@ import AddWordScreen from "./app/screens/AddWordScreen";
 import WordListScreen from "./app/screens/WordListScreen";
 import LearnWordScreen from "./app/screens/LearnWordScreen";
 import SettingsScreen from "./app/screens/SettingsScreen";
-import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";

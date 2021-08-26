@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: "center",
     color: "white",
-    width: Platform.OS === "ios" ? "90%" : "100%",
+    width: "90%",
   },
   nextButton: {
     backgroundColor: COLORS.light_gray,

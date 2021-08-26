@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, SafeAreaView, Platform, View, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, SafeAreaView, Platform, Text } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-root-toast";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -10,7 +9,7 @@ const SettingsScreen = ({ route, navigation }) => {
   const [translationLanguageFound, setTranslationLanguageFound] = useState(false);
   const [translationLanguage, setTranslationLanguage] = useState("");
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: "English", value: "1" },
     { label: "日本語", value: "2" },
@@ -54,7 +53,13 @@ const SettingsScreen = ({ route, navigation }) => {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
-        onChangeValue={async () => {
+        onClose={async () => {
+          Toast.show("Saved changes", {
+            duration: Toast.durations.SHORT,
+            backgroundColor: "gray",
+            shadow: false,
+            opacity: 0.8,
+          });
           await AsyncStorage.setItem("@translationLanguage", JSON.stringify(value));
         }}
       />

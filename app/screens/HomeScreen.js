@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
     if (appState !== "active") {
       console.log("Inactive");
       try {
-        const setAppBadgeCount = Notifications.setBadgeCountAsync(numReviews);
+        Notifications.setBadgeCountAsync(numReviews);
         console.log("Badge count number set to " + numReviews);
       } catch (err) {
         console.log("did not manage to show notif app badge count!", err);

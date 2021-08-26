@@ -14,7 +14,6 @@ const HomeScreen = ({ navigation }) => {
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
-  const [sliceColors] = useState(["#eef5f6", "#cce2e5", "#aacfd4", "#88bcc3", "#66a9b2", "#4d9099"]);
   const appState = useAppState();
 
   //Re-render when going to this screen through navigation to update states

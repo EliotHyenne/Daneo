@@ -80,16 +80,26 @@ const HomeScreen = ({ navigation }) => {
             break;
         }
       }
+
+      let tempData = [
+        { key: 0, amount: newWordsCounter, title: newWordsCounter === 0 ? "" : "Unranked", svg: { fill: "#eef5f6" } },
+        { key: 1, amount: apprenticeCounter, title: apprenticeCounter === 0 ? "" : "Apprentice", svg: { fill: "#cce2e5" } },
+        { key: 2, amount: guruCounter, title: guruCounter === 0 ? "" : "Guru", svg: { fill: "#aacfd4" } },
+        { key: 3, amount: masterCounter, title: masterCounter === 0 ? "" : "Master", svg: { fill: "#88bcc3" } },
+        { key: 4, amount: enlightenCounter, title: enlightenCounter === 0 ? "" : "Enlighten", svg: { fill: "#66a9b2" } },
+        { key: 5, amount: burnCounter, title: burnCounter === 0 ? "" : "Burn", svg: { fill: "#4d9099" } },
+      ];
+
+      let finalData = [];
+      for (let element of tempData) {
+        if (element.amount > 0) {
+          finalData.push(element);
+        }
+      }
+
+      setData(finalData);
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);
-      setData([
-        { key: 0, amount: newWordsCounter, label: newWordsCounter === 0 ? "" : "Unranked", svg: { fill: "#eef5f6" } },
-        { key: 1, amount: apprenticeCounter, label: apprenticeCounter === 0 ? "" : "Apprentice", svg: { fill: "#cce2e5" } },
-        { key: 2, amount: guruCounter, label: guruCounter === 0 ? "" : "Guru", svg: { fill: "#aacfd4" } },
-        { key: 3, amount: masterCounter, label: masterCounter === 0 ? "" : "Master", svg: { fill: "#88bcc3" } },
-        { key: 4, amount: enlightenCounter, label: enlightenCounter === 0 ? "" : "Enlighten", svg: { fill: "#66a9b2" } },
-        { key: 5, amount: burnCounter, label: burnCounter === 0 ? "" : "Burn", svg: { fill: "#4d9099" } },
-      ]);
     }
   };
 

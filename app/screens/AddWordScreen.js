@@ -4,11 +4,14 @@ import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
 import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AddWordScreen = ({ route, navigation }) => {
   const [searchInputText, setSearchInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [wordFound, setWordFound] = useState(false);
+  const [translationLanguageFound, setTranslationLanguageFound] = useState(false);
+  const [translationLanguage, setTranslationLanguage] = useState("");
   const [word, setWord] = useState("");
   const [translatedWordList, setTranslatedWordList] = useState([]);
   const [definitionsList, setDefinitionsList] = useState([]);
@@ -33,6 +36,20 @@ const AddWordScreen = ({ route, navigation }) => {
     }
     return itemIndex;
   };
+
+  const getTranslationLanguage = async () => {
+    const currentTranslationLanguage = await AsyncStorage.getItem("@translationLanguage");
+
+    if (!currentTranslationLanguage) {
+      await AsyncStorage.setItem("@translationLanguage", JSON.stringify("1"));
+    }
+    setTranslationLanguage(JSON.parse(currentTranslationLanguage));
+    setTranslationLanguageFound(true);
+  };
+
+  if (!translationLanguageFound) {
+    getTranslationLanguage();
+  }
 
   const createWord = (jsonData) => {
     let newTranslatedWordList = [];
@@ -72,7 +89,9 @@ const AddWordScreen = ({ route, navigation }) => {
     setWordFound(false);
     setIsLoading(true);
     let url =
-      "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=2&q=" +
+      "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=" +
+      translationLanguage +
+      "&q=" +
       text;
     fetch(url)
       .then((response) => response.text())

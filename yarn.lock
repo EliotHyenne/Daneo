@@ -5383,6 +5383,13 @@
   "resolved" "https://registry.npmjs.org/react-native-async-storage/-/react-native-async-storage-0.0.1.tgz"
   "version" "0.0.1"
 
+"react-native-dropdown-picker@^5.1.23":
+  "integrity" "sha512-Mz8CJAP/3iSXqR7Ox0IchfSotP1g2tcxn3jIS23IEw73zAdntLsp3J15iQQrIANxEuxel2RcPIF2sZvcyKQK9g=="
+  "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.1.23.tgz"
+  "version" "5.1.23"
+  dependencies:
+    "react-native-gesture-handler" "*"
+
 "react-native-easy-toast@^2.0.0":
   "integrity" "sha512-mLvHOy/slCJfgrLfOercIhVKslTF6D7NrJ7XLTRK3BCim7kNO1JdAgQ5+IF6bqdcUcFMIW/GwiauUbnSpynr8Q=="
   "resolved" "https://registry.npmjs.org/react-native-easy-toast/-/react-native-easy-toast-2.0.0.tgz"

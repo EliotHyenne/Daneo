@@ -24,6 +24,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-async-storage": "0.0.1",
+    "react-native-dropdown-picker": "^5.1.23",
     "react-native-easy-toast": "^2.0.0",
     "react-native-elements": "^3.4.1",
     "react-native-gesture-handler": "~1.10.2",

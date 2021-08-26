@@ -3,6 +3,7 @@ import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, Sta
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = ({ navigation }) => {
   const [wordListFound, setWordListFound] = useState(false);
@@ -50,6 +51,9 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableWithoutFeedback onPress={() => navigation.navigate("Settings", { title: "SETTINGS" })}>
+        <Ionicons style={styles.settings} name="settings-sharp" size={24} color="white" />
+      </TouchableWithoutFeedback>
       <ScrollView>
         <View>
           <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
@@ -68,6 +72,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
+      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5 }}>1.0.3</Text>
     </SafeAreaView>
   );
 };
@@ -91,6 +96,11 @@ const styles = StyleSheet.create({
     height: 100,
     overflow: "hidden",
     lineHeight: Platform.OS === "ios" ? 100 : null,
+  },
+  settings: {
+    alignSelf: "flex-end",
+    margin: 20,
+    marginTop: 0,
   },
 });
 

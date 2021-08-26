@@ -2,15 +2,14 @@
 <img src="circle-icon.png" width="300" height="300">
 </p>
 
-# Daneo [in development]
-
+# Daneo
+A Korean language vocabulary learning app for iOS and Android written in JavaScript using React Native (expo).
+## Progress
 - [x] Word list & search
 - [x] Add word system
 - [x] Learn system
 - [x] Review system
 - [x] Settings page
-
-A Korean language vocabulary learning app for iOS and Android written in JavaScript using React Native (expo).
 
 ## Contributing
 

@@ -6,24 +6,49 @@ import Toast from "react-native-root-toast";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const SettingsScreen = ({ route, navigation }) => {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
+  const [translationLanguageMenuOpen, setTranslationLanguageMenuOpen] = useState(false);
+  const [translationLanguageMenuValue, setTranslationLanguageMenuValue] = useState(null);
+  const [translationLanguageMenuItems, setTranslationLanguageMenuItems] = useState([
     { label: "English", value: "1" },
     { label: "日本語", value: "2" },
+  ]);
+  const [reviewBatchSizeMenuOpen, setReviewBatchSizeMenuOpen] = useState(false);
+  const [reviewBatchSizeMenuValue, setReviewBatchSizeMenuValue] = useState(null);
+  const [reviewBatchSizeMenuItems, setReviewBatchSizeMenuItems] = useState([
+    { label: "5", value: "5" },
+    { label: "10", value: "10" },
+    { label: "15", value: "15" },
+    { label: "20", value: "20" },
+    { label: "25", value: "25" },
+    { label: "30", value: "30" },
+    { label: "35", value: "35" },
+    { label: "40", value: "40" },
+    { label: "45", value: "45" },
+    { label: "50", value: "50" },
   ]);
 
   const getTranslationLanguage = async () => {
     const currentTranslationLanguage = await AsyncStorage.getItem("@translationLanguage");
 
     if (!currentTranslationLanguage) {
-      console.log("Here");
       await AsyncStorage.setItem("@translationLanguage", JSON.stringify("1"));
+    }
+  };
+
+  const getReviewBatchSize = async () => {
+    const currentReviewBatchSize = await AsyncStorage.getItem("@reviewBatchSize");
+
+    if (!currentReviewBatchSize) {
+      await AsyncStorage.setItem("@reviewBatchSize", JSON.stringify("5"));
     }
   };
 
   useEffect(() => {
     getTranslationLanguage();
+  }, []);
+
+  useEffect(() => {
+    getReviewBatchSize();
   }, []);
 
   return (
@@ -34,16 +59,40 @@ const SettingsScreen = ({ route, navigation }) => {
           fontSize: 15,
           fontFamily: "Roboto-Thin",
         }}
-        defaultValue={value}
+        defaultValue={translationLanguageMenuValue}
         placeholder="Select a language"
-        open={open}
-        value={value}
-        items={items}
-        setOpen={setOpen}
-        setValue={setValue}
-        setItems={setItems}
+        open={translationLanguageMenuOpen}
+        value={translationLanguageMenuValue}
+        items={translationLanguageMenuItems}
+        setOpen={setTranslationLanguageMenuOpen}
+        setValue={setTranslationLanguageMenuValue}
+        setItems={setTranslationLanguageMenuItems}
         onChangeValue={async () => {
-          await AsyncStorage.setItem("@translationLanguage", JSON.stringify(value));
+          await AsyncStorage.setItem("@translationLanguage", JSON.stringify(translationLanguageMenuValue));
+          Toast.show("Saved changes", {
+            duration: Toast.durations.SHORT,
+            backgroundColor: "gray",
+            shadow: false,
+            opacity: 0.8,
+          });
+        }}
+      />
+      <Text style={styles.text2}>Review batch size:</Text>
+      <DropDownPicker
+        textStyle={{
+          fontSize: 15,
+          fontFamily: "Roboto-Thin",
+        }}
+        defaultValue={reviewBatchSizeMenuValue}
+        placeholder="Select a review batch size"
+        open={reviewBatchSizeMenuOpen}
+        value={reviewBatchSizeMenuValue}
+        items={reviewBatchSizeMenuItems}
+        setOpen={setReviewBatchSizeMenuOpen}
+        setValue={setReviewBatchSizeMenuValue}
+        setItems={setReviewBatchSizeMenuItems}
+        onChangeValue={async () => {
+          await AsyncStorage.setItem("@reviewBatchSize", JSON.stringify(reviewBatchSizeMenuValue));
           Toast.show("Saved changes", {
             duration: Toast.durations.SHORT,
             backgroundColor: "gray",
@@ -70,6 +119,16 @@ const styles = StyleSheet.create({
     fontSize: 25,
     margin: 5,
     marginLeft: 0,
+    marginTop: 25,
+    color: "white",
+  },
+  text2: {
+    fontFamily: "Roboto-Black",
+    alignSelf: "flex-start",
+    fontSize: 25,
+    margin: 5,
+    marginLeft: 0,
+    marginTop: 85,
     color: "white",
   },
 });

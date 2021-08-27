@@ -19,6 +19,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const [firstMeaningAttempt, setFirstMeaningAttempt] = useState(true);
   const [firstReadingAttempt, setFirstReadingAttempt] = useState(true);
   const [currentWord, setCurrentWord] = useState(null);
+  const [reviewBatchSize, setReviewBatchSize] = useState(null);
 
   const suffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -27,6 +28,15 @@ const ReviewScreen = ({ route, navigation }) => {
       array[i] = array[j];
       array[j] = temp;
     }
+  };
+
+  const getReviewBatchSize = async () => {
+    const currentReviewBatchSize = await AsyncStorage.getItem("@reviewBatchSize");
+
+    if (!currentReviewBatchSize) {
+      await AsyncStorage.setItem("@reviewBatchSize", JSON.stringify("5"));
+    }
+    setReviewBatchSize(parseInt(JSON.parse(currentReviewBatchSize)));
   };
 
   const getReviewList = async () => {
@@ -59,6 +69,10 @@ const ReviewScreen = ({ route, navigation }) => {
   };
 
   useEffect(() => {
+    getReviewBatchSize();
+  }, []);
+
+  useEffect(() => {
     getReviewList();
   }, []);
 
@@ -78,8 +92,8 @@ const ReviewScreen = ({ route, navigation }) => {
       return;
     }
 
-    if (tempList.length >= 5) {
-      setWordBatch(tempList.splice(0, 5));
+    if (tempList.length >= reviewBatchSize) {
+      setWordBatch(tempList.splice(0, reviewBatchSize));
     } else {
       setWordBatch(tempList.splice(0, tempList.length));
     }

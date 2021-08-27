@@ -174,12 +174,12 @@ const HomeScreen = ({ navigation }) => {
               <Labels />
               <Counts />
             </PieChart>
-            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.6</Text>
+            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.7</Text>
           </View>
         ) : null}
       </ScrollView>
       {wordListLength === 0 ? (
-        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.6</Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.7</Text>
       ) : null}
     </SafeAreaView>
   );

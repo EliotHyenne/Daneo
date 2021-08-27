@@ -1,33 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import * as Notifications from "expo-notifications";
-import { useAppState } from "@react-native-community/hooks";
 import { PieChart } from "react-native-svg-charts";
 import * as svg from "react-native-svg";
-import Constants from "expo-constants";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: false,
-    shouldPlaySound: false,
-    shouldSetBadge: true,
-  }),
-});
 
 const HomeScreen = ({ navigation }) => {
   const [wordListLength, setWordListLength] = useState(0);
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
-  const appState = useAppState();
-  const [setExpoPushToken] = useState("");
-  const [setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
@@ -35,54 +19,6 @@ const HomeScreen = ({ navigation }) => {
       getCounters();
     });
   }, [navigation]);
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
-
-    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      setNotification(notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log(response);
-    });
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
-
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    return token;
-  }
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
@@ -161,7 +97,6 @@ const HomeScreen = ({ navigation }) => {
           finalData.push(element);
         }
       }
-
       setData(finalData);
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);
@@ -171,18 +106,6 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     getCounters();
   }, []);
-
-  useEffect(() => {
-    if (appState !== "active") {
-      console.log("Inactive");
-      try {
-        Notifications.setBadgeCountAsync(numReviews);
-        console.log("Badge count number set to " + 4);
-      } catch (err) {
-        console.log("Counldn't change badge count number", err);
-      }
-    }
-  }, [appState]);
 
   const Labels = ({ slices }) => {
     return slices.map((slice, index) => {
@@ -196,7 +119,7 @@ const HomeScreen = ({ navigation }) => {
           fill={"white"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={15}
+          fontSize={17}
         >
           {data[index].title}
         </svg.Text>
@@ -215,7 +138,7 @@ const HomeScreen = ({ navigation }) => {
           fill={"white"}
           textAnchor={"middle"}
           alignmentBaseline={"bottom"}
-          fontSize={15}
+          fontSize={17}
         >
           {data[index].amount}
         </svg.Text>
@@ -251,12 +174,12 @@ const HomeScreen = ({ navigation }) => {
               <Labels />
               <Counts />
             </PieChart>
-            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.0.3</Text>
+            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.6</Text>
           </View>
         ) : null}
       </ScrollView>
       {wordListLength === 0 ? (
-        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.0.3</Text>
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.6</Text>
       ) : null}
     </SafeAreaView>
   );

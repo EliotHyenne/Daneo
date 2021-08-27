@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   },
   word1: {
     fontFamily: "Roboto-Black",
-    fontSize: 50,
+    fontSize: 40,
     color: "white",
     marginTop: 100,
     marginBottom: 40,
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
   },
   word2: {
     fontFamily: "Roboto-Black",
-    fontSize: 50,
+    fontSize: 40,
     color: "white",
     marginTop: 5,
     marginBottom: 40,
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   },
   translatedWord: {
     fontFamily: "Roboto-Black",
-    fontSize: 50,
+    fontSize: 40,
     color: "white",
     marginTop: 100,
     marginBottom: 40,

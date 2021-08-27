@@ -50,6 +50,9 @@ const HomeScreen = ({ navigation }) => {
         }
 
         switch (currentWordObject.level) {
+          case "Unranked":
+            newWordsCounter++;
+            break;
           case "Apprentice 1":
             apprenticeCounter++;
             break;
@@ -81,12 +84,12 @@ const HomeScreen = ({ navigation }) => {
       }
 
       let tempData = [
-        { key: 0, amount: newWordsCounter, title: newWordsCounter === 0 ? "" : "Unranked", svg: { fill: "#eef5f6" } },
-        { key: 1, amount: apprenticeCounter, title: apprenticeCounter === 0 ? "" : "Apprentice", svg: { fill: "#cce2e5" } },
-        { key: 2, amount: guruCounter, title: guruCounter === 0 ? "" : "Guru", svg: { fill: "#aacfd4" } },
-        { key: 3, amount: masterCounter, title: masterCounter === 0 ? "" : "Master", svg: { fill: "#88bcc3" } },
-        { key: 4, amount: enlightenCounter, title: enlightenCounter === 0 ? "" : "Enlighten", svg: { fill: "#66a9b2" } },
-        { key: 5, amount: burnCounter, title: burnCounter === 0 ? "" : "Burn", svg: { fill: "#4d9099" } },
+        { key: 0, amount: newWordsCounter, title: "Unseen", svg: { fill: "#dcdcdc" } },
+        { key: 1, amount: apprenticeCounter, title: "Apprentice", svg: { fill: "#d3d3d3" } },
+        { key: 2, amount: guruCounter, title: "Guru", svg: { fill: "#c0c0c0" } },
+        { key: 3, amount: masterCounter, title: "Master", svg: { fill: "#a9a9a9" } },
+        { key: 4, amount: enlightenCounter, title: "Enlighten", svg: { fill: "#808080" } },
+        { key: 5, amount: burnCounter, title: "Burn", svg: { fill: "#696969" } },
       ];
 
       let finalData = [];
@@ -122,7 +125,35 @@ const HomeScreen = ({ navigation }) => {
     return slices.map((slice, index) => {
       const { pieCentroid } = slice;
       return (
-        <svg.Text key={index} x={pieCentroid[0]} y={pieCentroid[1]} fill={"white"} textAnchor={"middle"} alignmentBaseline={"middle"} fontSize={15}>
+        <svg.Text
+          key={index}
+          x={pieCentroid[0]}
+          y={pieCentroid[1] - 5}
+          fontFamily={"Roboto-Thin"}
+          fill={"white"}
+          textAnchor={"middle"}
+          alignmentBaseline={"middle"}
+          fontSize={15}
+        >
+          {data[index].title}
+        </svg.Text>
+      );
+    });
+  };
+  const Counts = ({ slices }) => {
+    return slices.map((slice, index) => {
+      const { pieCentroid } = slice;
+      return (
+        <svg.Text
+          key={index}
+          x={pieCentroid[0]}
+          y={pieCentroid[1] + 15}
+          fontFamily={"Roboto-Thin"}
+          fill={"white"}
+          textAnchor={"middle"}
+          alignmentBaseline={"bottom"}
+          fontSize={15}
+        >
           {data[index].amount}
         </svg.Text>
       );
@@ -151,11 +182,19 @@ const HomeScreen = ({ navigation }) => {
             </TouchableWithoutFeedback>
           </View>
         </View>
-        <PieChart style={{ height: 300 }} valueAccessor={({ item }) => item.amount} data={data} spacing={0} outerRadius={"95%"}>
-          <Labels />
-        </PieChart>
+        {wordListLength > 0 ? (
+          <View>
+            <PieChart style={{ height: 300 }} valueAccessor={({ item }) => item.amount} data={data} spacing={0} outerRadius={"100%"} innerRadius={55}>
+              <Labels />
+              <Counts />
+            </PieChart>
+            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.0.3</Text>
+          </View>
+        ) : null}
       </ScrollView>
-      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5 }}>1.0.3</Text>
+      {wordListLength === 0 ? (
+        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.0.3</Text>
+      ) : null}
     </SafeAreaView>
   );
 };

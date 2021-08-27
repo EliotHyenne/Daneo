@@ -24,10 +24,17 @@ const HomeScreen = ({ navigation }) => {
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
   const appState = useAppState();
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
+  const [setExpoPushToken] = useState("");
+  const [setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
+
+  //Re-render when going to this screen through navigation to update states
+  React.useEffect(() => {
+    return navigation.addListener("focus", () => {
+      getCounters();
+    });
+  }, [navigation]);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
@@ -77,13 +84,6 @@ const HomeScreen = ({ navigation }) => {
     return token;
   }
 
-  //Re-render when going to this screen through navigation to update states
-  React.useEffect(() => {
-    return navigation.addListener("focus", () => {
-      getCounters();
-    });
-  }, [navigation]);
-
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
 
@@ -92,6 +92,7 @@ const HomeScreen = ({ navigation }) => {
     } else {
       setWordListLength(JSON.parse(currentWordList).length);
       let newWordsCounter = 0;
+      let unseenCounter = 0;
       let reviewsCounter = 0;
       let apprenticeCounter = 0;
       let guruCounter = 0;
@@ -104,6 +105,7 @@ const HomeScreen = ({ navigation }) => {
 
         if (currentWordObject.learn) {
           newWordsCounter++;
+          unseenCounter++;
         } else if (currentWordObject.nextReview - Date.now() <= 0) {
           currentWordObject.review = true;
           reviewsCounter++;
@@ -112,7 +114,7 @@ const HomeScreen = ({ navigation }) => {
 
         switch (currentWordObject.level) {
           case "Unranked":
-            newWordsCounter++;
+            unseenCounter++;
             break;
           case "Apprentice 1":
             apprenticeCounter++;
@@ -145,7 +147,7 @@ const HomeScreen = ({ navigation }) => {
       }
 
       let tempData = [
-        { key: 0, amount: newWordsCounter, title: "Unseen", svg: { fill: "#dcdcdc" } },
+        { key: 0, amount: unseenCounter, title: "Unseen", svg: { fill: "#dcdcdc" } },
         { key: 1, amount: apprenticeCounter, title: "Apprentice", svg: { fill: "#d3d3d3" } },
         { key: 2, amount: guruCounter, title: "Guru", svg: { fill: "#c0c0c0" } },
         { key: 3, amount: masterCounter, title: "Master", svg: { fill: "#a9a9a9" } },
@@ -190,7 +192,7 @@ const HomeScreen = ({ navigation }) => {
           key={index}
           x={pieCentroid[0]}
           y={pieCentroid[1] - 5}
-          fontFamily={"Roboto-Thin"}
+          fontFamily={"Roboto-Black"}
           fill={"white"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
@@ -209,7 +211,7 @@ const HomeScreen = ({ navigation }) => {
           key={index}
           x={pieCentroid[0]}
           y={pieCentroid[1] + 15}
-          fontFamily={"Roboto-Thin"}
+          fontFamily={"Roboto-Black"}
           fill={"white"}
           textAnchor={"middle"}
           alignmentBaseline={"bottom"}

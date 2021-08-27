@@ -10,6 +10,7 @@ A Korean language vocabulary learning app for iOS and Android written in JavaScr
 - [x] Learn system
 - [x] Review system
 - [x] Settings page
+- [ ] Notifications
 
 ## Contributing
 

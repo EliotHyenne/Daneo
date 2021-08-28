@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
+import { Dimensions, StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -115,11 +115,11 @@ const HomeScreen = ({ navigation }) => {
           key={index}
           x={pieCentroid[0]}
           y={pieCentroid[1] - 5}
-          fontFamily={"Roboto-Black"}
+          fontFamily={Platform.OS === "android" ? "Roboto-Bold" : ""}
           fill={"white"}
           textAnchor={"middle"}
           alignmentBaseline={"middle"}
-          fontSize={17}
+          fontSize={Platform.OS === "android" ? 17 : 15}
         >
           {data[index].title}
         </svg.Text>
@@ -134,11 +134,11 @@ const HomeScreen = ({ navigation }) => {
           key={index}
           x={pieCentroid[0]}
           y={pieCentroid[1] + 15}
-          fontFamily={"Roboto-Black"}
+          fontFamily={Platform.OS === "android" ? "Roboto-Bold" : ""}
           fill={"white"}
           textAnchor={"middle"}
           alignmentBaseline={"bottom"}
-          fontSize={17}
+          fontSize={Platform.OS === "android" ? 17 : 15}
         >
           {data[index].amount}
         </svg.Text>
@@ -153,7 +153,7 @@ const HomeScreen = ({ navigation }) => {
       </TouchableWithoutFeedback>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <View style={{ top: Platform.OS === "ios" ? 50 : 0 }}>
+          <View>
             <TouchableWithoutFeedback onPress={() => navigation.navigate("WordList", { title: "WORD LIST" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_red }]}>{"WORDS" + " (" + wordListLength + ")"}</Text>
             </TouchableWithoutFeedback>
@@ -170,17 +170,20 @@ const HomeScreen = ({ navigation }) => {
         </View>
         {wordListLength > 0 ? (
           <View>
-            <PieChart style={{ height: 300 }} valueAccessor={({ item }) => item.amount} data={data} spacing={0} outerRadius={"100%"} innerRadius={55}>
+            <PieChart
+              style={{ height: Dimensions.get("window").width - 25, marginBottom: 25 }}
+              valueAccessor={({ item }) => item.amount}
+              data={data}
+              spacing={0}
+              outerRadius={"100%"}
+              innerRadius={55}
+            >
               <Labels />
               <Counts />
             </PieChart>
-            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.8</Text>
           </View>
         ) : null}
       </ScrollView>
-      {wordListLength === 0 ? (
-        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", margin: 5, marginTop: 20, alignSelf: "center" }}>1.8</Text>
-      ) : null}
     </SafeAreaView>
   );
 };
@@ -189,19 +192,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.pastel_purple,
-    alignItems: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 40 : 0,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 20 : 0,
   },
   button: {
     textAlign: "center",
     textAlignVertical: "center",
+    alignSelf: "center",
     marginBottom: 25,
     borderRadius: 25,
     fontFamily: "Roboto-Black",
     fontSize: 25,
     color: "white",
-    width: 300,
     height: 100,
+    width: Dimensions.get("window").width - 70,
     overflow: "hidden",
     lineHeight: Platform.OS === "ios" ? 100 : null,
   },

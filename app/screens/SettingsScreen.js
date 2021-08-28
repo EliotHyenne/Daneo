@@ -77,6 +77,7 @@ const SettingsScreen = ({ route, navigation }) => {
           fontSize: 15,
           fontFamily: "Roboto-Thin",
         }}
+        style={{ width: "75%", marginLeft: 10 }}
         defaultValue={translationLanguageMenuValue}
         placeholder="Select a language"
         open={translationLanguageMenuOpen}
@@ -101,6 +102,7 @@ const SettingsScreen = ({ route, navigation }) => {
           fontSize: 15,
           fontFamily: "Roboto-Thin",
         }}
+        style={{ width: "75%", marginLeft: 10 }}
         defaultValue={reviewBatchSizeMenuValue}
         placeholder="Select a review batch size"
         open={reviewBatchSizeMenuOpen}
@@ -125,6 +127,7 @@ const SettingsScreen = ({ route, navigation }) => {
           <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>CLEAR</Text>
         </TouchableWithoutFeedback>
       </View>
+      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", marginTop: 15, alignSelf: "center" }}>Version 1.9</Text>
     </SafeAreaView>
   );
 };
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     fontSize: 25,
     margin: 5,
-    marginLeft: 0,
+    marginLeft: 10,
     marginTop: 25,
     color: "white",
   },
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     fontSize: 25,
     margin: 5,
-    marginLeft: 0,
+    marginLeft: 10,
     marginTop: 85,
     color: "white",
   },
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Black",
     fontSize: 25,
     margin: 5,
-    marginLeft: 0,
+    marginLeft: 10,
     color: "white",
   },
   deleteButton: {
@@ -178,6 +181,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 75,
     overflow: "hidden",
+    marginLeft: 10,
     lineHeight: Platform.OS === "ios" ? 75 : null,
   },
 });

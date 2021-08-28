@@ -5,13 +5,16 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { PieChart } from "react-native-svg-charts";
+import * as Notifications from "expo-notifications";
 import * as svg from "react-native-svg";
+import { useAppState } from "@react-native-community/hooks";
 
 const HomeScreen = ({ navigation }) => {
   const [wordListLength, setWordListLength] = useState(0);
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
+  const appState = useAppState();
 
   //Re-render when going to this screen through navigation to update states
   React.useEffect(() => {
@@ -19,6 +22,18 @@ const HomeScreen = ({ navigation }) => {
       getCounters();
     });
   }, [navigation]);
+
+  useEffect(() => {
+    if (appState !== "active") {
+      console.log("Inactive");
+      try {
+        Notifications.setBadgeCountAsync(numReviews);
+        console.log("Badge count number set to " + numReviews);
+      } catch (err) {
+        console.log("Counldn't change badge count number", err);
+      }
+    }
+  }, [appState]);
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");

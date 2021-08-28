@@ -127,7 +127,7 @@ const SettingsScreen = ({ route, navigation }) => {
           <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>CLEAR</Text>
         </TouchableWithoutFeedback>
       </View>
-      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", marginTop: 15, alignSelf: "center" }}>Version 1.9</Text>
+      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", marginTop: 15, alignSelf: "center" }}>Version 2.0</Text>
     </SafeAreaView>
   );
 };

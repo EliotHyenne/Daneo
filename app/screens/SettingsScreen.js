@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, SafeAreaView, Platform, Text } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, Text, TouchableWithoutFeedback, Alert, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-root-toast";
@@ -51,6 +51,24 @@ const SettingsScreen = ({ route, navigation }) => {
     getReviewBatchSize();
   }, []);
 
+  const clearData = async () => {
+    Toast.show("Data cleared", {
+      duration: Toast.durations.SHORT,
+      backgroundColor: "gray",
+      shadow: false,
+      opacity: 0.8,
+    });
+    AsyncStorage.clear();
+  };
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Clear",
+      "Are you sure you want to clear your data?\n\nThis action will remove all of your vocabulary words and progress, it cannot be undone.",
+      [{ text: "Yes", onPress: () => clearData() }, { text: "No" }]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>Translation language:</Text>
@@ -101,6 +119,12 @@ const SettingsScreen = ({ route, navigation }) => {
           });
         }}
       />
+      <View style={styles.container2}>
+        <Text style={styles.text3}>Clear data:</Text>
+        <TouchableWithoutFeedback onPress={() => confirmDelete()}>
+          <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>CLEAR</Text>
+        </TouchableWithoutFeedback>
+      </View>
     </SafeAreaView>
   );
 };
@@ -130,6 +154,31 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginTop: 85,
     color: "white",
+  },
+  container2: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignSelf: "flex-start",
+  },
+  text3: {
+    fontFamily: "Roboto-Black",
+    fontSize: 25,
+    margin: 5,
+    marginLeft: 0,
+    color: "white",
+  },
+  deleteButton: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    borderRadius: 25,
+    fontFamily: "Roboto-Black",
+    fontSize: 25,
+    color: "white",
+    width: 150,
+    height: 75,
+    overflow: "hidden",
+    lineHeight: Platform.OS === "ios" ? 75 : null,
   },
 });
 

@@ -125,7 +125,7 @@ const ReviewScreen = ({ route, navigation }) => {
             (translation != null &&
               translation
                 .toLowerCase()
-                .split(/[\s;【】・]+/)
+                .split(/[\s;【】・。]+/)
                 .includes(text.toLowerCase())) ||
             (translation != null && translation.toLowerCase() === text.toLowerCase())
           ) {

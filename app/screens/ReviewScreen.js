@@ -68,18 +68,6 @@ const ReviewScreen = ({ route, navigation }) => {
     setReviewListFound(true);
   };
 
-  useEffect(() => {
-    getReviewBatchSize();
-  }, []);
-
-  useEffect(() => {
-    getReviewList();
-  }, []);
-
-  useEffect(() => {
-    getWordBatch(); // This is be executed when 'reviewListFound' state changes
-  }, [reviewListFound]);
-
   const getWordBatch = () => {
     setCurrentWordIndex(0);
 
@@ -103,6 +91,18 @@ const ReviewScreen = ({ route, navigation }) => {
       setReadingList(tempList);
     }
   };
+
+  useEffect(() => {
+    getReviewBatchSize();
+  }, []);
+
+  useEffect(() => {
+    getReviewList();
+  }, []);
+
+  useEffect(() => {
+    getWordBatch(); // This is be executed when 'reviewListFound' state changes
+  }, [reviewListFound]);
 
   const checkAnswer = async () => {
     const tempWord = JSON.parse(await AsyncStorage.getItem(wordBatch[currentWordIndex].word));

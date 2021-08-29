@@ -85,6 +85,7 @@ const ReviewScreen = ({ route, navigation }) => {
     } else {
       setWordBatch(tempList.splice(0, tempList.length));
     }
+
     if (tempMeaningState) {
       setMeaningList(tempList);
     } else {

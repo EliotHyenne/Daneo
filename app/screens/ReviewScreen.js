@@ -105,6 +105,12 @@ const ReviewScreen = ({ route, navigation }) => {
     getWordBatch(); // This is be executed when 'reviewListFound' state changes
   }, [reviewListFound]);
 
+  useEffect(() => {
+    if (wordBatch.length > 0) {
+      setTimeout(() => input.focus(), 200);
+    }
+  }, [wordBatch]);
+
   const checkAnswer = async () => {
     const tempWord = JSON.parse(await AsyncStorage.getItem(wordBatch[currentWordIndex].word));
 
@@ -269,7 +275,9 @@ const ReviewScreen = ({ route, navigation }) => {
     }
     setAnswered(false);
     setText("");
-    input.focus();
+    if (wordBatch[tempCounter]) {
+      setTimeout(() => input.focus(), 200);
+    }
   };
 
   const renderSenses = () => {
@@ -296,7 +304,6 @@ const ReviewScreen = ({ route, navigation }) => {
           <Text style={styles.reviewType}>Meaning</Text>
           <TextInput
             ref={(input) => (this.input = input)}
-            autoFocus
             backgroundColor={COLORS.pastel_blue}
             style={styles.input}
             placeholder="ex: Milk"
@@ -314,7 +321,6 @@ const ReviewScreen = ({ route, navigation }) => {
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
             backgroundColor={COLORS.pastel_blue}
-            autoFocus
             ref={(input) => (this.input = input)}
             style={styles.input}
             placeholder="ex: 우유"

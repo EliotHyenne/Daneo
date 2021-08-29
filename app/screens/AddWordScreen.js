@@ -18,6 +18,10 @@ const AddWordScreen = ({ route, navigation }) => {
 
   const parseString = require("react-native-xml2js").parseString;
 
+  React.useEffect(() => {
+    setTimeout(() => this.search.focus(), 50);
+  }, []);
+
   //Find word item that contains translated word and translated definition
   const findItemIndex = (jsonData) => {
     var itemIndex = 0;
@@ -129,7 +133,6 @@ const AddWordScreen = ({ route, navigation }) => {
           ref={(search) => (this.search = search)}
           onClear={handleOnClear}
           round
-          autoFocus
           searchIcon={{ size: 25, color: "white", paddingLeft: 10 }}
           clearIcon={{ size: 20, color: "white" }}
           onChangeText={setSearchInputText}

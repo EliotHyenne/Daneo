@@ -14,14 +14,15 @@ const HomeScreen = ({ navigation }) => {
   const [numNewWords, setNumNewWords] = useState(0);
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
+  const [nextReviewTime, setNextReviewTime] = useState(0);
   const appState = useAppState();
 
-  //Re-render when going to this screen through navigation to update states
-  React.useEffect(() => {
-    return navigation.addListener("focus", () => {
+  useEffect(() => {
+    const interval = setInterval(() => {
       getCounters();
-    });
-  }, [navigation]);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (appState !== "active") {
@@ -50,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
       let masterCounter = 0;
       let enlightenCounter = 0;
       let burnCounter = 0;
+      let tempNextReviewTime = Infinity;
 
       for (let word of JSON.parse(currentWordList)) {
         let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
@@ -61,6 +63,10 @@ const HomeScreen = ({ navigation }) => {
           currentWordObject.review = true;
           reviewsCounter++;
           await AsyncStorage.setItem(word, JSON.stringify(currentWordObject));
+        }
+
+        if (!currentWordObject.learn) {
+          tempNextReviewTime = Math.min(tempNextReviewTime, currentWordObject.nextReview - Date.now());
         }
 
         switch (currentWordObject.level) {
@@ -115,6 +121,7 @@ const HomeScreen = ({ navigation }) => {
       setData(finalData);
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);
+      setNextReviewTime(tempNextReviewTime);
     }
   };
 
@@ -161,6 +168,36 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  const renderNextReviewTime = () => {
+    let x = nextReviewTime / 1000;
+    const seconds = x % 60;
+    x /= 60;
+    const minutes = x % 60;
+    x /= 60;
+    const hours = x % 24;
+    x /= 24;
+    const days = x;
+
+    let str = "Next review in ";
+
+    if (Math.round(days) > 0) {
+      str += Math.round(days) + " day(s) ";
+    }
+    if (Math.round(hours) > 0) {
+      str += Math.round(hours) + " hour(s) ";
+    }
+    if (Math.round(minutes) > 0) {
+      str += Math.round(minutes) + " min ";
+    }
+    if (Math.round(seconds) > 0) {
+      str += Math.round(seconds) + " sec";
+    }
+
+    if (nextReviewTime > 0) {
+      return <Text style={styles.nextReviewTime}>{str}</Text>;
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={() => navigation.navigate("Settings", { title: "SETTINGS" })}>
@@ -181,6 +218,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={() => navigation.navigate("AddWord", { title: "ADD WORD" })}>
               <Text style={[styles.button, { backgroundColor: COLORS.pastel_green }]}>ADD</Text>
             </TouchableWithoutFeedback>
+            {renderNextReviewTime()}
           </View>
         </View>
         {wordListLength > 0 ? (
@@ -222,6 +260,16 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 70,
     overflow: "hidden",
     lineHeight: Platform.OS === "ios" ? 100 : null,
+  },
+  nextReviewTime: {
+    textAlign: "center",
+    textAlignVertical: "center",
+    alignSelf: "center",
+    marginBottom: 25,
+    borderRadius: 25,
+    fontFamily: "Roboto-Light",
+    fontSize: 15,
+    color: "white",
   },
   settings: {
     alignSelf: "flex-end",

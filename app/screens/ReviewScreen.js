@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   levelUp: {
     position: "absolute",
     alignSelf: "flex-end",
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-LightItalic",
     fontSize: 18,
     color: COLORS.pastel_green,
     marginTop: Platform.OS === "android" ? 5 : 0,
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   levelDown: {
     position: "absolute",
     alignSelf: "flex-end",
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-LightItalic",
     fontSize: 18,
     color: COLORS.pastel_red,
     marginTop: Platform.OS === "android" ? 5 : 0,

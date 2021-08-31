@@ -274,6 +274,7 @@ const ReviewScreen = ({ route, navigation }) => {
       }
     }
     setAnswered(false);
+    setLevelChange(false);
     setText("");
     if (wordBatch[tempCounter]) {
       setTimeout(() => input.focus(), 200);

@@ -6,6 +6,7 @@ import Toast from "react-native-root-toast";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const SettingsScreen = ({ route, navigation }) => {
+  const appData = require("../../app.json");
   const [translationLanguageMenuOpen, setTranslationLanguageMenuOpen] = useState(false);
   const [translationLanguageMenuValue, setTranslationLanguageMenuValue] = useState(null);
   const [translationLanguageMenuItems, setTranslationLanguageMenuItems] = useState([
@@ -127,7 +128,9 @@ const SettingsScreen = ({ route, navigation }) => {
           <Text style={[styles.deleteButton, { backgroundColor: COLORS.pastel_red }]}>CLEAR</Text>
         </TouchableWithoutFeedback>
       </View>
-      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", marginTop: 15, alignSelf: "center" }}>Version 2.2</Text>
+      <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, color: "white", marginTop: 15, alignSelf: "center" }}>
+        {"Version " + appData.expo.version}
+      </Text>
     </SafeAreaView>
   );
 };

@@ -121,17 +121,17 @@ const WordInfoComponent = (props) => {
 
     let str = "Next review in ";
 
-    if (Math.round(days) > 0) {
-      str += Math.round(days) + " day(s) ";
+    if (Math.floor(days) > 0) {
+      str += Math.floor(days) + " day(s) ";
     }
-    if (Math.round(hours) > 0) {
-      str += Math.round(hours) + " hour(s) ";
+    if (Math.floor(hours) > 0) {
+      str += Math.floor(hours) + " hour(s) ";
     }
-    if (Math.round(minutes) > 0) {
-      str += Math.round(minutes) + " min ";
+    if (Math.floor(minutes) > 0) {
+      str += Math.floor(minutes) + " min ";
     }
-    if (Math.round(seconds) > 0) {
-      str += Math.round(seconds) + " sec";
+    if (Math.floor(seconds) > 0) {
+      str += Math.floor(seconds) + " sec";
     }
 
     if (props.level != "Unseen" && props.nextReview - Date.now() <= 0) {

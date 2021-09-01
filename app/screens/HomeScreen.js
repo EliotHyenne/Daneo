@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dimensions, StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
@@ -7,7 +7,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { PieChart } from "react-native-svg-charts";
 import * as Notifications from "expo-notifications";
 import * as svg from "react-native-svg";
+import Constants from "expo-constants";
 import { useAppState } from "@react-native-community/hooks";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const HomeScreen = ({ navigation }) => {
   const [wordListLength, setWordListLength] = useState(0);
@@ -16,12 +25,33 @@ const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [nextReviewTime, setNextReviewTime] = useState(0);
   const appState = useAppState();
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   useEffect(() => {
     const interval = setInterval(() => {
       getCounters();
     }, 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -34,7 +64,49 @@ const HomeScreen = ({ navigation }) => {
         console.log("Counldn't change badge count number", err);
       }
     }
+    schedulePushNotification();
   }, [appState]);
+
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Ready to review",
+        body: "You have words available for review",
+      },
+      trigger: { seconds: ((nextReviewTime - Date.now()) / 1000) % 60 },
+    });
+  }
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");

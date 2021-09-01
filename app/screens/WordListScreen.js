@@ -69,7 +69,7 @@ const WordListScreen = ({ route, navigation }) => {
         translation != null &&
         translation
           .toLowerCase()
-          .split(/[\s;]+/)
+          .split(/[\s;【】・。]+/)
           .includes(text.toLowerCase())
       ) {
         return true;
@@ -81,7 +81,7 @@ const WordListScreen = ({ route, navigation }) => {
         definition != null &&
         definition
           .toLowerCase()
-          .split(/[\s,.;:]+/)
+          .split(/[\s,.;:【】・。]+/)
           .includes(text.toLowerCase())
       ) {
         return true;

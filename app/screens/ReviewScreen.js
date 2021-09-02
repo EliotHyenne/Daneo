@@ -259,6 +259,7 @@ const ReviewScreen = ({ route, navigation }) => {
   };
 
   const nextWord = () => {
+    console.log(wordBatch[currentWordIndex].translatedWordList[0]);
     let tempCounter = currentWordIndex;
 
     if (answer) {
@@ -318,7 +319,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {!noReviews && wordBatch.length > 0 && !meaningState && !answered ? (
         <View>
-          <Text style={[styles.translatedWord]}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={[styles.translatedWord]}>{wordBatch[currentWordIndex].translatedWordList[0].split(/\r?\n|\r/g)}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
             backgroundColor={COLORS.pastel_blue}
@@ -352,7 +353,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {!meaningState && answered && !answer ? (
         <View>
-          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0].split(/\r?\n|\r/g)}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
             backgroundColor={COLORS.pastel_red}
@@ -386,7 +387,7 @@ const ReviewScreen = ({ route, navigation }) => {
 
       {!meaningState && answered && answer && !levelChange ? (
         <View>
-          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0].split(/\r?\n|\r/g)}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
             backgroundColor={COLORS.pastel_green}
@@ -422,7 +423,7 @@ const ReviewScreen = ({ route, navigation }) => {
       {!meaningState && answered && answer && finalAnswer && levelChange ? (
         <View>
           <Text style={styles.levelUp}>+ {currentWord.level}</Text>
-          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0].split(/\r?\n|\r/g)}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
             backgroundColor={COLORS.pastel_green}
@@ -458,7 +459,7 @@ const ReviewScreen = ({ route, navigation }) => {
       {!meaningState && answered && answer && !finalAnswer && levelChange ? (
         <View>
           <Text style={styles.levelDown}>- {currentWord.level}</Text>
-          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0]}</Text>
+          <Text style={styles.translatedWord}>{wordBatch[currentWordIndex].translatedWordList[0].split(/\r?\n|\r/g)}</Text>
           <Text style={styles.reviewType}>Reading</Text>
           <TextInput
             backgroundColor={COLORS.pastel_green}
@@ -521,7 +522,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: "white",
     marginTop: 100,
-    marginBottom: 40,
+    marginBottom: 35,
     textAlign: "center",
   },
   word2: {
@@ -529,15 +530,15 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: "white",
     marginTop: 5,
-    marginBottom: 40,
+    marginBottom: 35,
     textAlign: "center",
   },
   translatedWord: {
     fontFamily: "Roboto-Black",
-    fontSize: 40,
+    fontSize: 38,
     color: "white",
     marginTop: 100,
-    marginBottom: 40,
+    marginBottom: 35,
     textAlign: "center",
   },
   reviewType: {

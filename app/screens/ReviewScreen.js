@@ -10,7 +10,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const [wordBatch, setWordBatch] = useState([]);
   const [noReviews, setNoReviews] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [meaningState, setMeaningState] = useState(false);
+  const [meaningState, setMeaningState] = useState(true);
   const [text, setText] = useState("");
   const [answered, setAnswered] = useState(false);
   const [answer, setAnswer] = useState(false);
@@ -72,7 +72,7 @@ const ReviewScreen = ({ route, navigation }) => {
     setCurrentWordIndex(0);
 
     const tempMeaningState = meaningList.length >= readingList.length;
-    setMeaningState(!tempMeaningState);
+    setMeaningState(tempMeaningState);
     const tempList = tempMeaningState ? [...meaningList] : [...readingList];
 
     if (tempList.length === 0) {

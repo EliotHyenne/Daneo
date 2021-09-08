@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Text } from "react-native";
+import { FlatList, StyleSheet, SafeAreaView, Platform, View, ActivityIndicator, Text } from "react-native";
 import { SearchBar } from "react-native-elements";
 import { COLORS } from "../config/colors.js";
 import WordInfoComponent from "../components/WordInfoComponent.js";
-import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AddWordScreen = ({ route, navigation }) => {
@@ -12,9 +11,7 @@ const AddWordScreen = ({ route, navigation }) => {
   const [wordFound, setWordFound] = useState(false);
   const [translationLanguageFound, setTranslationLanguageFound] = useState(false);
   const [translationLanguage, setTranslationLanguage] = useState("");
-  const [word, setWord] = useState("");
-  const [translatedWordList, setTranslatedWordList] = useState([]);
-  const [definitionsList, setDefinitionsList] = useState([]);
+  const [wordList, setWordList] = useState([]);
 
   const parseString = require("react-native-xml2js").parseString;
 
@@ -22,23 +19,18 @@ const AddWordScreen = ({ route, navigation }) => {
     setTimeout(() => this.search.focus(), 50);
   }, []);
 
-  //Find word item that contains translated word and translated definition
-  const findItemIndex = (jsonData) => {
-    var itemIndex = 0;
-    const item = jsonData.channel.item;
-
-    if (Array.isArray(item)) {
-      while (true) {
-        if (Array.isArray(item[itemIndex].sense)) {
-          break;
+  const createWordList = (jsonData) => {
+    if (parseInt(jsonData.channel.total._text) > 1) {
+      for (let currentItem of jsonData.channel.item) {
+        if (Array.isArray(currentItem.sense) || currentItem.sense.translation !== undefined) {
+          createWord(currentItem);
         }
-        if (item[itemIndex].sense.translation !== undefined) {
-          break;
-        }
-        itemIndex++;
+      }
+    } else {
+      if (Array.isArray(jsonData.channel.item.sense) || jsonData.channel.item.sense.translation !== undefined) {
+        createWord(jsonData.channel.item);
       }
     }
-    return itemIndex;
   };
 
   const getTranslationLanguage = async () => {
@@ -55,15 +47,22 @@ const AddWordScreen = ({ route, navigation }) => {
     getTranslationLanguage();
   }
 
-  const createWord = (jsonData) => {
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.wordContainer}>
+        <WordInfoComponent word={item[0]} translatedWordList={item[1]} definitionsList={item[2]}></WordInfoComponent>
+      </View>
+    );
+  };
+
+  const createWord = (item) => {
     let newTranslatedWordList = [];
     let newDefinitionsList = [];
-    let itemIndex = findItemIndex(jsonData);
-    const item = jsonData.channel.item;
+    let newWordItem = [];
 
     //Set the states using the correct word item
     if (Array.isArray(item)) {
-      setWord(item[itemIndex].word._text);
+      newWordItem.push(item[itemIndex].word._text);
       if (Array.isArray(item[itemIndex].sense)) {
         for (let sense of item[itemIndex].sense) {
           newTranslatedWordList.push(sense.translation.trans_word._cdata);
@@ -74,7 +73,7 @@ const AddWordScreen = ({ route, navigation }) => {
         newDefinitionsList.push(item[itemIndex].sense.translation.trans_dfn._cdata);
       }
     } else {
-      setWord(item.word._text);
+      newWordItem.push(item.word._text);
       if (Array.isArray(item.sense)) {
         for (let sense of item.sense) {
           newTranslatedWordList.push(sense.translation.trans_word._cdata);
@@ -85,39 +84,46 @@ const AddWordScreen = ({ route, navigation }) => {
         newDefinitionsList.push(item.sense.translation.trans_dfn._cdata);
       }
     }
-    setTranslatedWordList(newTranslatedWordList);
-    setDefinitionsList(newDefinitionsList);
+    newWordItem.push(newTranslatedWordList);
+    newWordItem.push(newDefinitionsList);
+
+    setWordList((wordList) => [...wordList, newWordItem]);
   };
 
   const handleSearch = (text) => {
-    setWordFound(false);
-    setIsLoading(true);
-    let url =
-      "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=" +
-      translationLanguage +
-      "&q=" +
-      text;
-    fetch(url)
-      .then((response) => response.text())
-      .then((response) => {
-        parseString(response, function (err, res) {
-          let convert = require("xml-js");
-          let xml = response;
-          let result = convert.xml2json(xml, { compact: true, spaces: 2 });
-          let jsonData = JSON.parse(result);
+    if (text) {
+      setWordList([]);
+      setWordFound(false);
+      setIsLoading(true);
+      let url =
+        "https://krdict.korean.go.kr/api/search?certkey_no=2546&key=BB8FF875370D0FF767AEA6E2586E62A4&type_search=search&method=WORD_INFO&part=word&sort=dict&translated=y&trans_lang=" +
+        translationLanguage +
+        "&q=" +
+        text;
+      fetch(url)
+        .then((response) => response.text())
+        .then((response) => {
+          parseString(response, function (err, res) {
+            let convert = require("xml-js");
+            let xml = response;
+            let result = convert.xml2json(xml, { compact: true, spaces: 2 });
+            let jsonData = JSON.parse(result);
 
-          if (jsonData.channel.item === undefined) {
-            setWordFound(false);
-          } else {
-            createWord(jsonData);
-            setWordFound(true);
-          }
-          setIsLoading(false);
+            if (parseInt(jsonData.channel.total._text) === 0) {
+              setWordFound(false);
+            } else {
+              createWordList(jsonData);
+              setWordFound(true);
+            }
+            setIsLoading(false);
+          });
+        })
+        .catch((e) => {
+          console.log("There was a problem searching for a word: ", e);
         });
-      })
-      .catch((e) => {
-        console.log("There was a problem searching for a word: ", e);
-      });
+    } else {
+      setWordFound(false);
+    }
   };
 
   const handleOnClear = () => {
@@ -158,15 +164,7 @@ const AddWordScreen = ({ route, navigation }) => {
       </View>
       <View style={styles.loading}>{isLoading ? <ActivityIndicator size="large" color="white" /> : null}</View>
       <View style={{ top: 200 }}>{!wordFound && !isLoading ? <Text style={styles.error}>¯\(°_o)/¯</Text> : null}</View>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%" }}>
-        <View>
-          {wordFound ? (
-            <View style={styles.wordContainer}>
-              <WordInfoComponent word={word} translatedWordList={translatedWordList} definitionsList={definitionsList}></WordInfoComponent>
-            </View>
-          ) : null}
-        </View>
-      </ScrollView>
+      <FlatList data={wordList} renderItem={renderItem} keyExtractor={(item, index) => index.toString()} />
     </SafeAreaView>
   );
 };

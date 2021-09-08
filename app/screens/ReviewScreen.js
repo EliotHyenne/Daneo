@@ -10,7 +10,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const [wordBatch, setWordBatch] = useState([]);
   const [noReviews, setNoReviews] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [meaningState, setMeaningState] = useState(true);
+  const [meaningState, setMeaningState] = useState(false);
   const [text, setText] = useState("");
   const [answered, setAnswered] = useState(false);
   const [answer, setAnswer] = useState(false);

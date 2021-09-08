@@ -72,7 +72,7 @@ const ReviewScreen = ({ route, navigation }) => {
     setCurrentWordIndex(0);
 
     const tempMeaningState = meaningList.length >= readingList.length;
-    setMeaningState(tempMeaningState);
+    setMeaningState(!tempMeaningState);
     const tempList = tempMeaningState ? [...meaningList] : [...readingList];
 
     if (tempList.length === 0) {

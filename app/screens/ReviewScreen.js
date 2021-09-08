@@ -71,7 +71,7 @@ const ReviewScreen = ({ route, navigation }) => {
   const getWordBatch = () => {
     setCurrentWordIndex(0);
 
-    const tempMeaningState = readingList.length >= meaningList.length;
+    const tempMeaningState = meaningList.length >= readingList.length;
     setMeaningState(tempMeaningState);
     const tempList = tempMeaningState ? [...meaningList] : [...readingList];
 

@@ -138,7 +138,9 @@ const HomeScreen = ({ navigation }) => {
         }
 
         if (!currentWordObject.learn) {
-          tempNextReviewTime = Math.min(tempNextReviewTime, currentWordObject.nextReview - Date.now());
+          if (currentWordObject.nextReview - Date.now() > 0 && currentWordObject.nextReview - Date.now() < tempNextReviewTime) {
+            tempNextReviewTime = currentWordObject.nextReview - Date.now();
+          }
         }
 
         switch (currentWordObject.level) {
@@ -265,7 +267,7 @@ const HomeScreen = ({ navigation }) => {
       str += Math.floor(seconds) + " sec";
     }
 
-    if (nextReviewTime > 0) {
+    if (nextReviewTime < Infinity) {
       return <Text style={styles.nextReviewTime}>{str}</Text>;
     }
   };

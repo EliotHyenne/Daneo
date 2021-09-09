@@ -178,40 +178,40 @@ const ReviewScreen = ({ route, navigation }) => {
         setFinalAnswer(true);
         switch (tempWord.level) {
           case "Unranked":
-            tempWord.level = "Apprentice 1";
             tempWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 1";
             break;
           case "Apprentice 1":
-            tempWord.level = "Apprentice 2";
             tempWord.nextReview = Date.now() + 8 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 2";
             break;
           case "Apprentice 2":
-            tempWord.level = "Apprentice 3";
             tempWord.nextReview = Date.now() + 23 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 3";
             break;
           case "Apprentice 3":
-            tempWord.level = "Apprentice 4";
             tempWord.nextReview = Date.now() + 47 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 4";
             break;
           case "Apprentice 4":
-            tempWord.level = "Guru 1";
             tempWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Guru 1";
             break;
           case "Guru 1":
-            tempWord.level = "Guru 2";
             tempWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Guru 2";
             break;
           case "Guru 2":
-            tempWord.level = "Master";
             tempWord.nextReview = Date.now() + 30 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Master";
             break;
           case "Master":
-            tempWord.level = "Enlighten";
             tempWord.nextReview = Date.now() + 120 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Enlighten";
             break;
           case "Enlighten":
-            tempWord.level = "Burn";
             tempWord.nextReview = Date.now() + 365 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Burn";
             break;
         }
       } else {
@@ -228,32 +228,32 @@ const ReviewScreen = ({ route, navigation }) => {
           case "Apprentice 2":
           case "Apprentice 3":
           case "Apprentice 4":
-            tempWord.level = "Apprentice 1";
             tempWord.nextReview = Date.now() + 4 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 1";
             break;
           case "Guru 1":
           case "Guru 2":
           case "Master":
-            tempWord.level = "Apprentice 4";
             tempWord.nextReview = Date.now() + 43 * ONE_HOUR_IN_MILLIS;
+            tempWord.level = "Apprentice 4";
             break;
           case "Enlighten":
-            tempWord.level = "Guru 1";
             tempWord.nextReview = Date.now() + 7 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Guru 1";
             break;
           case "Burn":
-            tempWord.level = "Master";
             tempWord.nextReview = Date.now() + 14 * ONE_DAY_IN_MILLIS;
+            tempWord.level = "Master";
             break;
         }
       }
-      setCurrentWord(tempWord);
-
       tempWord.review = false;
       tempWord.meaningAnswered = false;
       tempWord.meaningAnswer = false;
       tempWord.readingAnswered = false;
       tempWord.readingAnswer = false;
+
+      setCurrentWord(tempWord);
     }
     await AsyncStorage.setItem(wordBatch[currentWordIndex].word, JSON.stringify(tempWord));
   };

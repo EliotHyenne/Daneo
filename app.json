@@ -2,7 +2,7 @@
   "expo": {
     "name": "Daneo",
     "slug": "Daneo",
-    "version": "3.2",
+    "version": "3.3",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -22,8 +22,9 @@
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#a6b1e1"
       },
+      "googleServicesFile": "./app/google-services.json",
       "package": "com.plumetone.daneo",
-      "versionCode": 22,
+      "versionCode": 23,
       "allowBackup": true
     },
     "web": {

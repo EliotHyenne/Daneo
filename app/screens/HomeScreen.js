@@ -77,8 +77,7 @@ const HomeScreen = ({ navigation }) => {
     });
   }
 
-  async function registerForPushNotificationsAsync() {
-    let token;
+  const registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
@@ -90,8 +89,9 @@ const HomeScreen = ({ navigation }) => {
         alert("Failed to get push token for push notification!");
         return;
       }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log(token);
+      this.setState({ expoPushToken: token });
     } else {
       alert("Must use physical device for Push Notifications");
     }
@@ -104,9 +104,7 @@ const HomeScreen = ({ navigation }) => {
         lightColor: "#FF231F7C",
       });
     }
-
-    return token;
-  }
+  };
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");

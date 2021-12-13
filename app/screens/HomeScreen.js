@@ -25,8 +25,6 @@ const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [nextReviewTime, setNextReviewTime] = useState(0);
   const appState = useAppState();
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -36,75 +34,6 @@ const HomeScreen = ({ navigation }) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
-
-    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      setNotification(notification);
-    });
-
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log(response);
-    });
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (appState !== "active") {
-      console.log("Inactive");
-      try {
-        Notifications.setBadgeCountAsync(numReviews);
-        console.log("Badge count number set to " + numReviews);
-      } catch (err) {
-        console.log("Counldn't change badge count number", err);
-      }
-    }
-    schedulePushNotification();
-  }, [appState]);
-
-  async function schedulePushNotification() {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Ready to review",
-        body: "You have words available for review",
-      },
-      trigger: { seconds: ((nextReviewTime - Date.now()) / 1000) % 60 },
-    });
-  }
-
-  const registerForPushNotificationsAsync = async () => {
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-      this.setState({ expoPushToken: token });
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
-
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-  };
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");

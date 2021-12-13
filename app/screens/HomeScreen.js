@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Dimensions, StyleSheet, Text, SafeAreaView, TouchableWithoutFeedback, Platform, StatusBar, View } from "react-native";
 import { COLORS } from "../config/colors.js";
 import { ScrollView } from "react-native-gesture-handler";
@@ -7,8 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { PieChart } from "react-native-svg-charts";
 import * as Notifications from "expo-notifications";
 import * as svg from "react-native-svg";
-import Constants from "expo-constants";
-import { useAppState } from "@react-native-community/hooks";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,9 +22,6 @@ const HomeScreen = ({ navigation }) => {
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
   const [nextReviewTime, setNextReviewTime] = useState(0);
-  const appState = useAppState();
-  const notificationListener = useRef();
-  const responseListener = useRef();
 
   useEffect(() => {
     const interval = setInterval(() => {

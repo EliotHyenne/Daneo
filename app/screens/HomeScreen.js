@@ -16,6 +16,7 @@ const HomeScreen = ({ navigation }) => {
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
+    //console.log(currentWordList);
 
     if (!currentWordList) {
       setWordListLength(0);

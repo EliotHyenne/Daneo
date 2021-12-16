@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback, ActivityIndicator, AppState } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
@@ -13,6 +13,7 @@ const LearnWordScreen = ({ route, navigation }) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const scrollRef = useRef();
+  const appState = useRef(AppState.currentState);
 
   const getLessonList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
@@ -39,6 +40,36 @@ const LearnWordScreen = ({ route, navigation }) => {
     getLessonList();
   }, []);
 
+  useEffect(() => {
+    if ((appState === "background" || appState === "inactive") && lessonListFound) {
+      console.log("Inactive");
+
+      AsyncStorage.setItem("@wordList", JSON.stringify(wordList))
+        .then(() => {
+          console.log("Saved word list 1");
+        })
+        .catch((e) => {
+          console.log("There was an error while saving the words list: ", e);
+        });
+    }
+  }, [appState, lessonListFound]);
+
+  useEffect(
+    () =>
+      navigation.addListener("blur", (e) => {
+        if (lessonListFound) {
+          AsyncStorage.setItem("@wordList", JSON.stringify(wordList))
+            .then(() => {
+              console.log("Saved word list 2");
+            })
+            .catch((e) => {
+              console.log("There was an error while saving the words list: ", e);
+            });
+        }
+      }),
+    [navigation, lessonListFound]
+  );
+
   const renderSenses = (index) => {
     return lessonList[index].wordObject.translatedWordList.map((data, key) => {
       return (
@@ -56,8 +87,6 @@ const LearnWordScreen = ({ route, navigation }) => {
     wordList[lessonList[currentWordIndex].index].learn = false;
     wordList[lessonList[currentWordIndex].index].review = true;
     wordList[lessonList[currentWordIndex].index].level = "Unranked";
-
-    await AsyncStorage.setItem("@wordList", JSON.stringify(wordList));
   };
 
   const nextWord = () => {

@@ -12,7 +12,7 @@ const WordInfoComponent = (props) => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
 
     if (currentWordList) {
-      setWordIndex(JSON.parse(currentWordList).findIndex((element) => element === props.word));
+      setWordIndex(JSON.parse(currentWordList).findIndex((element) => element.word === props.word));
     }
   };
 
@@ -32,8 +32,6 @@ const WordInfoComponent = (props) => {
 
     const newWordList = JSON.parse(currentWordList);
     newWordList.splice(index, 1);
-
-    await AsyncStorage.removeItem(props.word);
 
     await AsyncStorage.setItem("@wordList", JSON.stringify(newWordList))
       .then(() => {
@@ -74,14 +72,7 @@ const WordInfoComponent = (props) => {
       newWordList = JSON.parse(currentWordList);
     }
 
-    newWordList.push(wordToAdd.word);
-    await AsyncStorage.setItem(wordToAdd.word, JSON.stringify(wordToAdd))
-      .then(() => {
-        setCheckedExists(false);
-      })
-      .catch((e) => {
-        console.log("There was an error while creating word element: ", e);
-      });
+    newWordList.push(wordToAdd);
     await AsyncStorage.setItem("@wordList", JSON.stringify(newWordList))
       .then(() => {
         setCheckedExists(false);

@@ -8,19 +8,21 @@ import Toast from "react-native-root-toast";
 const LearnWordScreen = ({ route, navigation }) => {
   const [lessonList, setLessonList] = useState([]);
   const [lessonListFound, setLessonListFound] = useState(false);
+  const [wordList, setWordList] = useState([]);
   const [noLessons, setNoLessons] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const scrollRef = useRef();
 
   const getLessonList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
+    setWordList(JSON.parse(currentWordList));
     let tempLessonList = [];
 
     if (currentWordList) {
-      for (let word of JSON.parse(currentWordList)) {
-        let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
-        if (currentWordObject.learn) {
-          tempLessonList.push(currentWordObject);
+      for (var i = 0; i < JSON.parse(currentWordList); i++) {
+        console.log("HERE");
+        if (currentWordList[i].learn) {
+          tempLessonList.push({ index: i, wordObject: currentWordList[i] });
         }
       }
       setLessonList(tempLessonList);
@@ -36,24 +38,26 @@ const LearnWordScreen = ({ route, navigation }) => {
   }, []);
 
   const renderSenses = (index) => {
-    return lessonList[index].translatedWordList.map((data, key) => {
+    return lessonList[index].wordObject.translatedWordList.map((data, key) => {
       return (
         <View key={key}>
           <Text style={styles.translatedWordList}>
             {key + 1}. {data}
           </Text>
-          <Text style={styles.definitionsList}>{lessonList[index].definitionsList[key]}</Text>
+          <Text style={styles.definitionsList}>{lessonList[index].wordObject.definitionsList[key]}</Text>
         </View>
       );
     });
   };
 
   const changeLevel = async () => {
-    lessonList[currentWordIndex].learn = false;
-    lessonList[currentWordIndex].review = true;
-    lessonList[currentWordIndex].level = "Unranked";
+    //let index = wordList.findIndex((element) => element.word === lessonList[currentWordIndex].word);
 
-    await AsyncStorage.setItem(lessonList[currentWordIndex].word, JSON.stringify(lessonList[currentWordIndex]));
+    wordList[lessonList[currentWordIndex].index].learn = false;
+    wordList[lessonList[currentWordIndex].index].review = true;
+    wordList[lessonList[currentWordIndex].index].level = "Unranked";
+
+    AsyncStorage.setItem("@wordList", JSON.stringify(wordList));
   };
 
   const nextWord = () => {
@@ -88,7 +92,7 @@ const LearnWordScreen = ({ route, navigation }) => {
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef} style={{ width: "100%" }}>
           {!noLessons ? (
             <View>
-              <Text style={styles.word}>{lessonList[currentWordIndex].word}</Text>
+              <Text style={styles.word}>{lessonList[currentWordIndex].wordObject.word}</Text>
               {renderSenses(currentWordIndex)}
             </View>
           ) : null}

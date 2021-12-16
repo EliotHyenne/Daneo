@@ -5,16 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { PieChart } from "react-native-svg-charts";
-import * as Notifications from "expo-notifications";
 import * as svg from "react-native-svg";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
 
 const HomeScreen = ({ navigation }) => {
   const [wordListLength, setWordListLength] = useState(0);
@@ -22,13 +13,6 @@ const HomeScreen = ({ navigation }) => {
   const [numReviews, setNumReviews] = useState(0);
   const [data, setData] = useState([]);
   const [nextReviewTime, setNextReviewTime] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getCounters();
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const getCounters = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
@@ -48,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
       let tempNextReviewTime = Infinity;
 
       for (let word of JSON.parse(currentWordList)) {
-        let currentWordObject = JSON.parse(await AsyncStorage.getItem(word));
+        let currentWordObject = word;
 
         if (currentWordObject.learn) {
           newWordsCounter++;
@@ -56,7 +40,6 @@ const HomeScreen = ({ navigation }) => {
         } else if (currentWordObject.nextReview - Date.now() <= 0) {
           currentWordObject.review = true;
           reviewsCounter++;
-          await AsyncStorage.setItem(word, JSON.stringify(currentWordObject));
         }
 
         if (!currentWordObject.learn) {
@@ -114,12 +97,20 @@ const HomeScreen = ({ navigation }) => {
           finalData.push(element);
         }
       }
+      await AsyncStorage.setItem("@wordList", currentWordList);
       setData(finalData);
       setNumReviews(reviewsCounter);
       setNumNewWords(newWordsCounter);
       setNextReviewTime(tempNextReviewTime);
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getCounters();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     getCounters();

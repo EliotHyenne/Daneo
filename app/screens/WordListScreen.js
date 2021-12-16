@@ -12,14 +12,10 @@ const WordListScreen = ({ route, navigation }) => {
 
   const getWordList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
-    let tempWordList = [];
 
     if (currentWordList) {
-      for (let word of JSON.parse(currentWordList)) {
-        tempWordList.unshift(JSON.parse(await AsyncStorage.getItem(word)));
-      }
-      setWordList(tempWordList);
-      setFilteredWordList(tempWordList);
+      setWordList(JSON.parse(currentWordList));
+      setFilteredWordList(JSON.parse(currentWordList));
     }
   };
 

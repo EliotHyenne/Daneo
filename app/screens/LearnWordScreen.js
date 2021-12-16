@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, View, Text, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
 import { COLORS } from "../config/colors.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
@@ -11,18 +11,19 @@ const LearnWordScreen = ({ route, navigation }) => {
   const [wordList, setWordList] = useState([]);
   const [noLessons, setNoLessons] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const scrollRef = useRef();
 
   const getLessonList = async () => {
     const currentWordList = await AsyncStorage.getItem("@wordList");
-    setWordList(JSON.parse(currentWordList));
+    const parsedWordList = JSON.parse(currentWordList);
+    setWordList(parsedWordList);
     let tempLessonList = [];
 
     if (currentWordList) {
-      for (var i = 0; i < JSON.parse(currentWordList); i++) {
-        console.log("HERE");
-        if (currentWordList[i].learn) {
-          tempLessonList.push({ index: i, wordObject: currentWordList[i] });
+      for (var i = 0; i < parsedWordList.length; i++) {
+        if (parsedWordList[i].learn) {
+          tempLessonList.push({ index: i, wordObject: parsedWordList[i] });
         }
       }
       setLessonList(tempLessonList);
@@ -31,6 +32,7 @@ const LearnWordScreen = ({ route, navigation }) => {
       }
     }
     setLessonListFound(true);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -51,13 +53,11 @@ const LearnWordScreen = ({ route, navigation }) => {
   };
 
   const changeLevel = async () => {
-    //let index = wordList.findIndex((element) => element.word === lessonList[currentWordIndex].word);
-
     wordList[lessonList[currentWordIndex].index].learn = false;
     wordList[lessonList[currentWordIndex].index].review = true;
     wordList[lessonList[currentWordIndex].index].level = "Unranked";
 
-    AsyncStorage.setItem("@wordList", JSON.stringify(wordList));
+    await AsyncStorage.setItem("@wordList", JSON.stringify(wordList));
   };
 
   const nextWord = () => {
@@ -88,7 +88,10 @@ const LearnWordScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       {!noLessons ? <Text style={styles.counter}>{currentWordIndex + 1 + " / " + lessonList.length}</Text> : null}
       <View style={styles.componentContainer}>
-        {!lessonListFound || noLessons ? <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text> : null}
+        <View style={styles.loading}>{isLoading ? <ActivityIndicator size="large" color="white" /> : null}</View>
+        {!isLoading && (!lessonListFound || noLessons) ? (
+          <Text style={[styles.error, { marginTop: Platform.OS === "android" ? 300 : 175 }]}>¯\(°_o)/¯</Text>
+        ) : null}
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef} style={{ width: "100%" }}>
           {!noLessons ? (
             <View>
@@ -173,6 +176,9 @@ const styles = StyleSheet.create({
     margin: Platform.OS === "ios" ? 25 : 0,
     lineHeight: Platform.OS === "ios" ? 75 : null,
     overflow: "hidden",
+  },
+  loading: {
+    top: 200,
   },
 });
 
